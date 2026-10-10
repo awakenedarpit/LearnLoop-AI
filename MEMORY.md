@@ -1,6 +1,6 @@
 # LearnLoop AI — Persistent Project Memory
 
-**Last updated:** 2026-10-10
+**Last updated:** 2026-10-11
 
 ## Goal and scope
 
@@ -18,8 +18,8 @@ Build an Education prototype for Team Data Alchemists at HackOverflow 10.0 — A
 ## Verified implementation status
 
 - Phase 1 student Learning MVP: diagnostic across variables/data types/conditionals/loops/functions/lists; 3 question variants per concept; confidence field; safe active-session response; server-side saves/recovery; score/gap analysis; curated hints/explanations; unseen targeted practice; fresh reassessment linked to actual diagnostic; server-rendered progress/history; honest comparison.
-- Teacher quiz authoring/publish and a fictional local assessment attempt flow are verified: published quiz delivery, server autosave/recovery, deadline expiry, idempotent scoring/finalization, and pre-finalization answer-key withholding. Class assignment/review, production roles/auth, Supabase migrations/RLS, Gemini, exports and deployment remain incomplete.
-- Verified commands: `pnpm typecheck` PASS; `pnpm test` PASS (11 tests across 3 files); `pnpm lint` PASS; `pnpm build` PASS; `pnpm test:integration` PASS (8 student routes plus `/assess` and full local student flow). Full detail is in `tasks/PROGRESS.md` and `docs/TESTING_PLAN.md`.
+- Teacher quiz authoring, timed student attempt/autosave/deadline handling, teacher analytics, submission review, print-friendly review and filtered CSV export are integrated into main. GitHub Actions passed typecheck, lint, unit tests and production build on the combined milestone; full assessment HTTP integration remains unverified. Class assignment, production roles/auth, Supabase migrations/RLS, Gemini and successful deployment remain incomplete.
+- Verified commands: `pnpm typecheck` PASS; `pnpm test` PASS (4 unit tests); `pnpm lint` PASS; `pnpm build` PASS; `pnpm test:integration` PASS (8 routes + full local student flow). Full detail is in `tasks/PROGRESS.md` and `docs/TESTING_PLAN.md`.
 - No public deployment URL exists.
 
 ## Important paths
@@ -41,5 +41,35 @@ Build an Education prototype for Team Data Alchemists at HackOverflow 10.0 — A
 4. **Tests:** `pnpm typecheck`, 4 unit tests, `pnpm lint`, `pnpm build`, `pnpm test:integration` all passed. Integration verified server saves/recovery, answer-key withholding, scoring, idempotency, final-state immutability, unseen practice, fresh reassessment and the linked score delta.
 5. **Commit/push:** no new milestone commit/push verified yet. Previous managed scaffold: `f594498`.
 6. **Next three actions:** (i) public-content audit + dual push + verify refs; (ii) implement teacher timed-assessment MVP within demo-only boundary; (iii) run checks and persist actual milestone status.
+
+Never put secrets or credentials in memory. Keep statuses aligned with actual source and test evidence.
+
+
+## Dated handoff — 2026-10-11 (teacher analytics)
+
+1. **Implemented, not verified:** branch `feat/teacher-results-analytics` based on `feat/timed-quiz-autosave`. Added `lib/services/teacher-analytics.ts`, `app/api/teacher/analytics/route.ts`, `components/teacher-analytics-dashboard.tsx`, `app/teacher/analytics/page.tsx`, `app/teacher/analytics/analytics.css`, `tests/teacher-analytics.test.ts`; updated teacher entry link, route manifest and docs.
+2. **Feature:** actual local demo attempt records power quiz counts, mean/high score, pass-rate indicator, recent submission list and question accuracy. Explicitly one fixed fictional learner; not class analytics or production authorization.
+3. **PR:** PR #6 (`feat/teacher-results-analytics`) was merged into `feat/timed-quiz-autosave` on 2026-10-10; the analytics feature branch head is `f020f6a921b46c157a36df1e7fe511253fddd8db`. PR #7 adds teacher submission review, based on that analytics branch.
+4. **Verification:** no tests, typecheck, lint, build, integration or browser check has been executed for this branch. No GitHub Actions workflow runs were returned; Vercel status was pending. Do not claim success or deployment.
+5. **Next three actions:** (i) run checks and inspect diffs, especially sqlite schema/analytics aggregation; (ii) fix failures and update this handoff; (iii) review PR #6 and stacked assessment PRs in dependency order.
+
+
+## Dated handoff — 2026-10-11 (teacher submission review)
+
+1. **Implemented, verification pending:** branch `feat/teacher-submission-review`, based on `feat/teacher-results-analytics`. Added `lib/services/teacher-review.ts`, `app/api/teacher/review/route.ts`, `components/teacher-submission-review.tsx`, `app/teacher/review/page.tsx`, `app/teacher/review/review.css`, and `tests/teacher-review.test.ts`; updated analytics navigation, route manifest, README, TODO and progress notes.
+2. **Feature:** demo submission inbox; quiz filter; attempt detail lookup; selected/correct answers, explanations, unanswered count, score and timestamp; print-friendly individual review.
+3. **PR:** https://github.com/awakenedarpit/LearnLoop-AI/pull/7 (open), based on `feat/teacher-results-analytics`. Latest confirmed head at handoff update: `9eefe0935b5d1a99be78f0d9988e8cf40d00c288`.
+4. **Verification:** no local test/typecheck/lint/build/browser checks were run. GitHub Actions workflow runs for this head were empty. Do not claim checks or deployment succeeded.
+5. **Boundaries/blockers:** fictional local SQLite and one fixed demo learner; no teacher authentication/class authorization, access-denial or integrity-event review, durable cloud storage, or CSV export. Vercel demo needs `DEMO_MODE=true`; use fictional data only.
+6. **Next actions:** run typecheck, lint, unit tests, build and integration tests on the combined branch; review UI and print behavior; resolve production auth/cloud prerequisites before real learner data.
+
+
+## Dated handoff — 2026-10-11 (assessment workflow merged to main)
+
+1. **Main code commit:** `cefae2c777a2d3abcc140af749e46c29a45909fc` — `Integrate assessment workflow and CSV analytics export`. PR #8 merged to `main`.
+2. **Integrated:** teacher quiz builder, student timed attempts with autosave/recovery/deadlines, teacher results analytics, question-by-question review, print-friendly review, filtered CSV export, and CI.
+3. **Verification:** GitHub Actions run `38078124788` passed typecheck, lint, unit tests and production build on the combined assessment branch. Run `38078482327` on main commit `ae71ec21d35e5be2b3ebeb784c4431e7c89e0991` passed typecheck, lint, unit tests, the existing student-learning HTTP integration, and production build. Assessment-specific HTTP/browser integration remains unverified.
+4. **Known boundaries:** fictional SQLite demo, one fixed learner, no production teacher auth/class permissions/admin roles, no access-denial/integrity event review, no configured Supabase project/RLS, no configured Gemini key. Vercel status is rate-limited; no successful deployment confirmed.
+5. **Next three actions:** (i) add assessment-specific integration coverage for autosave/deadline/finalization/CSV; (ii) run those checks and inspect print/mobile flows; (iii) resume Supabase/auth work only after the project quota blocker is resolved.
 
 Never put secrets or credentials in memory. Keep statuses aligned with actual source and test evidence.

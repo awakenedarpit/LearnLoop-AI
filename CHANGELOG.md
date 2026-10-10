@@ -1,8 +1,14 @@
 # Changelog
 
-## Unreleased — 2026-10-10
+## Unreleased — 2026-10-11
 
-- Verified the local assessment milestone: published quiz delivery, server-authoritative answer autosave/recovery, countdown/deadline enforcement, idempotent manual/expired finalization, scoring, answer-key withholding, read-only results, and 11 passing unit tests across learning, teacher quiz, and assessment services.
+- Merged PR #8 to `main` as `cefae2c`: consolidated teacher quiz authoring, student timed attempts with autosave/recovery/deadlines, teacher analytics, question-by-question submission review, print-friendly review, filtered CSV export, and GitHub Actions CI.
+- Fixed React lint findings in assessment views and corrected CI setup ordering. GitHub Actions run `38078124788` passed typecheck, lint, unit tests, and production build on the combined branch. Full assessment HTTP integration remains unverified.
+- Added `GET /api/teacher/analytics/export` with assessment filtering, safe CSV quoting, and formula-like cell neutralization. All assessment data remains fictional demo data for one learner; production authorization/cloud persistence are not available.
+
+# Changelog
+
+## Unreleased — 2026-10-10
 
 - Started the teacher quiz builder milestone on `feat/teacher-quiz-builder`: authoring UI, draft CRUD and publish API, validation, quiz metadata/question storage, student preview, and responsive styles. Implementation status and limitations are documented in `tasks/PROGRESS.md`; verification is still pending.
 
@@ -15,4 +21,17 @@
 - Removed `better-sqlite3` after opening a database reproducibly segfaulted in the sandbox; Node built-in SQLite create/read/transaction was verified instead.
 - Added deterministic scoring/catalog tests and a disposable HTTP integration harness for routes, recovery, scoring, idempotency, post-completion edits, targeted practice and reassessment comparison.
 - Verification passed: `pnpm typecheck`, 4 `pnpm test` checks, `pnpm lint`, `pnpm build`, and `pnpm test:integration`. Exact output is summarized in `tasks/PROGRESS.md`.
-- Class assignment, authenticated teacher review, integrity/access-denial records, real authentication/RLS, Supabase cloud project, live Gemini, reports/exports, and production deployment remain incomplete/unverified.
+- Production authentication/RLS, dedicated Supabase cloud persistence, live Gemini, class assignment/access-denial/integrity review, full class reports, and successful production deployment remain incomplete/unverified.
+
+ 
+## 2026-10-10 — Assessment workflow demos
+
+- Added the teacher quiz builder and published-quiz state in PR #2.
+- Added student quiz listing, answer submission, server-side grading, result explanations, attempt limits and responsive quiz review in PR #3.
+- Both are demo-only; no role authorization, shared durable cloud storage, or server-enforced quiz timer is implemented. Verification of the latest branches and Vercel preview is pending.
+
+## Unreleased — timed assessment flow
+
+- Added server-backed active quiz attempts, deadline enforcement, answer autosave, resume after refresh, and automatic submit behavior in the student quiz interface.
+- Added service tests for active-attempt recovery and ensuring late payloads cannot replace saved answers after the deadline.
+- Demo-only: uses fixed fictional student identity and local SQLite. Typecheck, lint, tests, build, browser testing and preview deployment remain unverified.

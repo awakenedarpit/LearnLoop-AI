@@ -56,29 +56,28 @@ Statuses use `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, or `DONE`. A phase/task be
 
 ## Phase 2 — Teacher assessment MVP
 
-### P2.1 Teacher quiz authoring — `IN_PROGRESS` (demo-only milestone; verification pending)
+### P2.1 Teacher quiz authoring — `IN_PROGRESS` (demo subset integrated; CI checks passed)
 - **Objective:** Build the teacher authoring flow for quiz metadata, multiple-choice questions, answer keys, concept tags, explanations, preview, draft save, and publish.
 - **Prerequisites:** Demo-only quiz storage exists; production identity/role boundaries and class/assignment models remain prerequisites for secure class assignment.
 - **Affected files:** `features/assess/authoring`, teacher routes/actions, schema, class assignment UI.
 - **Approach:** Implement manual question/answer/explanation/concept editing; title/instruction/duration/availability/attempt settings; student preview; draft save/edit; and draft-to-published transition. Keep class assignment out of this milestone until server-side auth and trusted class membership exist.
 - **Current implementation:** `components/teacher-quiz-builder.tsx`, `lib/services/teacher-quizzes.ts`, and `app/api/teacher/quizzes/*`; SQLite demo storage is per instance and ephemeral on Vercel when `:memory:` is configured.
 - **Acceptance:** Authoring, editing, preview, save, and publish pass UI/API tests; published drafts are locked; invalid question payloads are rejected. Class assignment remains incomplete.
-- **Verification:** **Pending** — run typecheck/lint/unit/integration/build and verify the UI against a checked-out branch before marking complete.
+- **Verification:** GitHub Actions passed typecheck, lint, unit tests and production build on the combined assessment branch. Assessment-specific integration/browser verification and class authorization remain incomplete.
 
-### P2.2 Student attempt, autosave, deadlines, and finalization — `IN_PROGRESS` (local demo verified)
+### P2.2 Student attempt, autosave, deadlines, and finalization — `IN_PROGRESS` (demo-only implementation)
 - **Objective:** Make the timed test reliable across refreshes and deadline boundaries.
 - **Prerequisites:** P2.1 and persistent answer store.
 - **Affected files:** `features/assess/attempt`, save/finalize services, answer/session API.
-- **Current implementation:** `lib/services/assessments.ts`, `components/assessment-runner.tsx`, and `/api/assessments/*` provide server-saved answers, refresh recovery, server deadline checks, manual/expired finalization, idempotent scoring, and answer-key withholding in the fictional local demo.
 - **Approach:** Server saves each answer; UI shows last-successful-save state; server time enforces deadline; finalization idempotently scores the latest saved answers; prevent writes after finalization; record policy termination/access denials/integrity events.
-- **Acceptance:** Refresh recovers server answers, late writes fail, duplicate finalization scores once, expiry uses the latest successfully saved answer, and pre-start denial creates no submission.
-- **Verification:** `tests/assessments.test.ts` covers save/restore, deadline expiry, duplicate finalization, post-finalization write rejection, and answer-key withholding. Class/identity authorization and access-denial/integrity records remain pending cloud/auth work.
+- **Current demo implementation:** student quiz UI/API supports timed attempts, server autosave/recovery, deadline checks and submission/finalization. Full combined integration and race-condition verification remains pending; access-denial records are not implemented.
+- **Verification:** Integration tests for save/restore/deadline/duplicate-submit/race conditions and access-denial behavior.
 
-### P2.3 Individual review and integrity review — `NOT_STARTED`
+### P2.3 Individual review and integrity review — `IN_PROGRESS` (demo review subset)
 - **Objective:** Give authorized teachers actionable submission review.
 - **Prerequisites:** P2.1–P2.2 and review event records.
 - **Affected files:** `features/assess/review`, teacher access services/routes.
-- **Approach:** Filter by assessment/class/student; display question responses, score/time, unanswered summary, denial reason, and reviewable integrity signals.
+- **Current demo implementation:** `/teacher/review` filters finalized submissions by quiz and displays individual responses, score/time, unanswered summary, correct answers and explanations; print-friendly output is available. Access-denial and integrity-event records are not implemented.
 - **Acceptance:** Teacher sees only authorized records; signals are not presented as proof of misconduct.
 - **Verification:** Teacher/student cross-record authorization checks.
 
@@ -92,9 +91,10 @@ Statuses use `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, or `DONE`. A phase/task be
 - **Acceptance:** Configured requests are validated and handled safely; missing-key/provider failures use fallbacks; generated quizzes cannot publish without teacher review.
 - **Verification:** Unit tests with mocked provider, key-absence/failure/schema cases; live request only after key setup.
 
-### P3.2 Class, question, concept, and individual analytics — `NOT_STARTED`
+### P3.2 Class, question, concept, and individual analytics — `IN_PROGRESS` (demo subset integrated; CI checks passed)
 - **Objective:** Provide useful authorized insights and exports.
-- **Prerequisites:** Persisted assessment/learning records and P2.3 authorization.
+- **Current demo implementation:** `lib/services/teacher-analytics.ts`, `app/api/teacher/analytics/route.ts`, `/teacher/analytics`, and `/api/teacher/analytics/export` calculate quiz-level scores, pass-rate indicators, recent submissions, per-question correctness, and downloadable filtered CSV for the single fictional demo learner. CI passed typecheck/lint/unit tests/build on the combined milestone. No auth/class scope exists yet; assessment-specific integration remains pending.
+- **Prerequisites for full scope:** Persisted assessment/learning records and P2.3 authorization.
 - **Affected files:** analytics services/routes, class dashboard, CSV/print views.
 - **Approach:** Compute summaries from real submissions/responses; define ranking eligibility and tie behavior; export filtered authorized datasets.
 - **Acceptance:** Class scores, leaderboards, question correctness, concepts/common gaps, individual history, printable report and CSV all match stored data.

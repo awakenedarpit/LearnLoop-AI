@@ -1,6 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import { AssessmentReview } from "@/components/assessment-review";
-export const metadata: Metadata = { title: "Submission Review" };
-export default function TeacherReviewPage() { return <><div className="page-heading"><div><Link className="subtle-link" href="/teacher"><ArrowLeft size={13} /> Back to teacher space</Link><h1 className="page-title" style={{ marginTop: 12 }}>Review saved submissions.</h1><p className="page-subtitle">Inspect finalized answers from the local demo assessment flow.</p></div></div><AssessmentReview /></>; }
+import { ArrowUpRight } from "lucide-react";
+import { TeacherSubmissionReview } from "@/components/teacher-submission-review";
+import "../builder.css";
+import "../analytics/analytics.css";
+import "./review.css";
+
+export const metadata: Metadata = { title: "Teacher Submission Review" };
+
+export default function TeacherReviewPage() {
+  return <>
+    <div className="page-heading analytics-page-heading">
+      <div>
+        <p className="eyebrow"><span className="eyebrow-mark" />TEACHER WORKSPACE</p>
+        <h1 className="page-title">Review every answer.</h1>
+        <p className="page-subtitle">Inspect submitted responses, correct answers, explanations, and unanswered questions in one place.</p>
+      </div>
+      <Link className="button button-secondary" href="/teacher/analytics">Results & analytics <ArrowUpRight size={14} /></Link>
+    </div>
+    <TeacherSubmissionReview />
+  </>;
+}

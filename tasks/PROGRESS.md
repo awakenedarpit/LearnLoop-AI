@@ -1,26 +1,38 @@
 # Progress Log
 
-## Current status — 2026-10-11 (local assessment attempt milestone)
+## Current status — 2026-10-11 (assessment workflow integrated)
 
-**Phase:** Phase 2 — Teacher authoring and a fictional student assessment attempt flow are implemented and verified locally.
+**Phase:** Phase 2 demo assessment milestone integrated into `main`. Assessment code milestone commit: `cefae2c777a2d3abcc140af749e46c29a45909fc` (`Integrate assessment workflow and CSV analytics export`). PR #8 is merged.
 
-### Assessment attempt implementation completed
+### Integrated demo features
 
-- Added `lib/services/assessments.ts` with published-quiz availability checks, one active demo attempt per quiz, server-side answer persistence, attempt limits, server deadline enforcement, manual/expired finalization, scoring, and idempotent finalization.
-- Added `/api/assessments`, `/api/assessments/attempts/[attemptId]`, and server autosave routes. Pre-finalization responses omit answer keys; completed responses include keys and explanations for demo review.
-- Replaced the Assess placeholder with `components/assessment-runner.tsx`: published quiz list, start/resume, countdown, question navigation, save state, refresh recovery, submit, and read-only result state.
-- Added `tests/assessments.test.ts` covering key withholding, server autosave recovery, scoring/idempotency, post-finalization immutability, and deadline expiry.
-- This remains fictional local demo behavior: no authenticated identity, class assignment, teacher review, integrity-event records, shared persistence, or production authorization.
+- Teacher quiz builder: create/edit MCQ drafts, answer keys, explanations, concept tags, duration/availability/attempt limits, preview and publish.
+- Student assessment flow: attempt start/resume, countdown, server-backed autosave, saved-answer recovery, deadline checks and submission/finalization.
+- Teacher analytics: quiz-level submission counts, average/high scores, pass-rate indicators, recent finalized attempts and per-question correctness.
+- Teacher review: submission inbox, filtering, answer-by-answer review, selected/correct answers, explanations, unanswered counts and print-friendly output.
+- CSV export: filtered assessment/question analytics download; CSV cells are quoted/escaped and formula-like strings are neutralized.
+- GitHub Actions run `38078124788` passed typecheck, lint, unit tests and production build on the combined feature branch before merge. After enabling the existing student HTTP integration verifier in CI, run `38078482327` passed typecheck, lint, unit tests, student HTTP integration, and production build on `main` commit `ae71ec21d35e5be2b3ebeb784c4431e7c89e0991`.
+- The existing `pnpm test:integration` verifies the student learning loop. The full combined assessment flow and browser behavior have not yet been verified end-to-end.
 
-### Verification
+### Boundaries and blockers
 
-- `pnpm typecheck` — passed.
-- `pnpm test` — passed, 11 tests across 3 files.
-- `pnpm lint` — passed.
-- `pnpm build` — passed; assessment page and API routes compiled.
-- `pnpm test:integration` — passed; existing 8-page student flow remained green and `/assess` returned 200.
+- Everything assessment-related is a fictional local SQLite demo for one fixed learner; do not use real student or organization data.
+- There is no production teacher authentication, class/assignment authorization, or organization-admin workflow.
+- Access-denial and integrity-event records/review are not implemented.
+- No dedicated LearnLoop Supabase project exists; the two-active-project free-tier limit blocked project creation. Cloud persistence, production Supabase auth, PostgreSQL migrations and RLS remain blocked.
+- No `GEMINI_API_KEY` is configured; Gemini calls and AI quiz drafting are not live.
+- Vercel reported `Deployment rate limited — retry in 24 hours`; this is not a code diagnostic. No successful deployment is verified.
+
+### Next actions
+
+1. Add assessment-specific HTTP/service integration tests for autosave, expiry, duplicate finalization, access denial, and CSV export; the existing student-learning HTTP integration now runs in CI and passes.
+2. Review and fix any remaining accessibility/responsive/print issues; keep all demo data clearly fictional.
+3. Resume production auth/persistence only after a dedicated Supabase project is available, then implement server-side role checks/RLS and access-denial/integrity-event records.
+
 
 ---
+
+# Progress Log
 
 ## Current status — 2026-10-10 (teacher quiz builder milestone)
 
@@ -80,3 +92,52 @@ Initial managed scaffold commit is `f594498` (`Initial project scaffold`). Inspe
 1. Inspect Git status/remotes and public-repo content for secrets/PII; commit and push the verified Phase 1 source/docs milestone to managed `origin` and the approved GitHub mirror, then verify both refs/SHA.
 2. Implement Phase 2 teacher assessment workflow in clearly labelled local demo mode only if role boundaries can be enforced server-side; keep Supabase auth/RLS blocked and document the demo-only boundary.
 3. Re-run affected checks, update memory/docs, then tackle Gemini (only with protected key) and report/security hardening without claiming unavailable cloud verification.
+
+ 
+### Follow-up feature work — 2026-10-10
+
+- Added a teacher quiz authoring demo in PR #2: `feat/teacher-quiz-builder`.
+- Added the student published-quiz attempt flow in PR #3: `feat/student-quiz-attempts`, stacked on the teacher quiz branch.
+- Student quiz API hides answer keys until submission, grades on the server, returns explanations after grading, and enforces configured attempt limits for the fixed fictional demo identity.
+- Added service tests for answer-key privacy, server grading, attempt limits, draft visibility and invalid question IDs.
+- Pending verification: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`, browser interaction and Vercel preview. Neither feature should be treated as production-ready; authentication/authorization and durable cloud persistence remain unimplemented.
+
+ 
+### Supabase identity and persistence foundation — 2026-10-10
+
+- Added Supabase SSR/browser client helpers, Next.js session-refresh proxy, server-side profile/role guard utilities, magic-link sign-in and callback routes, and `GET /api/auth/me`.
+- Added a draft SQL migration for profiles/roles, teacher quizzes/questions, assignments, attempts/answers, RLS policies and a safe student-facing quiz DTO function.
+- Added a setup guide with project provisioning, callback configuration, role promotion and RLS verification steps.
+- Not yet production-ready: no dedicated Supabase project exists, migration is unapplied/unverified, current quiz routes still use demo SQLite, guards are not yet wired into all protected handlers, and cloud attempt grading/repository adapters and database policy tests remain outstanding.
+- Verification of typecheck, lint, tests, build and deployment is pending for this branch.
+
+### Timed quiz attempts, autosave and refresh recovery — 2026-10-10
+
+- Added server-created active attempts with authoritative start/deadline timestamps, resume of an in-progress attempt, answer autosave, attempt status and result caching.
+- Added start/resume and per-attempt PATCH endpoints. Submission now requires an active attempt ID; after the deadline, late request payloads are ignored and only previously saved answers are graded.
+- Updated student UI with a countdown, save status and start/resume label; added service tests for refresh recovery and deadline enforcement.
+- This remains fictional SQLite demo functionality. No auth, cloud persistence or browser/CI verification has been completed for this branch.
+
+
+## Current status — 2026-10-11 (teacher submission review)
+
+**Phase:** Phase 2 assessment workflow. Branch: `feat/teacher-submission-review`, based on `feat/teacher-results-analytics`. Source changes are implemented; verification is pending.
+
+### Added
+
+- Added `lib/services/teacher-review.ts` to list finalized demo attempts and return question-by-question answer details from saved attempts and the corresponding quiz definition.
+- Added `GET /api/teacher/review`; optional `quizId` filters the submission list and `attemptId` retrieves one attempt. Responses are private/no-store and unknown attempt IDs return 404.
+- Added `components/teacher-submission-review.tsx` and `app/teacher/review/page.tsx`: submission inbox, assessment filter, score/time/unanswered summary, correct/selected answers, explanations, refresh, loading/error/empty states, and print-friendly output.
+- Added responsive and print styles in `app/teacher/review/review.css`, registered the page in `public/manus-routes.json`, linked it from analytics, and added `tests/teacher-review.test.ts`.
+- Scope remains a single fictional local-demo learner. This is not protected teacher review: authentication, class authorization, access-denial records and integrity-event review are still missing.
+
+### Verification
+
+No typecheck, lint, unit tests, build, integration test, browser test, or deployment has been run for this feature in this authoring environment. Do not mark it verified until those checks run. The demo API also requires `DEMO_MODE=true` in production/Vercel environments; use fictional data only.
+
+### Next actions
+
+1. Run `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`, and `pnpm test:integration` on the combined feature branch and fix any failures.
+2. Review the new route and UI in a browser, including empty state, quiz filtering, detail lookup, and print layout.
+3. Keep this PR stacked on teacher analytics and the timed-assessment branch; do not claim production authorization or deployment.
+

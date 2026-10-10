@@ -45,6 +45,9 @@ jobs:
       - name: Unit tests
         run: pnpm test
 
+      - name: Student HTTP integration
+        run: pnpm test:integration
+
       - name: Production build
         run: pnpm build
         env:
