@@ -1,6 +1,6 @@
 # Database Schema — LearnLoop AI
 
-**Status:** The normalized tables below describe the future Supabase/PostgreSQL target only. No LearnLoop Supabase project, cloud migrations, or cloud application tables exist. Separately, local `lib/db/demo-store.ts` creates fictional-only SQLite demo tables (`question_bank`, `learning_sessions`, `learning_responses`) at runtime. This document is not evidence of live cloud database state.
+**Status (2026-10-11):** Dedicated LearnLoop Supabase project `rlglcgtamqwqzmkitdtn` exists. Three migrations have been applied, creating the organization/class and assessment tables listed below (14 public application tables). Live metadata confirms RLS enabled on all 14 and the expected key constraints. The table names below are a target-level overview, not exact names/columns: the current implementation uses `teacher_quizzes`, `quiz_questions`, `quiz_assignments`, `quiz_attempts`, and `quiz_attempt_answers`; `organization_memberships` contains a composite `(organization_id,user_id)` primary key; there is no role column in `profiles`. Application services still use local SQLite (`question_bank`, `learning_sessions`, `learning_responses`), so cloud application persistence is not implemented. No authenticated row-isolation test has passed.
 
 ## Core tables
 
@@ -25,12 +25,12 @@
 
 Use `timestamptz` for server timestamps, generated UUIDs, `NOT NULL` where required, explicit `CHECK` constraints for statuses and score ranges, and foreign-key deletion rules that preserve submitted records. Avoid storing real learner data in demo seeds.
 
-## RLS and grants (target)
+## RLS and grants
 
-Enable RLS on every exposed table. Revoke unnecessary default privileges from `anon` and `authenticated`; grant only the required operations. Policies must scope rows to the verified `auth.uid()` plus trusted organization/class membership. Students may read their own profile, assigned published quizzes (without protected answer keys), their own attempts/saved answers/submissions and their own learning sessions. Teachers may manage quizzes and review attempts only for classes they are assigned to. Organization admins may manage records only in their organization. Inserts/updates on attempts must enforce valid assignment and lifecycle on the server, with the database/RLS boundary preventing cross-user record access. Do not use a service-role key in browser clients.
+RLS is enabled on all current public application tables. The corrective migration revokes inherited default privileges and restores narrowly scoped grants; specifically, authenticated users cannot write submissions or update attempt lifecycle/result fields. Current policies scope intended rows using verified `auth.uid()` and membership/class assignment predicates, but role-scoped behavior remains untested with actual users. Use these policies as a foundation, not proof of production security. Teacher/API data access, admin provisioning, and transactional finalization are not implemented. Do not use a service-role key in browser clients.
 
 Views, RPCs and functions require separate review because views can bypass RLS depending on their security mode. Migrations and automated database policy tests must be committed. The official Supabase RLS guide recommends RLS plus explicit grants/policies for exposed tables; see `docs/DECISIONS.md`.
 
 ## Migration plan
 
-Apply additive, deterministic migrations in `supabase/migrations/`, record versioned seed data separately, and never overwrite user edits on startup. Use disposable fixtures for tests. The only production target is a dedicated LearnLoop Supabase project after its quota blocker is resolved and configuration is authorized; unrelated existing projects are not migration targets.
+Applied to the dedicated LearnLoop project: `202610100001_initial_identity_and_assessments.sql`, `202610100002_correct_rls_correlations_and_grants.sql`, and `202610100003_move_internal_functions_private.sql`. Continue with additive, deterministic migrations and separate seed data; use disposable fixtures for tests. Never target either unrelated existing project.

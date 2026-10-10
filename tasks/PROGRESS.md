@@ -1,5 +1,34 @@
 # Progress Log
 
+## Current status — 2026-10-11 (production foundation)
+
+**Phase:** Production configuration foundations implemented; application remains in fictional demo mode and is not production-ready.
+
+### Completed and inspected
+
+- User authorized provisioning in `RajArpit`; project creation cost check returned `$0/month`. Dedicated Supabase project `LearnLoop` (`rlglcgtamqwqzmkitdtn`, `ap-south-1`) is `ACTIVE_HEALTHY`. Existing unrelated projects were not changed.
+- Applied three migrations recorded by Supabase: `20261010192616 initial_identity_assessments_multitenancy`, `20261010192807 correct_rls_correlations_and_grants`, `20261010193044 move_internal_functions_to_private_schema`.
+- Live catalog inspection confirmed 14/14 public application tables have RLS enabled; default API grants were revoked and narrowed; authenticated users have no direct update to attempt lifecycle/result fields and no insert/update/delete privileges on submissions; assignment and quiz policy correlations were corrected; auth trigger/internal helper functions moved to a non-exposed schema.
+- Supabase security advisors retain one warning for the intended signed-in `get_assigned_quiz` security-definer DTO, which checks assignment/availability and omits answer keys/explanations. The warning is documented at `docs/SECURITY.md`.
+- Added cloud-mode server-side role gates to all existing teacher/student assessment API handlers and changed role lookup to use trusted organization memberships.
+- Local verification after code/docs edits: `pnpm typecheck` PASS, `pnpm lint` PASS, `pnpm test` PASS (20 tests), `pnpm test:integration` PASS (8 pages plus full local student flow), and production `pnpm build` PASS. This HTTP integration uses explicitly enabled fictional local-demo mode; it is not a cloud/RLS test.
+
+### Still incomplete / do not use with real learners
+
+- Assessment/learning services still use local SQLite; cloud role gates do not connect them to Postgres, and cloud-mode service actions therefore do not deliver production persistence.
+- No allowed/denied RLS tests with authenticated user sessions, first-admin/membership provisioning, class/organization CRUD, or actual student/teacher/admin workflows.
+- Access-denial and integrity tables exist, but app event-write/review paths are not implemented. Multi-student analytics and organization administration remain incomplete.
+- No Gemini API key or live Gemini call. No email/Auth callback delivery verification. No production hosting variables or successful deployment.
+- Source changes are not yet published; current checkout remains based on `main` at `55fdcc5023f24d08bcc884b3a2c3916036cf2bc6`, same as public origin at last check. Do not claim deployment.
+
+### Next actions
+
+1. Add authenticated RLS allow/deny tests and implement atomic server-side scoring/finalization.
+2. Implement cloud data repositories, class/assignment and org-admin operations; securely bootstrap trusted memberships.
+3. Configure Gemini and production hosting/Auth/email callback, then run full end-to-end production verification.
+
+---
+
 ## Current status — 2026-10-11 (assessment workflow integrated)
 
 **Phase:** Phase 2 demo assessment milestone integrated into `main`. Assessment code milestone commit: `cefae2c777a2d3abcc140af749e46c29a45909fc` (`Integrate assessment workflow and CSV analytics export`). PR #8 is merged.
@@ -140,4 +169,3 @@ No typecheck, lint, unit tests, build, integration test, browser test, or deploy
 1. Run `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`, and `pnpm test:integration` on the combined feature branch and fix any failures.
 2. Review the new route and UI in a browser, including empty state, quiz filtering, detail lookup, and print layout.
 3. Keep this PR stacked on teacher analytics and the timed-assessment branch; do not claim production authorization or deployment.
-

@@ -1,6 +1,6 @@
 # API Specification — LearnLoop AI
 
-**Status:** Teacher quiz authoring, timed student attempts, and teacher analytics handlers are implemented on feature branches; verification is pending. Teacher/student quiz routes use fictional demo SQLite storage without authentication or role authorization. Class assignments, authenticated individual review, exports, Supabase auth/RLS, and Gemini remain incomplete. Page paths are synchronized with `public/manus-routes.json`.
+**Status (2026-10-11):** Teacher quiz authoring, timed attempts, teacher review/analytics, and CSV export are integrated for fictional SQLite demo mode. In cloud mode, all current teacher/student assessment API handlers now run server-side Supabase Auth and organization-membership role gates. Their underlying data services still use the demo SQLite adapter rather than PostgreSQL, so cloud operations/persistence are not implemented. The database and RLS policy metadata exist, but authenticated allowed/denied RLS tests have not been run. Class/org-admin APIs, access-denial/integrity event workflows, and Gemini are incomplete. Page paths are synchronized with `public/manus-routes.json`.
 
 ## Conventions
 
@@ -40,7 +40,7 @@ Quiz states: `draft → published → archived`; attempt states: `in_progress �
 
 ## Supabase/Gemini mode boundaries
 
-When Supabase is unavailable, demo routes use the explicitly labelled local server-side adapter; this does not confer production auth or cloud sync. Production Supabase auth/RLS and Gemini behavior remain unverified until the provider resources are configured and tests are run. Secrets are never accepted in route payloads.
+In explicitly enabled local demo mode, demo routes use the fictional local SQLite adapter without real-user auth; this is not production authentication or cloud sync. In cloud mode, teacher/student assessment routes require `auth.getUser()` plus a trusted organization membership role, but their backing services still attempt demo storage and do not yet provide cloud persistence. Learn APIs are still local-demo-only. Supabase schema/policy catalog checks passed, but session-level RLS behavior is unverified. Gemini is not integrated/live; secrets are never accepted in route payloads.
 
 ## Implemented local demo routes
 

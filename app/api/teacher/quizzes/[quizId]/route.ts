@@ -1,3 +1,4 @@
+import { authorizeRoute } from "@/lib/auth/route-guard";
 import { z } from "zod";
 import { DemoModeUnavailableError } from "@/lib/db/demo-store";
 import { updateTeacherQuiz } from "@/lib/services/teacher-quizzes";
@@ -28,6 +29,8 @@ const quizSchema = z.object({
 });
 
 export async function PATCH(request: Request, context: { params: Promise<{ quizId: string }> }): Promise<Response> {
+  const denied = await authorizeRoute(["teacher"]);
+  if (denied) return denied;
   try {
     const { quizId } = await context.params;
     const parsed = quizSchema.safeParse(await request.json());

@@ -11,15 +11,15 @@ Build an Education prototype for Team Data Alchemists at HackOverflow 10.0 — A
 - Next.js App Router 16.4.0, React 19.3.0, TypeScript 5.9.3, Tailwind CSS 4.3.3; Node `v22.13.0`; pnpm `11.25.0`.
 - Managed server capability on port 3000; managed database disabled; host-managed TypeScript diagnostics registered.
 - **Implemented local fallback:** server-side Node `node:sqlite` with fictional learning data. `node:sqlite` is experimental in this Node release; local demo is not production/shared/cloud storage and is disabled in production. Do not enter real student data. Browser storage is not authoritative for saved answers.
-- **Cloud target, not connected:** Supabase Auth/PostgreSQL/RLS. Dedicated project creation is blocked by the selected organization's two-active-project free-tier limit. No project created; no existing project modified.
+- **Cloud foundation provisioned, app still disconnected:** dedicated LearnLoop Supabase project `rlglcgtamqwqzmkitdtn`, `ap-south-1`, approved org `RajArpit`; project cost checked at `$0/month`. Three migrations applied; all 14 public app tables have RLS enabled and table grants/policy catalog were inspected. Cloud data repositories, allowed/denied user-session tests, admin/membership bootstrap, email/Auth URL setup and real data-flow verification remain incomplete.
 - **AI target, not live:** Gemini via protected server-side key; no `GEMINI_API_KEY` configured.
 - Design: calm editorial learning console, neutral surfaces, blue/lavender accents, custom double-loop SVG mark.
 
 ## Verified implementation status
 
 - Phase 1 student Learning MVP: diagnostic across variables/data types/conditionals/loops/functions/lists; 3 question variants per concept; confidence field; safe active-session response; server-side saves/recovery; score/gap analysis; curated hints/explanations; unseen targeted practice; fresh reassessment linked to actual diagnostic; server-rendered progress/history; honest comparison.
-- Teacher quiz authoring, timed student attempt/autosave/deadline handling, teacher analytics, submission review, print-friendly review and filtered CSV export are integrated into main. GitHub Actions passed typecheck, lint, unit tests and production build on the combined milestone; full assessment HTTP integration remains unverified. Class assignment, production roles/auth, Supabase migrations/RLS, Gemini and successful deployment remain incomplete.
-- Verified commands: `pnpm typecheck` PASS; `pnpm test` PASS (4 unit tests); `pnpm lint` PASS; `pnpm build` PASS; `pnpm test:integration` PASS (8 routes + full local student flow). Full detail is in `tasks/PROGRESS.md` and `docs/TESTING_PLAN.md`.
+- Teacher quiz authoring, timed attempts/autosave/deadlines, demo analytics/review, print review and CSV export are integrated. Cloud-mode assessment API role gates now resolve trusted organization memberships, but services still target the demo adapter; class/admin UI, denial/integrity workflow and multi-student analytics remain incomplete.
+- Latest local checks after authorization/schema edits: `pnpm typecheck` PASS; `pnpm lint` PASS; `pnpm test` PASS (20 tests); `pnpm test:integration` PASS (8 pages plus student loop in explicit demo mode); `pnpm build` PASS. No live authenticated RLS test or deployment has passed. Detail is in `tasks/PROGRESS.md` and `docs/TESTING_PLAN.md`.
 - No public deployment URL exists.
 
 ## Important paths
@@ -30,7 +30,7 @@ Build an Education prototype for Team Data Alchemists at HackOverflow 10.0 — A
 
 - Workspace `/home/ubuntu/learnloop`; branch `main`; initial managed scaffold `f594498` (`Initial project scaffold`). Preserve managed Webdev `origin`.
 - User-approved public GitHub target: `https://github.com/awakenedarpit/LearnLoop-AI`. Source/docs milestone push is still pending. Verify `github` remote and repo before push; do not overwrite `origin`.
-- Supabase project creation failed due to the free-tier active-project limit. Retry only after user resolves it, then recheck current price/quota. Do not touch unrelated Supabase projects or billing.
+- Supabase project is provisioned; do not touch the two pre-existing unrelated projects. Current migration state and unresolved app integration are in `docs/SUPABASE_SETUP.md`.
 - Gemini key is absent. Never ask for it in chat or commit secrets; use a protected input flow if configured.
 
 ## Dated handoff — 2026-10-10
@@ -73,3 +73,13 @@ Never put secrets or credentials in memory. Keep statuses aligned with actual so
 5. **Next three actions:** (i) add assessment-specific integration coverage for autosave/deadline/finalization/CSV; (ii) run those checks and inspect print/mobile flows; (iii) resume Supabase/auth work only after the project quota blocker is resolved.
 
 Never put secrets or credentials in memory. Keep statuses aligned with actual source and test evidence.
+
+## Dated handoff — 2026-10-11 (production foundation phase)
+
+1. **Provisioned:** user authorized project creation in `RajArpit`; Supabase cost check returned `$0/month`; new dedicated project `LearnLoop` is healthy (`rlglcgtamqwqzmkitdtn`, `ap-south-1`). Existing projects were not modified.
+2. **Database:** applied and recorded migrations `20261010192616 initial_identity_assessments_multitenancy`, `20261010192807 correct_rls_correlations_and_grants`, and `20261010193044 move_internal_functions_to_private_schema`. Live inspection confirmed 14/14 public app tables RLS enabled, minimum authenticated grants on key tables, fixed class/quiz policy expressions, auth trigger/helper functions moved out of public API, and no direct authenticated writes to submission scores or attempt lifecycle.
+3. **Advisor:** one intentional warning remains for signed-in SECURITY DEFINER `public.get_assigned_quiz`; it returns safe assigned published quiz fields only, omitting correct answer/explanation columns, and checks class membership/availability. No user-session RLS pass/fail tests have been run.
+4. **App updates:** `lib/auth/guards.ts` now derives role from trusted organization membership; `lib/auth/route-guard.ts` and all student/teacher assessment API handlers enforce server role gates in cloud mode. The data services remain SQLite-only; cloud APIs do not yet persist/load PostgreSQL. No initial admin or membership workflow, class/admin UI, Gemini key, or production deployment.
+5. **Verification:** final local typecheck/lint/unit tests/student HTTP integration/build passed (`20` unit tests); the integration run exercises only fictional demo mode, not cloud RLS. The generated `next-env.d.ts` modification was restored.
+6. **Git:** base checkout `main` at `55fdcc5023f24d08bcc884b3a2c3916036cf2bc6`, matching public `origin/main` at last read. Latest edits are uncommitted/unpushed. Earlier GitHub push tooling reported token problems; verify current push path and never force-push.
+7. **Next actions:** (i) add authenticated RLS allow/deny tests and transaction-safe scoring/finalization; (ii) implement cloud data repositories/class+org administration and provision a trusted first admin; (iii) configure protected Gemini and production hosting/Auth/email callbacks, then verify deployed service before calling it live.

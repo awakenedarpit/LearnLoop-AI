@@ -1,3 +1,4 @@
+import { authorizeRoute } from "@/lib/auth/route-guard";
 import { z } from "zod";
 import { DemoModeUnavailableError } from "@/lib/db/demo-store";
 import { saveStudentQuizAttemptAnswers } from "@/lib/services/student-quiz-attempts";
@@ -8,6 +9,8 @@ export const runtime = "nodejs";
 const schema = z.object({ answers: z.record(z.string(), z.number().int().min(0).max(3)) }).strict();
 
 export async function PATCH(request: Request, context: { params: Promise<{ quizId: string; attemptId: string }> }): Promise<Response> {
+  const denied = await authorizeRoute(["student"]);
+  if (denied) return denied;
   try {
     const parsed = schema.safeParse(await request.json());
     if (!parsed.success) return Response.json({ error: { code: "ANSWERS_INVALID", message: "Submit valid question answers." } }, { status: 422 });

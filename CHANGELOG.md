@@ -35,3 +35,10 @@
 - Added server-backed active quiz attempts, deadline enforcement, answer autosave, resume after refresh, and automatic submit behavior in the student quiz interface.
 - Added service tests for active-attempt recovery and ensuring late payloads cannot replace saved answers after the deadline.
 - Demo-only: uses fixed fictional student identity and local SQLite. Typecheck, lint, tests, build, browser testing and preview deployment remain unverified.
+
+## Unreleased — 2026-10-11 (production foundation)
+
+- Provisioned dedicated Supabase project `LearnLoop` in approved `RajArpit` organization; project cost check returned `$0/month`. Existing projects untouched.
+- Applied schema, grant/policy correction, and private-helper migrations. Verified 14/14 public application tables have RLS enabled, narrowed authenticated grants, and no direct user writes to submissions or attempt result/lifecycle fields. One documented advisor warning remains for the signed-in safe quiz DTO RPC.
+- Added trusted organization-membership role resolution and cloud-mode student/teacher route gates. These routes still use demo-only service implementations; cloud persistence and authorization behavior are not fully verified.
+- Re-ran typecheck, lint, 20 unit tests, and production build successfully. Live authenticated RLS tests, Gemini, cloud repository integration, email/Auth callback configuration, and production deployment remain incomplete.

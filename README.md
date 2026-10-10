@@ -16,7 +16,7 @@ LearnLoop AI is an Education-track prototype for HackOverflow 10.0 — Aarohan, 
 
 Next.js App Router 16.4, React 19, TypeScript 5.9, Tailwind CSS 4, Node `>=22.13.0`, pnpm `10.12.1`. The requested cloud target is Supabase Auth/PostgreSQL/RLS; the app also uses the official Google GenAI SDK dependency for the planned Gemini integration. The managed web server runs on port `3000`.
 
-The dedicated Supabase project request was rejected because the selected organization had reached its two-active-project free-tier limit. No LearnLoop cloud project was created and no existing project was changed. Until that blocker is resolved, **local demo mode** stores fictional learning sessions and answers on the server using Node’s built-in `node:sqlite`. This Node module is experimental in the pinned Node release; the fallback is for local demonstration only, not shared production storage. No cloud synchronization, production sign-in/RLS, or Gemini request is verified. Do not enter real student or organization data.
+The dedicated **LearnLoop** Supabase project has now been provisioned in the approved `RajArpit` organization (project ref `rlglcgtamqwqzmkitdtn`, region `ap-south-1`; the project-creation cost check returned `$0/month`). Repository migrations created organization/class membership, quizzes, assignments, attempts, saved answers, submissions, access-denial and integrity-event tables. All 14 public application tables have RLS enabled; grant and policy corrections were applied and inspected. However, application services still use the fictional SQLite adapter, and the live Supabase identity-to-data path, allowed/denied-user RLS tests, membership/bootstrap workflow, email delivery, Gemini, and deployment remain unverified. Do not enter real student or organization data.
 
 ## Deploy a demo to Vercel
 
@@ -30,7 +30,7 @@ The repository includes a Vercel-compatible **disposable demo mode** for the stu
 4. Deploy using the included `pnpm-lock.yaml`. The project pins Node 22.x and pnpm 10.x.
 5. After deployment, open the site and `/api/health`. The health route should return `status: "ok"` and `mode: "local_demo"`.
 
-Do not add real student information, production credentials, or a Gemini key for this demo. Do not set `DEMO_MODE=true` for a production service that needs durable or private learner records. For that, first configure a dedicated Supabase project, database migrations and RLS, authentication, and the cloud adapter; those pieces are not implemented yet.
+Do not add real student information, production credentials, or a Gemini key for this demo. Do not set `DEMO_MODE=true` for a production service that needs durable or private learner records. The dedicated project and schema now exist, but a cloud repository adapter, end-to-end authorization/persistence, verified RLS behavior, and deployment are still incomplete.
 
 ## Local setup
 
@@ -66,9 +66,9 @@ pnpm test:integration
 
 - Teacher quiz authoring, timed student attempts, autosave/deadline handling, question-by-question review, aggregate/question analytics, print-friendly review, and CSV export are integrated. GitHub Actions has passed typecheck, lint, unit tests, and production build for the combined assessment milestone; the full assessment HTTP integration flow is not yet verified. Class assignments and authenticated access-denial/integrity review remain unavailable.
 - No production user accounts or role switching are available. Local progress belongs to one fixed fictional demo learner; it is not a multi-user auth system.
-- No LearnLoop Supabase project exists, so cloud persistence, Supabase SSR authentication, PostgreSQL migrations/RLS and their security tests are blocked.
+- A dedicated LearnLoop Supabase project and RLS-enabled schema now exist. Assessment handlers require trusted student/teacher organization membership in cloud mode, but services still use the demo adapter and do not provide cloud persistence; the sign-in-to-data workflow and allowed/denied RLS tests remain unverified.
 - No `GEMINI_API_KEY` is configured; student explanations currently use curated content. AI drafting/explanations are not live.
-- No successful production deployment is verified. Vercel's check reported a deployment rate limit, so do not treat any deployment URL as confirmed live.
+- No successful production deployment is verified. Vercel's earlier check reported a deployment rate limit, so do not treat any deployment URL as confirmed live.
 
 ## Project documentation
 

@@ -27,7 +27,7 @@ export default function SignInPage() {
       setMessage("Check your inbox for a secure sign-in link. You can close this tab while you wait.");
     } catch (caught) {
       setError(caught instanceof Error && caught.message === "SUPABASE_NOT_CONFIGURED"
-        ? "Sign-in is not configured yet. The project owner must connect a dedicated Supabase project first."
+        ? "Sign-in is not configured for this deployment yet. The project owner must set the protected Supabase URL and publishable key."
         : "We could not send a sign-in link. Check the email and try again.");
     } finally {
       setBusy(false);

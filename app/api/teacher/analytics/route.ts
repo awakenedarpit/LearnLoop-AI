@@ -1,3 +1,4 @@
+import { authorizeRoute } from "@/lib/auth/route-guard";
 import { DemoModeUnavailableError } from "@/lib/db/demo-store";
 import { getTeacherAnalytics } from "@/lib/services/teacher-analytics";
 
@@ -5,6 +6,8 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export async function GET(): Promise<Response> {
+  const denied = await authorizeRoute(["teacher"]);
+  if (denied) return denied;
   try {
     return Response.json({ data: getTeacherAnalytics() }, {
       headers: { "Cache-Control": "private, no-store, max-age=0" },

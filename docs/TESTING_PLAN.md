@@ -2,12 +2,12 @@
 
 ## Current status
 
-The Phase 1 student-learning MVP has been verified in the current workspace. Teacher analytics tests have been added on `feat/teacher-results-analytics`, but have not yet been executed; that source milestone remains unverified. `pnpm typecheck`, `pnpm test` (4 tests), `pnpm lint`, `pnpm build`, and `pnpm test:integration` passed. The HTTP integration run rendered eight main routes and exercised server-saved learning answers, recovery, scoring, fresh practice/reassessment, linked score comparison, idempotent completion, private answer withholding, and post-completion write rejection. This does **not** verify teacher assessments, authentication, Supabase RLS, Gemini, production persistence, or deployment; those remain unimplemented/blocked.
+Latest local checks after cloud-mode role gates and documentation updates: `pnpm typecheck`, `pnpm lint`, `pnpm test` (20 tests), `pnpm test:integration` (8 pages and the local student loop in demo mode), and `DEMO_MODE=true DEMO_DB_PATH=:memory: pnpm build` all passed. The dedicated Supabase project and schema now exist; live metadata inspection confirmed RLS flags, applied migrations, narrowed grants, and policy/helper locations. No authenticated user-session RLS tests, cloud persistence flow, Gemini request, or production deployment was run.
 
 ## Test layers
 
 - **Unit:** scoring, concept gaps, recommendations, difficulty selection, fresh-question selection, confidence storage, deadline calculation, finalization idempotence, CSV escaping and report calculations.
-- **Repository/integration:** SQLite persistence and refresh recovery; server save/submit lifecycle; Supabase adapter/policies when dedicated project is available; migrations are deterministic and additive.
+- **Repository/integration:** SQLite persistence and refresh recovery; server save/submit lifecycle; Supabase adapter tests and authenticated policy tests still required even though project/migrations are present.
 - **Route/authorization:** logged-out vs student/teacher/admin; assigned vs unassigned assessment; student own vs other student's attempt; teacher assigned vs unassigned class; protected correct answers before release.
 - **Provider boundaries:** missing Gemini key, timeout/provider rejection, invalid JSON/schema, safe curated explanation fallback, AI quiz draft requires teacher edit/publish.
 - **UI/build:** typecheck, lint, build, route rendering, accessible labels/focus/keyboard states, route manifest HTTP response, responsive layout and reduced-motion behavior.
@@ -37,7 +37,7 @@ The Phase 1 student-learning MVP has been verified in the current workspace. Tea
 
 1. Search tracked files and built client assets for secrets; confirm privileged keys and answer keys are absent.
 2. Verify server routes derive identity/role from trusted auth and validate inputs.
-3. When a Supabase project exists, enable/test RLS and least-privilege grants for each exposed table, inspect security advisors and run database policy tests. Before that, report cloud RLS as blocked/unverified.
+3. Run authenticated RLS allow/deny tests and cloud persistence integration in the dedicated LearnLoop project; catalog/advisor checks alone do not verify behavior.
 4. Verify AI inputs/output, timeouts and failure fallbacks; do not send API keys client-side.
 5. Run configured type/lint/build checks; render major routes; verify responsive layouts and empty/error states; confirm exports match underlying records.
 

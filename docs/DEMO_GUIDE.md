@@ -2,7 +2,7 @@
 
 ## Current readiness
 
-The student Python Fundamentals flow is implemented and verified in a local fictional-data demo. The dedicated Supabase project could not be created because the selected organization reached its two-active-project free-tier limit. No Gemini key is configured. There are no production accounts, user-specific identities, class records, teacher assessment workflows, analytics/exports, or deployment URL. Local demo progress is not cloud-synced. Do not enter real student or organization data.
+The student Python Fundamentals flow and demo teacher assessment/analytics/review/export flows are implemented and locally verified using fictional data. The dedicated Supabase project `rlglcgtamqwqzmkitdtn` is provisioned and has three migrations applied, but app services still use local SQLite and authenticated RLS has not been tested. There is no trusted membership/admin workflow, class assignment UI, production data persistence, Gemini key/request, or verified deployment. Local demo progress is not cloud-synced. Do not enter real student or organization data.
 
 ## Local setup
 

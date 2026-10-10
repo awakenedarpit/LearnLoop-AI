@@ -6,6 +6,7 @@ export type AppRole = "student" | "teacher" | "org_admin";
 
 export type AuthenticatedProfile = {
   id: string;
+  organizationId: string;
   role: AppRole;
   displayName: string | null;
 };
@@ -29,16 +30,25 @@ export async function getAuthenticatedProfile(): Promise<AuthenticatedProfile | 
   const { data: { user }, error: userError } = await supabase.auth.getUser();
   if (userError || !user) return null;
 
-  const { data: profile, error } = await supabase
-    .from("profiles")
-    .select("id, role, display_name")
-    .eq("id", user.id)
-    .maybeSingle();
+  const [{ data: profile, error: profileError }, { data: memberships, error: membershipError }] = await Promise.all([
+    supabase.from("profiles").select("id, display_name").eq("id", user.id).maybeSingle(),
+    supabase.from("organization_memberships")
+      .select("organization_id, role, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: true })
+      .limit(1),
+  ]);
 
-  if (error || !profile) return null;
-  if (!["student", "teacher", "org_admin"].includes(profile.role)) return null;
+  if (profileError || membershipError || !profile || !memberships?.length) return null;
+  const membership = memberships[0];
+  if (!membership || !["student", "teacher", "org_admin"].includes(membership.role)) return null;
 
-  return { id: profile.id, role: profile.role as AppRole, displayName: profile.display_name };
+  return {
+    id: user.id,
+    organizationId: membership.organization_id,
+    role: membership.role as AppRole,
+    displayName: profile.display_name,
+  };
 }
 
 export async function requireRole(allowedRoles: AppRole[]): Promise<AuthenticatedProfile> {

@@ -1,3 +1,4 @@
+import { authorizeRoute } from "@/lib/auth/route-guard";
 import { DemoModeUnavailableError } from "@/lib/db/demo-store";
 import { publishTeacherQuiz } from "@/lib/services/teacher-quizzes";
 
@@ -5,6 +6,8 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export async function POST(_request: Request, context: { params: Promise<{ quizId: string }> }): Promise<Response> {
+  const denied = await authorizeRoute(["teacher"]);
+  if (denied) return denied;
   try {
     const { quizId } = await context.params;
     const quiz = publishTeacherQuiz(quizId);

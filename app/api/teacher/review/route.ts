@@ -1,3 +1,4 @@
+import { authorizeRoute } from "@/lib/auth/route-guard";
 import { DemoModeUnavailableError } from "@/lib/db/demo-store";
 import { getTeacherReviewDetail, listTeacherReviewSummaries } from "@/lib/services/teacher-review";
 
@@ -5,6 +6,8 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export async function GET(request: Request): Promise<Response> {
+  const denied = await authorizeRoute(["teacher"]);
+  if (denied) return denied;
   try {
     const url = new URL(request.url);
     const attemptId = url.searchParams.get("attemptId");

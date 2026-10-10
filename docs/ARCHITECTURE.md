@@ -1,6 +1,6 @@
 # Architecture — LearnLoop AI
 
-**Status:** Phase 1 student-learning path is implemented in local demo mode. Supabase auth/database, teacher assessments, Gemini integration, multi-role authorization and deployment are target architecture only.
+**Status (2026-10-11):** student learning and teacher assessments run in fictional SQLite demo mode. Dedicated Supabase project, RLS-enabled schema and cloud-mode assessment role gates exist, but services are not PostgreSQL-backed and authenticated row-level behavior is unverified. Gemini/deployment remain unconfigured.
 
 ## Implemented source modules
 
@@ -11,12 +11,12 @@
 - `lib/db/demo-store.ts` initializes local Node `node:sqlite` schema and fictional question seed data. The adapter refuses production mode.
 - `tests/` and `scripts/` contain score/catalog unit tests and a temporary-DB HTTP end-to-end verifier.
 
-## Target modules (not yet implemented)
+## Implemented scaffolding and outstanding modules
 
-- `lib/auth/` for Supabase session/role checks and controlled demo identity handling.
-- `features/assess/` for teacher authoring, class assignment, timed student attempts, submission review and analytics.
+- `lib/auth/` includes Supabase session/role checks and route authorization gates; do not equate these with cloud persistence or proven RLS.
+- `features/assess/` behavior exists for demo quiz authoring, timed attempts, review and analytics. Production class assignment and tenant-scoped workflow integration remain outstanding.
 - `lib/ai/` for Gemini server-only clients, schemas, validation and curated fallbacks.
-- Supabase migrations/policy tests for the durable cloud schema/RLS boundary.
+- Supabase schema and grant/policy migrations are applied; authenticated RLS policy tests and data repositories remain outstanding.
 
 ## Current data flow
 
@@ -26,29 +26,30 @@ flowchart LR
   App --> Routes[Learning route handlers]
   Routes --> Learning[Learning service + scoring]
   Learning --> Demo[Node SQLite demo database<br/>fictional data]
-  Planned[Supabase Auth/Postgres + RLS] -. blocked setup .-> App
-  Planned --> Cloud[Dedicated LearnLoop Supabase project not created]
+  Auth[Supabase Auth role gate] -. configured, membership required .-> App
+  App --> Demo[Node SQLite fictional demo services]
+  Cloud[Dedicated Supabase project + RLS schema] -. service adapter pending .-> App
   AI[Gemini server API] -. no protected key configured .-> App
-  Teacher[Teacher assessments and reports] -. Phase 2 .-> App
+  Teacher[Teacher assessment demo] --> App
 ```
 
 ## Security and trust boundaries
 
 Current local demo routes use one fixed fictional student identity and are **not authentication or multi-user authorization**. Request inputs are validated, each local session is checked against the fixed demo student, assigned session question IDs/options are enforced, and active responses do not expose correct answers or explanations. The server stores saved answers and computes final scores; repeat finalization is idempotent and post-completion answer writes are rejected. Never use real learner data in demo mode.
 
-Production identity must come from validated Supabase Auth claims plus trusted profile/class memberships. The database RLS layer must add a separate row boundary. Teacher/organization data, answer keys, deadlines, final scores and Gemini credentials must remain server-side and only be exposed to authorized actors. Do not claim those future protections are implemented or tested until their project and flows exist.
+Cloud-mode assessment handlers now derive identity from `auth.getUser()` and role from trusted organization memberships. However those handlers still call SQLite-backed services, and no signed-in RLS allow/deny test has passed. Teacher/organization data, answer keys, deadlines, final scores and Gemini credentials must remain server-side and only be exposed to authorized actors. Do not enable real learner data until tenant-aware repositories and policy tests pass.
 
 ## Current environment reality
 
-Managed server is enabled on port 3000; managed database is disabled. Dedicated Supabase provisioning was blocked by the selected organization's free-tier active-project limit. Local `node:sqlite` is experimental in the pinned Node version and is only a fictional-data development/demo fallback. Gemini, teacher assessment workflows, Supabase auth/RLS and production deployment are not yet connected.
+Managed server is enabled on port 3000; managed database is disabled. Dedicated Supabase project `rlglcgtamqwqzmkitdtn` is healthy, with three migrations applied and 14/14 public tables RLS-enabled. Local `node:sqlite` is experimental and remains the only application data store. Gemini and production deployment are not configured.
 
  
 ## Supabase foundation (scaffolded, not activated)
 
 - `lib/supabase/server.ts` and `lib/supabase/browser.ts` create cookie-aware SSR and browser clients from public project URL/publishable key.
 - `proxy.ts` refreshes/validates Supabase sessions when project settings are configured; it intentionally leaves the fictional demo available when no project credentials exist.
-- `lib/auth/guards.ts` resolves roles from the server-read `profiles` row and provides 401/403 response helpers for route handlers.
+- `lib/auth/guards.ts` resolves roles from trusted organization membership rows and provides 401/403 response helpers for handlers.
 - `app/sign-in` implements email magic-link initiation, `app/auth/callback` exchanges the callback code, and `/api/auth/me` reports the authenticated profile.
-- `supabase/migrations/202610100001_initial_identity_and_assessments.sql` is an initial profile/assessment schema with RLS and a safe quiz DTO RPC.
+- Migrations `202610100001`–`003` establish profile/org/class/assessment/audit schema, tightened grants/RLS policy correlations, private helpers, and a safe quiz DTO RPC.
 
-The current teacher/student quiz routes still use the demo SQLite service. The Supabase schema/client scaffolding is not a cloud persistence adapter, and the sign-in UI is not yet wired as a mandatory gate across all application routes. Do not enable real learner workflows until a dedicated project is configured, the migration is applied/reviewed, route handlers enforce roles, a cloud repository/attempt-grading adapter is implemented, and RLS/integration tests pass.
+The current teacher/student quiz services still use SQLite. The Supabase schema/client scaffolding is not a cloud persistence adapter; membership bootstrap, class/org administration, atomic Postgres attempt grading, mandatory sign-in routing, and authenticated RLS tests remain incomplete. Do not enable real learner workflows until those are implemented and verified.

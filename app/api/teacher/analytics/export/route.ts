@@ -1,3 +1,4 @@
+import { authorizeRoute } from "@/lib/auth/route-guard";
 import { DemoModeUnavailableError } from "@/lib/db/demo-store";
 import { getTeacherAnalytics } from "@/lib/services/teacher-analytics";
 
@@ -34,6 +35,8 @@ function csvCell(value: string | number | null): string {
 }
 
 export async function GET(request: Request): Promise<Response> {
+  const denied = await authorizeRoute(["teacher"]);
+  if (denied) return denied;
   try {
     const analytics = getTeacherAnalytics();
     const requestedQuizId = new URL(request.url).searchParams.get("quizId");

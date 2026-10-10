@@ -102,13 +102,13 @@ Statuses use `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, or `DONE`. A phase/task be
 
 ## Phase 4 — Supabase hardening and deployment
 
-### P4.1 Dedicated Supabase project and RLS — `BLOCKED`
+### P4.1 Dedicated Supabase project and RLS — `IN_PROGRESS` (schema provisioned; app integration/tests incomplete)
 - **Objective:** Run the production persistence/auth target requested by the user.
-- **Prerequisites:** User resolves the two-active-project free-tier limit; user-approved project cost; dedicated LearnLoop project and protected connection configuration.
+- **Prerequisites:** User-approved organization and project cost; dedicated LearnLoop project (provisioned, cost check `$0/month`) and protected connection configuration.
 - **Affected files:** `supabase/migrations/*`, `supabase/tests/*`, `lib/db/supabase/*`, `lib/auth/*`, security docs.
-- **Approach:** Apply reviewed additive migrations; least-privilege grants and per-operation RLS; inspect security advisories; test tenant/class/student/teacher/admin visibility.
-- **Acceptance:** Dedicated Supabase project serves auth/database; RLS enforces the intended rows; service-role credentials never enter client output; data persists and recovers.
-- **Verification:** `supabase test db`, tool-level schema/advisory review and role-scoped integration checks in that dedicated project. Do not write to unrelated existing projects.
+- **Approach:** Applied schema/membership/class/assessment/event migrations to dedicated project; narrowed default grants; corrected policy correlations; moved internal definer helpers to the private schema; inspected advisors. Next, build tenant-scoped cloud repositories and transactional attempt scoring, provision trusted memberships, and test tenant/class/student/teacher/admin visibility.
+- **Acceptance:** Dedicated Supabase project and 14 RLS-enabled public tables exist; role-gated API handlers derive roles from trusted memberships; however app services still use SQLite and no user-session row-isolation test has passed. Phase remains open until cloud persistence/auth, admin bootstrap, allowed/denied policy tests, and recovery are verified.
+- **Verification:** Live table/grant/policy/advisory inspection completed. Still required: authenticated role-scoped integration checks and persistent cloud flow tests in this dedicated project. Do not write to unrelated existing projects.
 
 ### P4.2 Edge cases, responsive quality, demo, and deployment preparation — `NOT_STARTED`
 - **Objective:** Complete the reproducible hackathon prototype and deployment instructions.

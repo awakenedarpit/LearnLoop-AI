@@ -1,3 +1,4 @@
+import { authorizeRoute } from "@/lib/auth/route-guard";
 import { DemoModeUnavailableError } from "@/lib/db/demo-store";
 import { getStudentQuiz } from "@/lib/services/student-quizzes";
 
@@ -5,6 +6,8 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export async function GET(_request: Request, context: { params: Promise<{ quizId: string }> }): Promise<Response> {
+  const denied = await authorizeRoute(["student"]);
+  if (denied) return denied;
   try {
     const { quizId } = await context.params;
     const quiz = getStudentQuiz(quizId);

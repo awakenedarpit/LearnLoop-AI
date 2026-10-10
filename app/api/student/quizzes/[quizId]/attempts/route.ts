@@ -1,3 +1,4 @@
+import { authorizeRoute } from "@/lib/auth/route-guard";
 import { z } from "zod";
 import { DemoModeUnavailableError } from "@/lib/db/demo-store";
 import { finalizeStudentQuizAttempt } from "@/lib/services/student-quiz-attempts";
@@ -11,6 +12,8 @@ const submissionSchema = z.object({
 }).strict();
 
 export async function POST(request: Request, context: { params: Promise<{ quizId: string }> }): Promise<Response> {
+  const denied = await authorizeRoute(["student"]);
+  if (denied) return denied;
   try {
     const parsed = submissionSchema.safeParse(await request.json());
     if (!parsed.success) {

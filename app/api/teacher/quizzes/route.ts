@@ -1,3 +1,4 @@
+import { authorizeRoute } from "@/lib/auth/route-guard";
 import { z } from "zod";
 import { DemoModeUnavailableError } from "@/lib/db/demo-store";
 import { createTeacherQuiz, listTeacherQuizzes } from "@/lib/services/teacher-quizzes";
@@ -36,6 +37,8 @@ function errorResponse(error: unknown): Response {
 }
 
 export async function GET(): Promise<Response> {
+  const denied = await authorizeRoute(["teacher"]);
+  if (denied) return denied;
   try {
     return Response.json({ data: listTeacherQuizzes(), mode: "fictional_demo" }, {
       headers: { "Cache-Control": "private, no-store, max-age=0" },
@@ -46,6 +49,8 @@ export async function GET(): Promise<Response> {
 }
 
 export async function POST(request: Request): Promise<Response> {
+  const denied = await authorizeRoute(["teacher"]);
+  if (denied) return denied;
   try {
     const parsed = quizSchema.safeParse(await request.json());
     if (!parsed.success) {

@@ -4,16 +4,16 @@
 
 The workspace is `/home/ubuntu/learnloop`, branch `main`; Node `v22.13.0`, pnpm `11.25.0`, Next.js `16.4.0`, React `19.3.0`, TypeScript `5.9.3`, Tailwind CSS `4.3.3`, managed runtime port `3000`. TypeScript host-managed diagnostics are registered. The managed Webdev project has `server:true`, `database:false`; its `origin` is Manus-managed.
 
-The user explicitly approved keeping the GitHub repository `awakenedarpit/LearnLoop-AI` public. Before the first project push, the separate `github` remote still needs verification/configuration without replacing `origin`. Supabase project creation was rejected because the selected organization reached its two-active-project free-tier limit; no LearnLoop Supabase project was created or modified. No Gemini API key is configured.
+The user approved the public GitHub repository `awakenedarpit/LearnLoop-AI`; inspect active origin and refs before each push. Dedicated Supabase project `LearnLoop` (`rlglcgtamqwqzmkitdtn`, `ap-south-1`) exists in `RajArpit`; three schema/security migrations are applied. Cloud repositories, live auth/member provisioning, and user-scoped RLS tests are not complete. No Gemini API key is configured.
 
 ## Stack and serving
 
 - Next.js App Router, TypeScript, React, Tailwind CSS, accessible reusable UI.
 - Node server routes on port 3000, bound to `0.0.0.0` in the managed Sandbox.
 - **Local demo persistence:** Node's built-in `node:sqlite` via `DatabaseSync`, with a fictional question bank and server-side learning sessions/answers. The local SQLite file is ignored by Git. SQLite is experimental in the pinned Node 22 release; this is not shared production storage.
-- **Cloud target (not connected):** Supabase Auth/PostgreSQL via `@supabase/ssr` and `@supabase/supabase-js`, once a dedicated project and protected configuration are available.
+- **Cloud foundation (in progress):** Supabase Auth/PostgreSQL via `@supabase/ssr` and `@supabase/supabase-js`; project/schema are provisioned. Assessment role gates resolve trusted membership in cloud mode, but data services still use SQLite. Do not enable for real data.
 - **AI target (not connected):** Google GenAI SDK (`@google/genai`) with server-only Gemini Interactions API calls and curated fallbacks, once a protected key is available.
-- Vercel-compatible source/build; deployment has not been attempted.
+- Vercel-compatible source/build; no successful production deployment is verified.
 
 The browser calls relative same-origin routes. Correct answers/explanations are withheld from active learning responses and released only after session completion. Secrets and server-derived absolute URLs are not embedded in browser code.
 
@@ -21,7 +21,7 @@ The browser calls relative same-origin routes. Correct answers/explanations are 
 
 Phase 1 includes the shared responsive product shell; a Python Fundamentals question bank with three variants for each of six concepts; diagnostic sessions, confidence capture, saved answers, server scoring/gap analysis, curated hints/explanations, unseen gap-targeted practice, fresh reassessment linked to its actual diagnostic baseline, and a data-backed progress/history view. Local learning answers are persisted on the server; reload recovers saved answers. Production mode refuses the local demo adapter.
 
-Teacher authoring/classes/timed tests, real authentication and roles, Supabase database/RLS, Gemini calls, teacher analytics/export, and deployment remain unimplemented.
+Demo teacher quiz authoring, timed tests, review, analytics, and export are integrated. Production class/organization administration, Postgres persistence, authenticated RLS behavior tests, Gemini calls, and deployment remain incomplete.
 
 ## Environment variable names
 
@@ -39,9 +39,9 @@ Pin pnpm 11 in `package.json`; use `pnpm-workspace.yaml` `allowBuilds` decisions
 
 ## Verification and blockers
 
-Verified in the current workspace: `pnpm typecheck`, `pnpm test` (4 deterministic unit tests), `pnpm lint`, `pnpm build`, and `pnpm test:integration` (8 page routes plus student API lifecycle, save/recovery, answer-key withholding, scoring, duplicate finalization, rejection of post-completion edits, gap-targeted practice, fresh reassessment and linked comparison).
+Verified after the current auth gate and schema changes: `pnpm typecheck`, `pnpm lint`, `pnpm test` (20 tests), `pnpm test:integration` (8 routes plus local student lifecycle, recovery and scoring), and production `pnpm build`.
 
-Not verified/blocked: Supabase migrations, authentication, RLS, shared persistence, Gemini provider requests, teacher assessment workflows, security/role-isolation tests, and production deployment. Do not claim these are live or passed.
+The dedicated project's three migrations, RLS flags, grants and helper locations were inspected. Not yet verified: real-user auth/membership provisioning, effective RLS allow/deny behavior, PostgreSQL-backed application persistence, Gemini, class/admin operations, and production deployment. The demo teacher assessment flows are local-only. Do not claim any of the unverified paths are live or passed.
 
 ## Official references consulted
 
