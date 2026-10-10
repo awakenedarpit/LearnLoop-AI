@@ -21,3 +21,9 @@
 - Added the teacher quiz builder and published-quiz state in PR #2.
 - Added student quiz listing, answer submission, server-side grading, result explanations, attempt limits and responsive quiz review in PR #3.
 - Both are demo-only; no role authorization, shared durable cloud storage, or server-enforced quiz timer is implemented. Verification of the latest branches and Vercel preview is pending.
+
+## Unreleased — timed assessment flow
+
+- Added server-backed active quiz attempts, deadline enforcement, answer autosave, resume after refresh, and automatic submit behavior in the student quiz interface.
+- Added service tests for active-attempt recovery and ensuring late payloads cannot replace saved answers after the deadline.
+- Demo-only: uses fixed fictional student identity and local SQLite. Typecheck, lint, tests, build, browser testing and preview deployment remain unverified.

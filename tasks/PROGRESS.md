@@ -76,3 +76,10 @@ Initial managed scaffold commit is `f594498` (`Initial project scaffold`). Inspe
 - Added a setup guide with project provisioning, callback configuration, role promotion and RLS verification steps.
 - Not yet production-ready: no dedicated Supabase project exists, migration is unapplied/unverified, current quiz routes still use demo SQLite, guards are not yet wired into all protected handlers, and cloud attempt grading/repository adapters and database policy tests remain outstanding.
 - Verification of typecheck, lint, tests, build and deployment is pending for this branch.
+
+### Timed quiz attempts, autosave and refresh recovery — 2026-10-10
+
+- Added server-created active attempts with authoritative start/deadline timestamps, resume of an in-progress attempt, answer autosave, attempt status and result caching.
+- Added start/resume and per-attempt PATCH endpoints. Submission now requires an active attempt ID; after the deadline, late request payloads are ignored and only previously saved answers are graded.
+- Updated student UI with a countdown, save status and start/resume label; added service tests for refresh recovery and deadline enforcement.
+- This remains fictional SQLite demo functionality. No auth, cloud persistence or browser/CI verification has been completed for this branch.
