@@ -12,8 +12,8 @@ type Quiz = Omit<QuizSummary, "questionCount" | "attemptsUsed"> & {
 type Result = {
   attemptId: string; quizTitle: string; scorePercent: number; correctCount: number;
   totalQuestions: number; answers: Array<{
-    questionId: string; prompt: string; selectedOptionIndex: number | null;
-    correctOptionIndex: number; isCorrect: boolean; explanation: string; concept: string;
+    questionId: string; prompt: string; selectedOptionIndex: number | null; selectedAnswer: string | null;
+    correctOptionIndex: number; correctAnswer: string; isCorrect: boolean; explanation: string; concept: string;
   }>;
 };
 
@@ -97,8 +97,8 @@ export function StudentQuizExperience() {
               <article className={answer.isCorrect ? "student-result-item is-correct" : "student-result-item is-incorrect"} key={answer.questionId}>
                 <p className="student-result-index">QUESTION {index + 1} · {answer.concept}</p>
                 <h3>{answer.prompt}</h3>
-                <p><strong>Your answer:</strong> {answer.selectedOptionIndex === null ? "Not answered" : answer.selectedOptionIndex + 1 + ". " + ["A", "B", "C", "D"][answer.selectedOptionIndex] + " — " + (answer.selectedOptionIndex === null ? "" : answer.selectedOptionIndex >= 0 ? "" : "")}</p>
-                <p><strong>Correct answer:</strong> {["A", "B", "C", "D"][answer.correctOptionIndex]}</p>
+                <p><strong>Your answer:</strong> {answer.selectedOptionIndex === null ? "Not answered" : `${["A", "B", "C", "D"][answer.selectedOptionIndex]}. ${answer.selectedAnswer ?? ""}`}</p>
+                <p><strong>Correct answer:</strong> {`${["A", "B", "C", "D"][answer.correctOptionIndex]}. ${answer.correctAnswer}`}</p>
                 <p>{answer.explanation}</p>
               </article>
             ))}
