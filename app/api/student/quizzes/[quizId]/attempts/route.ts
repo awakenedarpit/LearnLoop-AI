@@ -28,9 +28,6 @@ export async function POST(request: Request, context: { params: Promise<{ quizId
       const status = error.message === "ATTEMPT_LIMIT_REACHED" ? 409 : error.message === "ATTEMPT_NOT_FOUND" ? 404 : 409;
       return Response.json({ error: { code: error.message, message: error.message === "ATTEMPT_EXPIRED" ? "Time is up. Your saved answers were submitted or the attempt expired." : "This attempt cannot be submitted." } }, { status });
     }
-    if (error instanceof Error && error.message === "ATTEMPT_LIMIT_REACHED") {
-      return Response.json({ error: { code: "ATTEMPT_LIMIT_REACHED", message: "You have used all available attempts for this quiz." } }, { status: 409 });
-    }
     if (error instanceof Error && error.message === "QUIZ_NOT_AVAILABLE") return Response.json({ error: { code: "QUIZ_NOT_AVAILABLE", message: "This quiz is not currently available." } }, { status: 404 });
     if (error instanceof Error && error.message === "INVALID_ANSWERS") {
       return Response.json({ error: { code: "ANSWERS_INVALID", message: "One or more answers do not belong to this quiz." } }, { status: 422 });
