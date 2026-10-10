@@ -1,23 +1,34 @@
 # Progress Log
 
-## Current status — 2026-10-11 (teacher results and analytics)
+## Current status — 2026-10-11 (assessment workflow integrated)
 
-**Phase:** Phase 2 assessment workflow expansion. Feature branch: `feat/teacher-results-analytics`, based on `feat/timed-quiz-autosave`. This milestone is **implemented in source; verification pending**. PR #6 was merged into `feat/timed-quiz-autosave` on 2026-10-10 (merge commit `2679a07069458fa6382c6beaf933a1eada0aa74c`). PR #7 builds on the analytics branch. It must not be described as build/test-passed until checks run.
+**Phase:** Phase 2 demo assessment milestone integrated into `main`. Assessment code milestone commit: `cefae2c777a2d3abcc140af749e46c29a45909fc` (`Integrate assessment workflow and CSV analytics export`). PR #8 is merged.
 
-### Teacher results and analytics added (verification pending)
+### Integrated demo features
 
-- Added `lib/services/teacher-analytics.ts` to calculate quiz/submission totals, average/highest score, 60% pass-rate indicator, recent finalized submissions, and per-question correctness from actual fictional SQLite attempt records.
-- Added `GET /api/teacher/analytics` with private/no-store caching and safe demo-mode error responses.
-- Added `/teacher/analytics` dashboard with quiz filtering, responsive result tables, question-accuracy bars, recent submission history, refresh, loading/error/empty states, and a clear one-demo-learner warning.
-- Linked the dashboard from the teacher quiz builder and registered the route in `public/manus-routes.json`.
-- Added `tests/teacher-analytics.test.ts` for honest empty metrics and aggregation from finalized attempts.
-- **Boundaries:** fictional local SQLite only; one fixed demo learner; no authenticated teacher role, class assignment, multi-learner cohort analytics, individual protected review, print report or CSV export. Tests/typecheck/lint/build/browser checks have not been run in this authoring environment.
+- Teacher quiz builder: create/edit MCQ drafts, answer keys, explanations, concept tags, duration/availability/attempt limits, preview and publish.
+- Student assessment flow: attempt start/resume, countdown, server-backed autosave, saved-answer recovery, deadline checks and submission/finalization.
+- Teacher analytics: quiz-level submission counts, average/high scores, pass-rate indicators, recent finalized attempts and per-question correctness.
+- Teacher review: submission inbox, filtering, answer-by-answer review, selected/correct answers, explanations, unanswered counts and print-friendly output.
+- CSV export: filtered assessment/question analytics download; CSV cells are quoted/escaped and formula-like strings are neutralized.
+- GitHub Actions run `38078124788` passed typecheck, lint, unit tests and production build on the combined feature branch before merge.
+- The existing `pnpm test:integration` verifies the student learning loop. The full combined assessment flow and browser behavior have not yet been verified end-to-end.
 
-### Next verification/actions
+### Boundaries and blockers
 
-1. Run `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build` and `pnpm test:integration`; fix failures before marking verified.
-2. Review the analytics SQL/schema against the latest attempt service and test route-level demo/error behavior.
-3. Keep the PR stacked on the timed quiz branch; do not merge or claim deployment before CI/build evidence.
+- Everything assessment-related is a fictional local SQLite demo for one fixed learner; do not use real student or organization data.
+- There is no production teacher authentication, class/assignment authorization, or organization-admin workflow.
+- Access-denial and integrity-event records/review are not implemented.
+- No dedicated LearnLoop Supabase project exists; the two-active-project free-tier limit blocked project creation. Cloud persistence, production Supabase auth, PostgreSQL migrations and RLS remain blocked.
+- No `GEMINI_API_KEY` is configured; Gemini calls and AI quiz drafting are not live.
+- Vercel reported `Deployment rate limited — retry in 24 hours`; this is not a code diagnostic. No successful deployment is verified.
+
+### Next actions
+
+1. Add the existing student HTTP integration verifier to CI and run it on `main`; add assessment API/service integration tests for autosave, expiry, duplicate finalization and CSV export.
+2. Review and fix any remaining accessibility/responsive/print issues; keep all demo data clearly fictional.
+3. Resume production auth/persistence only after a dedicated Supabase project is available, then implement server-side role checks/RLS and access-denial/integrity-event records.
+
 
 ---
 
@@ -129,3 +140,4 @@ No typecheck, lint, unit tests, build, integration test, browser test, or deploy
 1. Run `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`, and `pnpm test:integration` on the combined feature branch and fix any failures.
 2. Review the new route and UI in a browser, including empty state, quiz filtering, detail lookup, and print layout.
 3. Keep this PR stacked on teacher analytics and the timed-assessment branch; do not claim production authorization or deployment.
+

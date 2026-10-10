@@ -18,7 +18,7 @@ Build an Education prototype for Team Data Alchemists at HackOverflow 10.0 — A
 ## Verified implementation status
 
 - Phase 1 student Learning MVP: diagnostic across variables/data types/conditionals/loops/functions/lists; 3 question variants per concept; confidence field; safe active-session response; server-side saves/recovery; score/gap analysis; curated hints/explanations; unseen targeted practice; fresh reassessment linked to actual diagnostic; server-rendered progress/history; honest comparison.
-- Teacher quiz authoring, timed student attempt/autosave code, and a demo-only teacher analytics dashboard have been added on stacked feature branches; verification remains pending. Class assignment, production roles/auth, Supabase migrations/RLS, Gemini, print/CSV exports and deployment remain incomplete.
+- Teacher quiz authoring, timed student attempt/autosave/deadline handling, teacher analytics, submission review, print-friendly review and filtered CSV export are integrated into main. GitHub Actions passed typecheck, lint, unit tests and production build on the combined milestone; full assessment HTTP integration remains unverified. Class assignment, production roles/auth, Supabase migrations/RLS, Gemini and successful deployment remain incomplete.
 - Verified commands: `pnpm typecheck` PASS; `pnpm test` PASS (4 unit tests); `pnpm lint` PASS; `pnpm build` PASS; `pnpm test:integration` PASS (8 routes + full local student flow). Full detail is in `tasks/PROGRESS.md` and `docs/TESTING_PLAN.md`.
 - No public deployment URL exists.
 
@@ -62,3 +62,14 @@ Never put secrets or credentials in memory. Keep statuses aligned with actual so
 4. **Verification:** no local test/typecheck/lint/build/browser checks were run. GitHub Actions workflow runs for this head were empty. Do not claim checks or deployment succeeded.
 5. **Boundaries/blockers:** fictional local SQLite and one fixed demo learner; no teacher authentication/class authorization, access-denial or integrity-event review, durable cloud storage, or CSV export. Vercel demo needs `DEMO_MODE=true`; use fictional data only.
 6. **Next actions:** run typecheck, lint, unit tests, build and integration tests on the combined branch; review UI and print behavior; resolve production auth/cloud prerequisites before real learner data.
+
+
+## Dated handoff — 2026-10-11 (assessment workflow merged to main)
+
+1. **Main code commit:** `cefae2c777a2d3abcc140af749e46c29a45909fc` — `Integrate assessment workflow and CSV analytics export`. PR #8 merged to `main`.
+2. **Integrated:** teacher quiz builder, student timed attempts with autosave/recovery/deadlines, teacher results analytics, question-by-question review, print-friendly review, filtered CSV export, and CI.
+3. **Verification:** GitHub Actions run `38078124788` passed typecheck, lint, unit tests and production build on the combined assessment branch. Existing student-loop integration test passed on the earlier student MVP; assessment-specific HTTP/browser integration has not been run against the combined milestone.
+4. **Known boundaries:** fictional SQLite demo, one fixed learner, no production teacher auth/class permissions/admin roles, no access-denial/integrity event review, no configured Supabase project/RLS, no configured Gemini key. Vercel status is rate-limited; no successful deployment confirmed.
+5. **Next three actions:** (i) include `pnpm test:integration` in CI and add assessment-specific integration coverage; (ii) run those checks and inspect print/mobile flows; (iii) resume Supabase/auth work only after the project quota blocker is resolved.
+
+Never put secrets or credentials in memory. Keep statuses aligned with actual source and test evidence.
