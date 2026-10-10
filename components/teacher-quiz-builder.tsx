@@ -205,7 +205,7 @@ export function TeacherQuizBuilder() {
               {quizzes.map((quiz) => (
                 <article className="card builder-quiz-row" key={quiz.id}>
                   <div className="builder-quiz-icon"><FilePlus2 size={17} /></div>
-                  <div className="builder-quiz-copy"><div className="builder-quiz-title-line"><h3>{quiz.title}</h3><span className={`state-chip ${quiz.status === "published" ? "state-chip-positive" : "state-chip-neutral"}`}>{quiz.status}</span></div><p>{quiz.questions.length} {quiz.questions.length === 1 ? "question" : "questions"} · {quiz.durationMinutes} min · {quiz.attemptLimit} {quiz.attemptLimit === 1 ? "attempt" : "attempts"}</p><small>Updated {readableDate(quiz.updatedAt)}</small></div>
+                  <div className="builder-quiz-copy"><div className="builder-quiz-title-line"><h3>{quiz.title}</h3><span className={`state-chip ${quiz.status === "published" ? "state-chip-done" : "state-chip-neutral"}`}>{quiz.status}</span></div><p>{quiz.questions.length} {quiz.questions.length === 1 ? "question" : "questions"} · {quiz.durationMinutes} min · {quiz.attemptLimit} {quiz.attemptLimit === 1 ? "attempt" : "attempts"}</p><small>Updated {readableDate(quiz.updatedAt)}</small></div>
                   {quiz.status === "draft" ? <button className="button button-secondary" onClick={() => editQuiz(quiz)}><PencilLine size={14} /> Edit draft</button> : <span className="builder-published-label"><Check size={14} /> Published</span>}
                 </article>
               ))}
