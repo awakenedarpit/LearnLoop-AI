@@ -101,6 +101,20 @@ function toDetail(row: AttemptRow, quiz: TeacherQuiz): TeacherReviewDetail {
   };
 }
 
+function toSummary(detail: TeacherReviewDetail): TeacherReviewSummary {
+  return {
+    attemptId: detail.attemptId,
+    quizId: detail.quizId,
+    quizTitle: detail.quizTitle,
+    learnerLabel: detail.learnerLabel,
+    scorePercent: detail.scorePercent,
+    correctCount: detail.correctCount,
+    totalQuestions: detail.totalQuestions,
+    submittedAt: detail.submittedAt,
+    unansweredCount: detail.unansweredCount,
+  };
+}
+
 /** Returns only finalized attempts for the single fictional local-demo learner. */
 export function listTeacherReviewSummaries(quizId?: string): TeacherReviewSummary[] {
   ensureTables();
@@ -120,9 +134,7 @@ export function listTeacherReviewSummaries(quizId?: string): TeacherReviewSummar
   const rows = (quizId ? statement.all(DEMO_STUDENT_ID, quizId) : statement.all(DEMO_STUDENT_ID)) as AttemptRow[];
   return rows.flatMap((row) => {
     const quiz = quizById.get(row.quiz_id);
-    if (!quiz) return [];
-    const { answers: _answers, ...summary } = toDetail(row, quiz);
-    return [summary];
+    return quiz ? [toSummary(toDetail(row, quiz))] : [];
   });
 }
 
