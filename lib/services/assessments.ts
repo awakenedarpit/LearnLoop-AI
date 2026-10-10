@@ -150,3 +150,12 @@ export function finalizeAssessmentAttempt(id: string, now = new Date(), reason: 
     .run(status, submittedAt, Math.round((correctCount / quiz.questions.length) * 100), correctCount, answerRows.length, status === "expired" ? "deadline" : "manual", id);
   return view(attemptRow(id));
 }
+
+export type AssessmentReview = AssessmentAttemptView & { studentLabel: string };
+
+export function listAssessmentReviews(): AssessmentReview[] {
+  const db = database();
+  const rows = db.prepare("SELECT * FROM assessment_attempts WHERE student_id = ? AND status != 'in_progress' ORDER BY submitted_at DESC")
+    .all(DEMO_STUDENT_ID) as AttemptRow[];
+  return rows.map((row) => ({ ...view(row), studentLabel: "Maya Chen (demo student)" }));
+}
