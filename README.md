@@ -4,12 +4,12 @@
 
 LearnLoop AI is an Education-track prototype for HackOverflow 10.0 — Aarohan, NIT Durgapur, built by Team Data Alchemists. It connects personalized learning with meaningful assessment through **Diagnose → Understand → Practice → Reassess → Track Improvement**.
 
-> **Current milestone:** the student Python Fundamentals MVP is implemented and verified locally: diagnostic, concept-gap scoring, curated explanations/hints, gap-targeted practice, fresh reassessment, honest score comparisons, server-side saved answers, and a data-backed progress/history view. Teacher assessments, production authentication, cloud persistence, Gemini calls, and production deployment are not implemented yet.
+> **Current milestone:** the student Python Fundamentals MVP has been verified locally. Demo-only teacher quiz authoring, student quiz attempts with server-backed autosave/deadlines, and a teacher results/analytics dashboard are now implemented on feature branches; verification is pending. Production authentication, durable cloud persistence, Gemini calls, and production deployment are not implemented/verified.
 
 ## Product scope
 
 - **LearnLoop Learn:** Python Fundamentals diagnostics for variables, data types, conditionals, loops, functions and lists; concept-based feedback; targeted practice; fresh reassessment; evidence-based progress/history.
-- **LearnLoop Assess (planned):** teacher quiz authoring and class assignments, timed student assessments, server-backed autosave/deadlines, teacher review, analytics, printable reports and CSV exports.
+- **LearnLoop Assess (demo milestones, verification pending):** teacher quiz authoring/publish, timed student assessments with server-backed autosave/deadlines, and teacher aggregate/question analytics. Class assignments, authenticated individual review, and CSV exports remain incomplete. A print-friendly individual review exists in the demo branch, but is not protected by production authorization.
 - **Future roles:** Student, Teacher and Organization Admin, with server-side authorization and PostgreSQL Row Level Security in configured cloud mode.
 
 ## Technology and data boundary
@@ -64,7 +64,7 @@ pnpm test:integration
 
 ## Current boundaries
 
-- No teacher assessment authoring, timed quiz, class records, submission review, analytics, reports or exports are available yet.
+- Teacher quiz authoring, timed student attempts, autosave/deadline handling, and aggregate/question analytics have been added on feature branches but are not verified yet. Class assignments, authenticated individual review, printable reports and CSV exports are not available.
 - No production user accounts or role switching are available. Local progress belongs to one fixed fictional demo learner; it is not a multi-user auth system.
 - No LearnLoop Supabase project exists, so cloud persistence, Supabase SSR authentication, PostgreSQL migrations/RLS and their security tests are blocked.
 - No `GEMINI_API_KEY` is configured; student explanations currently use curated content. AI drafting/explanations are not live.

@@ -1,0 +1,61 @@
+.teacher-review { display: flex; flex-direction: column; gap: 16px; padding-bottom: 32px; }
+.review-toolbar, .review-toolbar-actions { display: flex; align-items: center; gap: 9px; }
+.review-toolbar { justify-content: space-between; }
+.review-demo-note { display: flex; align-items: center; gap: 9px; padding: 11px 13px; border: 1px solid #eee4d3; border-radius: 10px; background: #fffbf4; color: #946a35; font-size: 10px; }
+.review-list-panel, .review-detail-panel { padding: 21px; }
+.review-list-heading, .review-detail-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+.review-list-heading .section-kicker, .review-detail-heading .section-kicker { margin: 0 0 6px; }
+.review-list-heading .card-description, .review-detail-heading .card-description { margin-top: 5px; }
+.review-submission-list { display: flex; flex-direction: column; margin-top: 16px; }
+.review-submission-row { display: flex; align-items: center; gap: 12px; width: 100%; padding: 13px 8px; border: 0; border-top: 1px solid #f0f0ef; background: transparent; text-align: left; cursor: pointer; }
+.review-submission-row:hover, .review-submission-selected { background: #f8f8ff; }
+.review-submission-icon { display: grid; flex: 0 0 34px; width: 34px; height: 34px; place-items: center; border-radius: 10px; background: #efedff; color: #7868c7; }
+.review-submission-copy { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 4px; }
+.review-submission-copy strong { overflow: hidden; color: #454957; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.review-submission-copy span, .review-submission-copy small { color: #9296a2; font-size: 9px; }
+.review-score { color: #a7753c; font-size: 15px; font-weight: 800; }
+.review-score-pass { color: #328366; }
+.review-state { display: flex; align-items: center; gap: 10px; padding: 17px; color: #7d8190; font-size: 11px; }
+.review-result-score { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; white-space: nowrap; }
+.review-result-score strong { color: #5d65bd; font-size: 28px; font-weight: 800; letter-spacing: -1px; }
+.review-result-score span { color: #9296a2; font-size: 9px; }
+.review-result-stats { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 16px; }
+.review-result-stats span { display: inline-flex; align-items: center; gap: 6px; padding: 7px 9px; border-radius: 8px; background: #f7f7fa; color: #777c89; font-size: 9px; }
+.review-answer-list { display: flex; flex-direction: column; margin-top: 18px; }
+.review-answer { padding: 18px 0; border-top: 1px solid #efeff2; break-inside: avoid; }
+.review-answer-title { display: grid; grid-template-columns: 29px minmax(0, 1fr) auto; align-items: start; gap: 11px; }
+.review-question-number { display: grid; width: 29px; height: 29px; place-items: center; border-radius: 8px; background: #f1edff; color: #7968c2; font-size: 10px; font-weight: 800; }
+.review-answer-title h3 { margin: 1px 0 5px; color: #454957; font-size: 12px; font-weight: 750; line-height: 1.6; }
+.review-answer-title p { margin: 0; color: #9296a2; font-size: 9px; }
+.review-answer-status { display: inline-flex; align-items: center; gap: 5px; padding: 5px 7px; border-radius: 99px; font-size: 8px; font-weight: 750; white-space: nowrap; }
+.review-answer-correct { background: #eaf7f1; color: #328366; }
+.review-answer-incorrect { background: #fff0ef; color: #b45e58; }
+.review-answer-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin: 13px 0 0 40px; }
+.review-option { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 9px; border: 1px solid #ececf0; border-radius: 8px; color: #777b88; font-size: 10px; }
+.review-option > span { display: grid; flex: 0 0 21px; width: 21px; height: 21px; place-items: center; border-radius: 6px; background: #f4f4f7; color: #818594; font-size: 8px; font-weight: 800; }
+.review-option p { flex: 1; margin: 0; line-height: 1.5; }
+.review-option strong, .review-option small { font-size: 8px; font-weight: 750; }
+.review-option-correct { border-color: #b8e3d0; background: #f0faf5; color: #2f785b; }
+.review-option-correct > span { background: #d8f1e5; color: #2f785b; }
+.review-option-selected-wrong { border-color: #efc5c1; background: #fff5f4; color: #a94f49; }
+.review-explanation { margin: 11px 0 0 40px; padding: 10px 12px; border-radius: 8px; background: #f8f8fc; color: #777b88; font-size: 10px; line-height: 1.65; }
+.review-explanation strong { color: #505565; }
+.review-footer-note { margin: 5px 0 0; color: #9a9da5; font-size: 9px; line-height: 1.6; }
+@media (max-width: 640px) {
+  .review-toolbar, .review-list-heading, .review-detail-heading { align-items: stretch; flex-direction: column; }
+  .review-toolbar > a { align-self: flex-start; }
+  .review-toolbar-actions { flex-wrap: wrap; }
+  .review-list-panel, .review-detail-panel { padding: 15px; }
+  .review-result-score { align-items: flex-start; }
+  .review-answer-title { grid-template-columns: 29px minmax(0, 1fr); }
+  .review-answer-status { grid-column: 2; justify-self: start; }
+  .review-answer-options { grid-template-columns: 1fr; margin-left: 0; }
+  .review-explanation { margin-left: 0; }
+}
+@media print {
+  body { background: white !important; }
+  .review-toolbar, .review-demo-note, .review-list-panel, .builder-notice { display: none !important; }
+  .teacher-review { padding: 0; }
+  .review-detail-panel { border: 0 !important; box-shadow: none !important; padding: 0 !important; }
+  .review-answer-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

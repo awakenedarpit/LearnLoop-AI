@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — 2026-10-11
+
+- Added a teacher results and analytics dashboard on `feat/teacher-results-analytics`: quiz-level averages/high scores/pass-rate indicators, submission counts, recent finalized attempts, and per-question accuracy calculated from saved answer records.
+- Added the demo-only `GET /api/teacher/analytics` endpoint, responsive dashboard page, route manifest entry, and analytics aggregation tests. Verification remains pending; this is not an authenticated class report and uses the fixed fictional demo learner.
+
+# Changelog
+
 ## Unreleased — 2026-10-10
 
 - Started the teacher quiz builder milestone on `feat/teacher-quiz-builder`: authoring UI, draft CRUD and publish API, validation, quiz metadata/question storage, student preview, and responsive styles. Implementation status and limitations are documented in `tasks/PROGRESS.md`; verification is still pending.
@@ -14,3 +21,16 @@
 - Added deterministic scoring/catalog tests and a disposable HTTP integration harness for routes, recovery, scoring, idempotency, post-completion edits, targeted practice and reassessment comparison.
 - Verification passed: `pnpm typecheck`, 4 `pnpm test` checks, `pnpm lint`, `pnpm build`, and `pnpm test:integration`. Exact output is summarized in `tasks/PROGRESS.md`.
 - Teacher authoring/timed assessments, real authentication/RLS, Supabase cloud project, live Gemini, reports/exports, and production deployment remain incomplete/unverified.
+
+ 
+## 2026-10-10 — Assessment workflow demos
+
+- Added the teacher quiz builder and published-quiz state in PR #2.
+- Added student quiz listing, answer submission, server-side grading, result explanations, attempt limits and responsive quiz review in PR #3.
+- Both are demo-only; no role authorization, shared durable cloud storage, or server-enforced quiz timer is implemented. Verification of the latest branches and Vercel preview is pending.
+
+## Unreleased — timed assessment flow
+
+- Added server-backed active quiz attempts, deadline enforcement, answer autosave, resume after refresh, and automatic submit behavior in the student quiz interface.
+- Added service tests for active-attempt recovery and ensuring late payloads cannot replace saved answers after the deadline.
+- Demo-only: uses fixed fictional student identity and local SQLite. Typecheck, lint, tests, build, browser testing and preview deployment remain unverified.

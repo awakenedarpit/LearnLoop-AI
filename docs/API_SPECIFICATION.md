@@ -1,6 +1,6 @@
 # API Specification — LearnLoop AI
 
-**Status:** Local demo health/learning handlers are implemented and the teacher quiz draft/list/edit/publish handlers have been added on `feat/teacher-quiz-builder` (verification pending). Teacher routes currently use fictional demo SQLite storage and have no authentication or role authorization. Timed student attempts, class assignments, reports, Supabase auth/RLS, and Gemini remain planned. Page paths are separately synchronized with `public/manus-routes.json`.
+**Status:** Teacher quiz authoring, timed student attempts, and teacher analytics handlers are implemented on feature branches; verification is pending. Teacher/student quiz routes use fictional demo SQLite storage without authentication or role authorization. Class assignments, authenticated individual review, exports, Supabase auth/RLS, and Gemini remain incomplete. Page paths are synchronized with `public/manus-routes.json`.
 
 ## Conventions
 
@@ -30,7 +30,7 @@ Same-origin relative requests. JSON responses use `{ "data": ... }` on success a
 | `POST /api/teacher/quizzes/:id/ai-draft` | Authorized teacher | Validated request to Gemini; returns editable draft, never publishes. Uses fallback/error if key unavailable. |
 | `POST /api/teacher/quizzes/:id/publish` | Demo-only; no auth yet | Changes a saved draft to published and locks editing. Does not create class assignments or deliver quizzes to students. |
 | `GET /api/teacher/assessments/:id/submissions` | Teacher authorized for assigned class | Filtered submission/denial/integrity summaries for that assessment. |
-| `GET /api/teacher/analytics` | Teacher authorized for selected class/assessment | Real aggregate metrics, question correctness and concept gaps. |
+| `GET /api/teacher/analytics` | Demo-only; no auth yet | Aggregate quiz counts, submission scores, pass rate, recent submissions and per-question accuracy from fictional SQLite records. No class/individual identity or authorization scope exists yet. |
 | `GET /api/teacher/reports/:id.csv` | Authorized teacher | CSV for authorized assessment and class records; safe escaping. |
 | `GET /api/teacher/reports/:id/print` | Authorized teacher | Print-friendly report based on the same authorized data. |
 
@@ -55,3 +55,47 @@ When Supabase is unavailable, demo routes use the explicitly labelled local serv
 | `GET /api/learn/progress` | Returns actual local session history, concept indicators and baseline-linked comparison. | No cloud synchronization; fixed fictional student only. |
 
 These endpoints currently serve only the non-production SQLite demo adapter. They must not be described as authenticated or multi-tenant until Supabase identity and database policies are configured and verified.
+
+## Teacher and student quiz demo routes
+
+| Method/path | Current behavior | Verified boundary |
+|---|---|---|
+| `GET /api/teacher/quizzes` | Lists fictional teacher-authored quizzes. | Demo adapter only; no teacher authorization. |
+| `POST /api/teacher/quizzes` | Validates and creates a draft quiz. | Zod validation; demo storage only. |
+| `PUT /api/teacher/quizzes/:quizId` | Updates an editable draft. | Published quizzes are locked. |
+| `POST /api/teacher/quizzes/:quizId/publish` | Publishes a quiz draft. | Publishing does not assign a class or authenticate students. |
+| `GET /api/student/quizzes` | Lists currently available published quizzes and attempt counts. | Fixed fictional demo student identity. |
+| `GET /api/student/quizzes/:quizId` | Returns a published quiz without correct-answer keys or explanations. | Availability windows are checked server-side. |
+| `POST /api/student/quizzes/:quizId/attempts` | Grades submitted MCQ answers on the server and returns score plus explanations. | Validates question IDs and option indexes; enforces configured attempt limit. |
+
+Student attempts are stored in the local SQLite demo adapter. No authentication, role authorization or shared cloud persistence is implemented. Use fictional data only; run typecheck, lint, tests, build and preview checks before merging.
+
+ 
+## Supabase identity scaffold (project configuration required)
+
+| Method/path | Behavior | Boundary |
+|---|---|---|
+| `GET /api/auth/me` | Returns the signed-in profile role or `data: null`. | Requires configured Supabase environment to return an authenticated profile; response is private/no-store. |
+| `GET /auth/callback?code=...` | Exchanges the Supabase email-link code for a session and redirects to a safe same-origin path. | Invalid/missing code returns to sign-in. |
+| `GET /sign-in` | Sends a Supabase email magic link. | Unavailable until project URL/key and email redirect settings are configured. |
+
+Server auth helpers expose role checks for route handlers. They do not automatically protect every route. The existing quiz routes still use demo SQLite; do not treat the Supabase schema/client scaffold as completed cloud persistence.
+
+## Timed student quiz attempts (fictional SQLite demo)
+
+| Method/path | Behavior | Boundary |
+|---|---|---|
+| `POST /api/student/quizzes/:quizId/attempts/start` | Starts an attempt or resumes the student's existing active attempt, returning server start/deadline timestamps and saved answers. | Fixed fictional demo identity; configured attempt limit applies. |
+| `PATCH /api/student/quizzes/:quizId/attempts/:attemptId` | Validates and persists answer changes. | Rejects unknown question IDs, inactive attempts and expired attempts. |
+| `POST /api/student/quizzes/:quizId/attempts` | Finalizes an active attempt and returns graded feedback. | Requires the server-issued attempt ID; after deadline, only previously saved answers are graded. |
+
+The browser countdown is a display and submission trigger only; the server checks the authoritative deadline on save/finalization. The local SQLite adapter is not durable/shared on serverless deployments, and there is still no authenticated student identity. Use fictional data only.
+
+
+## Teacher analytics demo route (verification pending)
+
+| Method/path | Current behavior | Boundary |
+|---|---|---|
+| `GET /api/teacher/analytics` | Returns aggregate quiz/submission counts, average/highest scores, a 60% pass-rate indicator, recent finalized attempts and per-question accuracy for the fixed demo student. | Values are calculated from local SQLite attempt records; no fabricated seed analytics are used. No teacher authentication, class membership, multi-learner comparison, or production authorization exists. Empty score metrics are `null` when there are no submissions. |
+
+The `/teacher/analytics` page is a demo-only results view. Do not describe it as a class dashboard or production-secure teacher report until class assignments, trusted identity and server-side authorization are implemented and tested.

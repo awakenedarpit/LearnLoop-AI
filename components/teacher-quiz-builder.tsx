@@ -82,6 +82,7 @@ export function TeacherQuizBuilder() {
     }
   }, []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional initial fetch for server-backed quiz drafts.
   useEffect(() => { void loadQuizzes(); }, [loadQuizzes]);
 
   function startNew() {
@@ -147,6 +148,7 @@ export function TeacherQuizBuilder() {
         ...draft,
         availableFrom: draft.availableFrom ? new Date(draft.availableFrom).toISOString() : null,
         availableUntil: draft.availableUntil ? new Date(draft.availableUntil).toISOString() : null,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Strip local draft IDs before sending the server payload.
         questions: draft.questions.map(({ id: _id, ...question }) => ({
           ...question,
           prompt: question.prompt.trim(),
