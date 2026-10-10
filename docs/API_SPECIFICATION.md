@@ -1,6 +1,6 @@
 # API Specification — LearnLoop AI
 
-**Status:** Local demo health/learning route handlers are implemented and exercised by `scripts/verify-learning-flow.mjs`. Supabase authentication, teacher, timed assessment, report, and Gemini route contracts below remain planned until those features exist. Page paths are separately synchronized with `public/manus-routes.json`.
+**Status:** Local demo health/learning handlers are implemented and the teacher quiz draft/list/edit/publish handlers have been added on `feat/teacher-quiz-builder` (verification pending). Teacher routes currently use fictional demo SQLite storage and have no authentication or role authorization. Timed student attempts, class assignments, reports, Supabase auth/RLS, and Gemini remain planned. Page paths are separately synchronized with `public/manus-routes.json`.
 
 ## Conventions
 
@@ -24,11 +24,11 @@ Same-origin relative requests. JSON responses use `{ "data": ... }` on success a
 | `PUT /api/assess/attempts/:id/answers/:questionId` | Owning student | Server-backed autosave; rejects expired/finalized attempts; returns confirmed save timestamp/version. |
 | `POST /api/assess/attempts/:id/submit` | Owning student | Idempotent server finalization, score, submitted timestamp. |
 | `POST /api/assess/attempts/:id/integrity-events` | Owning student | Accepts bounded known event types; stored as reviewable signal, not adjudication. |
-| `GET /api/teacher/quizzes` | Authorized teacher | Teacher's quizzes/drafts. |
-| `POST /api/teacher/quizzes` | Authorized teacher | Validated draft creation; protected answer keys remain server-side. |
-| `PATCH /api/teacher/quizzes/:id` | Owning/authorized teacher | Edit draft; reject changes to published/active records according to lifecycle. |
+| `GET /api/teacher/quizzes` | Demo-only; no auth yet | List fictional demo quizzes and drafts. Not production-secure until auth/authorization is added. |
+| `POST /api/teacher/quizzes` | Demo-only; no auth yet | Validated fictional demo quiz draft creation; answer keys are returned to the teacher UI only by this demo API. Not production-secure until auth/authorization is added. |
+| `PATCH /api/teacher/quizzes/:id` | Demo-only; no auth yet | Edit a draft; published quizzes are locked. Ownership is not enforced in this demo-only milestone. |
 | `POST /api/teacher/quizzes/:id/ai-draft` | Authorized teacher | Validated request to Gemini; returns editable draft, never publishes. Uses fallback/error if key unavailable. |
-| `POST /api/teacher/quizzes/:id/publish` | Authorized teacher | Validates quiz, availability and authorized class assignments; changes status. |
+| `POST /api/teacher/quizzes/:id/publish` | Demo-only; no auth yet | Changes a saved draft to published and locks editing. Does not create class assignments or deliver quizzes to students. |
 | `GET /api/teacher/assessments/:id/submissions` | Teacher authorized for assigned class | Filtered submission/denial/integrity summaries for that assessment. |
 | `GET /api/teacher/analytics` | Teacher authorized for selected class/assessment | Real aggregate metrics, question correctness and concept gaps. |
 | `GET /api/teacher/reports/:id.csv` | Authorized teacher | CSV for authorized assessment and class records; safe escaping. |
