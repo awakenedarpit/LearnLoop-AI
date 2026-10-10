@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Student Quizzes" };
 
 export default function StudentQuizzesPage() {
   return (
-    <main className="student-quizzes-page">
+    <section className="student-quizzes-page">
       <div className="student-quizzes-heading">
         <p className="eyebrow"><span className="eyebrow-mark" />STUDENT WORKSPACE</p>
         <h1>Practice that moves you forward.</h1>
@@ -14,6 +14,6 @@ export default function StudentQuizzesPage() {
       </div>
       <StudentQuizExperience />
       <p className="student-demo-note">Demo workspace · progress uses fictional demo data and may reset.</p>
-    </main>
+    </section>
   );
 }
