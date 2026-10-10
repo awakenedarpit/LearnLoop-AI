@@ -2,6 +2,8 @@
 
 ## Unreleased — 2026-10-10
 
+- Verified the local assessment milestone: published quiz delivery, server-authoritative answer autosave/recovery, countdown/deadline enforcement, idempotent manual/expired finalization, scoring, answer-key withholding, read-only results, and 11 passing unit tests across learning, teacher quiz, and assessment services.
+
 - Started the teacher quiz builder milestone on `feat/teacher-quiz-builder`: authoring UI, draft CRUD and publish API, validation, quiz metadata/question storage, student preview, and responsive styles. Implementation status and limitations are documented in `tasks/PROGRESS.md`; verification is still pending.
 
 - Created the user-approved public `awakenedarpit/LearnLoop-AI` repository and initialized the managed LearnLoop project workspace.
@@ -13,4 +15,4 @@
 - Removed `better-sqlite3` after opening a database reproducibly segfaulted in the sandbox; Node built-in SQLite create/read/transaction was verified instead.
 - Added deterministic scoring/catalog tests and a disposable HTTP integration harness for routes, recovery, scoring, idempotency, post-completion edits, targeted practice and reassessment comparison.
 - Verification passed: `pnpm typecheck`, 4 `pnpm test` checks, `pnpm lint`, `pnpm build`, and `pnpm test:integration`. Exact output is summarized in `tasks/PROGRESS.md`.
-- Teacher authoring/timed assessments, real authentication/RLS, Supabase cloud project, live Gemini, reports/exports, and production deployment remain incomplete/unverified.
+- Class assignment, authenticated teacher review, integrity/access-denial records, real authentication/RLS, Supabase cloud project, live Gemini, reports/exports, and production deployment remain incomplete/unverified.

@@ -82,7 +82,10 @@ export function TeacherQuizBuilder() {
     }
   }, []);
 
-  useEffect(() => { void loadQuizzes(); }, [loadQuizzes]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void loadQuizzes(); }, 0);
+    return () => window.clearTimeout(timer);
+  }, [loadQuizzes]);
 
   function startNew() {
     setEditingId(null);
@@ -147,13 +150,17 @@ export function TeacherQuizBuilder() {
         ...draft,
         availableFrom: draft.availableFrom ? new Date(draft.availableFrom).toISOString() : null,
         availableUntil: draft.availableUntil ? new Date(draft.availableUntil).toISOString() : null,
-        questions: draft.questions.map(({ id: _id, ...question }) => ({
-          ...question,
-          prompt: question.prompt.trim(),
-          options: question.options.map((option) => option.trim()),
-          explanation: question.explanation.trim(),
-          concept: question.concept.trim(),
-        })),
+        questions: draft.questions.map((question) => {
+          const { id: questionEditorId, ...payloadQuestion } = question;
+          void questionEditorId;
+          return {
+            ...payloadQuestion,
+            prompt: question.prompt.trim(),
+            options: question.options.map((option) => option.trim()),
+            explanation: question.explanation.trim(),
+            concept: question.concept.trim(),
+          };
+        }),
       };
       const response = await fetch(editingId ? `/api/teacher/quizzes/${editingId}` : "/api/teacher/quizzes", {
         method: editingId ? "PATCH" : "POST",

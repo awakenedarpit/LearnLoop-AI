@@ -1,5 +1,27 @@
 # Progress Log
 
+## Current status — 2026-10-11 (local assessment attempt milestone)
+
+**Phase:** Phase 2 — Teacher authoring and a fictional student assessment attempt flow are implemented and verified locally.
+
+### Assessment attempt implementation completed
+
+- Added `lib/services/assessments.ts` with published-quiz availability checks, one active demo attempt per quiz, server-side answer persistence, attempt limits, server deadline enforcement, manual/expired finalization, scoring, and idempotent finalization.
+- Added `/api/assessments`, `/api/assessments/attempts/[attemptId]`, and server autosave routes. Pre-finalization responses omit answer keys; completed responses include keys and explanations for demo review.
+- Replaced the Assess placeholder with `components/assessment-runner.tsx`: published quiz list, start/resume, countdown, question navigation, save state, refresh recovery, submit, and read-only result state.
+- Added `tests/assessments.test.ts` covering key withholding, server autosave recovery, scoring/idempotency, post-finalization immutability, and deadline expiry.
+- This remains fictional local demo behavior: no authenticated identity, class assignment, teacher review, integrity-event records, shared persistence, or production authorization.
+
+### Verification
+
+- `pnpm typecheck` — passed.
+- `pnpm test` — passed, 11 tests across 3 files.
+- `pnpm lint` — passed.
+- `pnpm build` — passed; assessment page and API routes compiled.
+- `pnpm test:integration` — passed; existing 8-page student flow remained green and `/assess` returned 200.
+
+---
+
 ## Current status — 2026-10-10 (teacher quiz builder milestone)
 
 **Phase:** Phase 2 — Teacher quiz authoring is now in progress on branch `feat/teacher-quiz-builder`. The editor, demo API routes, and SQLite-backed quiz draft service have been added to the branch. These changes have not yet been locally executed or verified; do not treat the milestone as build/test-passed until CI or local checks confirm it.

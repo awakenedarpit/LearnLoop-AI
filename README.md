@@ -4,12 +4,12 @@
 
 LearnLoop AI is an Education-track prototype for HackOverflow 10.0 — Aarohan, NIT Durgapur, built by Team Data Alchemists. It connects personalized learning with meaningful assessment through **Diagnose → Understand → Practice → Reassess → Track Improvement**.
 
-> **Current milestone:** the student Python Fundamentals MVP is implemented and verified locally: diagnostic, concept-gap scoring, curated explanations/hints, gap-targeted practice, fresh reassessment, honest score comparisons, server-side saved answers, and a data-backed progress/history view. Teacher assessments, production authentication, cloud persistence, Gemini calls, and production deployment are not implemented yet.
+> **Current milestone:** the student Python Fundamentals MVP and a fictional local assessment attempt flow are implemented and verified locally. The assessment flow covers published quiz delivery, server-side autosave/recovery, deadline-based expiry, idempotent scoring, and answer-key withholding before finalization. Production authentication, class assignment, cloud persistence, Gemini calls, teacher review/analytics, and production deployment are not implemented yet.
 
 ## Product scope
 
 - **LearnLoop Learn:** Python Fundamentals diagnostics for variables, data types, conditionals, loops, functions and lists; concept-based feedback; targeted practice; fresh reassessment; evidence-based progress/history.
-- **LearnLoop Assess (planned):** teacher quiz authoring and class assignments, timed student assessments, server-backed autosave/deadlines, teacher review, analytics, printable reports and CSV exports.
+- **LearnLoop Assess:** teacher quiz authoring/publishing and local demo timed student assessments with server-backed autosave/deadlines; class assignments, teacher review, analytics, printable reports and CSV exports remain planned.
 - **Future roles:** Student, Teacher and Organization Admin, with server-side authorization and PostgreSQL Row Level Security in configured cloud mode.
 
 ## Technology and data boundary

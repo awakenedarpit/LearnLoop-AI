@@ -18,8 +18,8 @@ Build an Education prototype for Team Data Alchemists at HackOverflow 10.0 — A
 ## Verified implementation status
 
 - Phase 1 student Learning MVP: diagnostic across variables/data types/conditionals/loops/functions/lists; 3 question variants per concept; confidence field; safe active-session response; server-side saves/recovery; score/gap analysis; curated hints/explanations; unseen targeted practice; fresh reassessment linked to actual diagnostic; server-rendered progress/history; honest comparison.
-- Assessment, teacher/class workflows, production roles/auth, Supabase migrations/RLS, Gemini, exports and deployment remain incomplete.
-- Verified commands: `pnpm typecheck` PASS; `pnpm test` PASS (4 unit tests); `pnpm lint` PASS; `pnpm build` PASS; `pnpm test:integration` PASS (8 routes + full local student flow). Full detail is in `tasks/PROGRESS.md` and `docs/TESTING_PLAN.md`.
+- Teacher quiz authoring/publish and a fictional local assessment attempt flow are verified: published quiz delivery, server autosave/recovery, deadline expiry, idempotent scoring/finalization, and pre-finalization answer-key withholding. Class assignment/review, production roles/auth, Supabase migrations/RLS, Gemini, exports and deployment remain incomplete.
+- Verified commands: `pnpm typecheck` PASS; `pnpm test` PASS (11 tests across 3 files); `pnpm lint` PASS; `pnpm build` PASS; `pnpm test:integration` PASS (8 student routes plus `/assess` and full local student flow). Full detail is in `tasks/PROGRESS.md` and `docs/TESTING_PLAN.md`.
 - No public deployment URL exists.
 
 ## Important paths

@@ -65,13 +65,14 @@ Statuses use `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, or `DONE`. A phase/task be
 - **Acceptance:** Authoring, editing, preview, save, and publish pass UI/API tests; published drafts are locked; invalid question payloads are rejected. Class assignment remains incomplete.
 - **Verification:** **Pending** — run typecheck/lint/unit/integration/build and verify the UI against a checked-out branch before marking complete.
 
-### P2.2 Student attempt, autosave, deadlines, and finalization — `NOT_STARTED`
+### P2.2 Student attempt, autosave, deadlines, and finalization — `IN_PROGRESS` (local demo verified)
 - **Objective:** Make the timed test reliable across refreshes and deadline boundaries.
 - **Prerequisites:** P2.1 and persistent answer store.
 - **Affected files:** `features/assess/attempt`, save/finalize services, answer/session API.
+- **Current implementation:** `lib/services/assessments.ts`, `components/assessment-runner.tsx`, and `/api/assessments/*` provide server-saved answers, refresh recovery, server deadline checks, manual/expired finalization, idempotent scoring, and answer-key withholding in the fictional local demo.
 - **Approach:** Server saves each answer; UI shows last-successful-save state; server time enforces deadline; finalization idempotently scores the latest saved answers; prevent writes after finalization; record policy termination/access denials/integrity events.
 - **Acceptance:** Refresh recovers server answers, late writes fail, duplicate finalization scores once, expiry uses the latest successfully saved answer, and pre-start denial creates no submission.
-- **Verification:** Integration tests for save/restore/deadline/duplicate-submit/race conditions and access-denial behavior.
+- **Verification:** `tests/assessments.test.ts` covers save/restore, deadline expiry, duplicate finalization, post-finalization write rejection, and answer-key withholding. Class/identity authorization and access-denial/integrity records remain pending cloud/auth work.
 
 ### P2.3 Individual review and integrity review — `NOT_STARTED`
 - **Objective:** Give authorized teachers actionable submission review.
