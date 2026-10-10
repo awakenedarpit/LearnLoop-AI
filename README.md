@@ -18,6 +18,20 @@ Next.js App Router 16.4, React 19, TypeScript 5.9, Tailwind CSS 4, Node `>=22.13
 
 The dedicated Supabase project request was rejected because the selected organization had reached its two-active-project free-tier limit. No LearnLoop cloud project was created and no existing project was changed. Until that blocker is resolved, **local demo mode** stores fictional learning sessions and answers on the server using Node’s built-in `node:sqlite`. This Node module is experimental in the pinned Node release; the fallback is for local demonstration only, not shared production storage. No cloud synchronization, production sign-in/RLS, or Gemini request is verified. Do not enter real student or organization data.
 
+## Deploy a demo to Vercel
+
+The repository includes a Vercel-compatible **disposable demo mode**. It can host the current student-learning prototype, but it is **not a production multi-user service**: authentication and cloud persistence are not implemented, and in-memory SQLite data can reset or differ between serverless instances. Use fictional data only.
+
+1. Push this repository to GitHub and import it at [Vercel](https://vercel.com/new).
+2. Keep the detected Next.js framework and root directory defaults.
+3. Add these environment variables for **Production, Preview, and Development**:
+   - `DEMO_MODE=true`
+   - `DEMO_DB_PATH=:memory:`
+4. Deploy using the included `pnpm-lock.yaml`. The project pins Node 22.x and pnpm 10.x.
+5. After deployment, open the site and `/api/health`. The health route should return `status: "ok"` and `mode: "local_demo"`.
+
+Do not add real student information, production credentials, or a Gemini key for this demo. Do not set `DEMO_MODE=true` for a production service that needs durable or private learner records. For that, first configure a dedicated Supabase project, database migrations and RLS, authentication, and the cloud adapter; those pieces are not implemented yet.
+
 ## Local setup
 
 ```bash
