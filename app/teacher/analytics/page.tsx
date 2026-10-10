@@ -15,7 +15,7 @@ export default function TeacherAnalyticsPage() {
         <h1 className="page-title">Turn results into next steps.</h1>
         <p className="page-subtitle">See how each assessment is performing, spot difficult questions, and review recent submissions.</p>
       </div>
-      <div className="page-heading-actions"><Link className="button button-secondary" href="/teacher/review"><FileSearch size={14} /> Review submissions</Link><Link className="button button-primary" href="/teacher">Quiz builder <ArrowUpRight size={14} /></Link></div>
+      <div className="analytics-toolbar"><Link className="button button-secondary" href="/teacher/review"><FileSearch size={14} /> Review submissions</Link><Link className="button button-primary" href="/teacher">Quiz builder <ArrowUpRight size={14} /></Link></div>
     </div>
     <TeacherAnalyticsDashboard />
   </>;
