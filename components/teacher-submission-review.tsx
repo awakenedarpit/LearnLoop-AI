@@ -52,6 +52,7 @@ export function TeacherSubmissionReview() {
     }
   }, [quizId, detail]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional initial fetch for server-backed submissions.
   useEffect(() => { void loadSubmissions(); }, [loadSubmissions]);
 
   const openReview = async (attemptId: string) => {
