@@ -1,6 +1,6 @@
 # LearnLoop AI — Persistent Project Memory
 
-**Last updated:** 2026-10-10
+**Last updated:** 2026-10-11
 
 ## Goal and scope
 
@@ -18,7 +18,7 @@ Build an Education prototype for Team Data Alchemists at HackOverflow 10.0 — A
 ## Verified implementation status
 
 - Phase 1 student Learning MVP: diagnostic across variables/data types/conditionals/loops/functions/lists; 3 question variants per concept; confidence field; safe active-session response; server-side saves/recovery; score/gap analysis; curated hints/explanations; unseen targeted practice; fresh reassessment linked to actual diagnostic; server-rendered progress/history; honest comparison.
-- Assessment, teacher/class workflows, production roles/auth, Supabase migrations/RLS, Gemini, exports and deployment remain incomplete.
+- Teacher quiz authoring, timed student attempt/autosave code, and a demo-only teacher analytics dashboard have been added on stacked feature branches; verification remains pending. Class assignment, production roles/auth, Supabase migrations/RLS, Gemini, print/CSV exports and deployment remain incomplete.
 - Verified commands: `pnpm typecheck` PASS; `pnpm test` PASS (4 unit tests); `pnpm lint` PASS; `pnpm build` PASS; `pnpm test:integration` PASS (8 routes + full local student flow). Full detail is in `tasks/PROGRESS.md` and `docs/TESTING_PLAN.md`.
 - No public deployment URL exists.
 
@@ -43,3 +43,11 @@ Build an Education prototype for Team Data Alchemists at HackOverflow 10.0 — A
 6. **Next three actions:** (i) public-content audit + dual push + verify refs; (ii) implement teacher timed-assessment MVP within demo-only boundary; (iii) run checks and persist actual milestone status.
 
 Never put secrets or credentials in memory. Keep statuses aligned with actual source and test evidence.
+
+
+## Dated handoff — 2026-10-11 (teacher analytics)
+
+1. **Implemented, not verified:** branch `feat/teacher-results-analytics` based on `feat/timed-quiz-autosave`. Added `lib/services/teacher-analytics.ts`, `app/api/teacher/analytics/route.ts`, `components/teacher-analytics-dashboard.tsx`, `app/teacher/analytics/page.tsx`, `app/teacher/analytics/analytics.css`, `tests/teacher-analytics.test.ts`; updated teacher entry link, route manifest and docs.
+2. **Feature:** actual local demo attempt records power quiz counts, mean/high score, pass-rate indicator, recent submission list and question accuracy. Explicitly one fixed fictional learner; not class analytics or production authorization.
+3. **Verification:** no tests, typecheck, lint, build, integration or browser check has been executed for this branch. Do not claim success. PR not yet created at the time of this note.
+4. **Next three actions:** (i) run checks and inspect diffs, especially sqlite schema/analytics aggregation; (ii) fix failures and update this handoff; (iii) open PR stacked on `feat/timed-quiz-autosave` only after checking source state.
