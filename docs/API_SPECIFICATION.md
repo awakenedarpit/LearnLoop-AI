@@ -68,7 +68,7 @@ These endpoints currently serve only the non-production SQLite demo adapter. The
 | `GET /api/student/quizzes/:quizId` | Returns a published quiz without correct-answer keys or explanations. | Availability windows are checked server-side. |
 | `POST /api/student/quizzes/:quizId/attempts` | Grades submitted MCQ answers on the server and returns score plus explanations. | Validates question IDs and option indexes; enforces configured attempt limit. |
 
-Student attempts are stored in the local SQLite demo adapter. No authentication, role authorization, shared cloud persistence, or server-enforced countdown timer is implemented. Use fictional data only; run typecheck, lint, tests, build and preview checks before merging.
+Student attempts are stored in the local SQLite demo adapter. No authentication, role authorization or shared cloud persistence is implemented. Use fictional data only; run typecheck, lint, tests, build and preview checks before merging.
 
  
 ## Supabase identity scaffold (project configuration required)
