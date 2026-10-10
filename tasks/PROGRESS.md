@@ -11,7 +11,7 @@
 - Teacher analytics: quiz-level submission counts, average/high scores, pass-rate indicators, recent finalized attempts and per-question correctness.
 - Teacher review: submission inbox, filtering, answer-by-answer review, selected/correct answers, explanations, unanswered counts and print-friendly output.
 - CSV export: filtered assessment/question analytics download; CSV cells are quoted/escaped and formula-like strings are neutralized.
-- GitHub Actions run `38078124788` passed typecheck, lint, unit tests and production build on the combined feature branch before merge.
+- GitHub Actions run `38078124788` passed typecheck, lint, unit tests and production build on the combined feature branch before merge. After enabling the existing student HTTP integration verifier in CI, run `38078482327` passed typecheck, lint, unit tests, student HTTP integration, and production build on `main` commit `ae71ec21d35e5be2b3ebeb784c4431e7c89e0991`.
 - The existing `pnpm test:integration` verifies the student learning loop. The full combined assessment flow and browser behavior have not yet been verified end-to-end.
 
 ### Boundaries and blockers
@@ -25,7 +25,7 @@
 
 ### Next actions
 
-1. Add the existing student HTTP integration verifier to CI and run it on `main`; add assessment API/service integration tests for autosave, expiry, duplicate finalization and CSV export.
+1. Add assessment-specific HTTP/service integration tests for autosave, expiry, duplicate finalization, access denial, and CSV export; the existing student-learning HTTP integration now runs in CI and passes.
 2. Review and fix any remaining accessibility/responsive/print issues; keep all demo data clearly fictional.
 3. Resume production auth/persistence only after a dedicated Supabase project is available, then implement server-side role checks/RLS and access-denial/integrity-event records.
 

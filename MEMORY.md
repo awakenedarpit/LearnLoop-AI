@@ -68,8 +68,8 @@ Never put secrets or credentials in memory. Keep statuses aligned with actual so
 
 1. **Main code commit:** `cefae2c777a2d3abcc140af749e46c29a45909fc` — `Integrate assessment workflow and CSV analytics export`. PR #8 merged to `main`.
 2. **Integrated:** teacher quiz builder, student timed attempts with autosave/recovery/deadlines, teacher results analytics, question-by-question review, print-friendly review, filtered CSV export, and CI.
-3. **Verification:** GitHub Actions run `38078124788` passed typecheck, lint, unit tests and production build on the combined assessment branch. Existing student-loop integration test passed on the earlier student MVP; assessment-specific HTTP/browser integration has not been run against the combined milestone.
+3. **Verification:** GitHub Actions run `38078124788` passed typecheck, lint, unit tests and production build on the combined assessment branch. Run `38078482327` on main commit `ae71ec21d35e5be2b3ebeb784c4431e7c89e0991` passed typecheck, lint, unit tests, the existing student-learning HTTP integration, and production build. Assessment-specific HTTP/browser integration remains unverified.
 4. **Known boundaries:** fictional SQLite demo, one fixed learner, no production teacher auth/class permissions/admin roles, no access-denial/integrity event review, no configured Supabase project/RLS, no configured Gemini key. Vercel status is rate-limited; no successful deployment confirmed.
-5. **Next three actions:** (i) include `pnpm test:integration` in CI and add assessment-specific integration coverage; (ii) run those checks and inspect print/mobile flows; (iii) resume Supabase/auth work only after the project quota blocker is resolved.
+5. **Next three actions:** (i) add assessment-specific integration coverage for autosave/deadline/finalization/CSV; (ii) run those checks and inspect print/mobile flows; (iii) resume Supabase/auth work only after the project quota blocker is resolved.
 
 Never put secrets or credentials in memory. Keep statuses aligned with actual source and test evidence.
