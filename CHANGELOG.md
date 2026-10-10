@@ -2,8 +2,9 @@
 
 ## Unreleased — 2026-10-11
 
-- Added a teacher results and analytics dashboard on `feat/teacher-results-analytics`: quiz-level averages/high scores/pass-rate indicators, submission counts, recent finalized attempts, and per-question accuracy calculated from saved answer records.
-- Added the demo-only `GET /api/teacher/analytics` endpoint, responsive dashboard page, route manifest entry, and analytics aggregation tests. Verification remains pending; this is not an authenticated class report and uses the fixed fictional demo learner.
+- Merged PR #8 to `main` as `cefae2c`: consolidated teacher quiz authoring, student timed attempts with autosave/recovery/deadlines, teacher analytics, question-by-question submission review, print-friendly review, filtered CSV export, and GitHub Actions CI.
+- Fixed React lint findings in assessment views and corrected CI setup ordering. GitHub Actions run `38078124788` passed typecheck, lint, unit tests, and production build on the combined branch. Full assessment HTTP integration remains unverified.
+- Added `GET /api/teacher/analytics/export` with assessment filtering, safe CSV quoting, and formula-like cell neutralization. All assessment data remains fictional demo data for one learner; production authorization/cloud persistence are not available.
 
 # Changelog
 
@@ -20,7 +21,7 @@
 - Removed `better-sqlite3` after opening a database reproducibly segfaulted in the sandbox; Node built-in SQLite create/read/transaction was verified instead.
 - Added deterministic scoring/catalog tests and a disposable HTTP integration harness for routes, recovery, scoring, idempotency, post-completion edits, targeted practice and reassessment comparison.
 - Verification passed: `pnpm typecheck`, 4 `pnpm test` checks, `pnpm lint`, `pnpm build`, and `pnpm test:integration`. Exact output is summarized in `tasks/PROGRESS.md`.
-- Teacher authoring/timed assessments, real authentication/RLS, Supabase cloud project, live Gemini, reports/exports, and production deployment remain incomplete/unverified.
+- Production authentication/RLS, dedicated Supabase cloud persistence, live Gemini, class assignment/access-denial/integrity review, full class reports, and successful production deployment remain incomplete/unverified.
 
  
 ## 2026-10-10 — Assessment workflow demos
