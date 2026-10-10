@@ -67,3 +67,12 @@ Initial managed scaffold commit is `f594498` (`Initial project scaffold`). Inspe
 - Student quiz API hides answer keys until submission, grades on the server, returns explanations after grading, and enforces configured attempt limits for the fixed fictional demo identity.
 - Added service tests for answer-key privacy, server grading, attempt limits, draft visibility and invalid question IDs.
 - Pending verification: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`, browser interaction and Vercel preview. Neither feature should be treated as production-ready; authentication/authorization and durable cloud persistence remain unimplemented.
+
+ 
+### Supabase identity and persistence foundation — 2026-10-10
+
+- Added Supabase SSR/browser client helpers, Next.js session-refresh proxy, server-side profile/role guard utilities, magic-link sign-in and callback routes, and `GET /api/auth/me`.
+- Added a draft SQL migration for profiles/roles, teacher quizzes/questions, assignments, attempts/answers, RLS policies and a safe student-facing quiz DTO function.
+- Added a setup guide with project provisioning, callback configuration, role promotion and RLS verification steps.
+- Not yet production-ready: no dedicated Supabase project exists, migration is unapplied/unverified, current quiz routes still use demo SQLite, guards are not yet wired into all protected handlers, and cloud attempt grading/repository adapters and database policy tests remain outstanding.
+- Verification of typecheck, lint, tests, build and deployment is pending for this branch.
