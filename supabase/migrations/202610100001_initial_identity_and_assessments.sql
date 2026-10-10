@@ -175,7 +175,7 @@ with check (
   and exists (
     select 1 from public.quiz_assignments a
     join public.teacher_quizzes q on q.id = a.quiz_id
-    where a.quiz_id = quiz_id and a.student_id = (select auth.uid())
+    where a.quiz_id = quiz_attempts.quiz_id and a.student_id = (select auth.uid())
       and q.status = 'published'
       and (q.available_from is null or q.available_from <= now())
       and (q.available_until is null or q.available_until >= now())
