@@ -56,13 +56,14 @@ Statuses use `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, or `DONE`. A phase/task be
 
 ## Phase 2 — Teacher assessment MVP
 
-### P2.1 Authoring and class assignments — `NOT_STARTED`
-- **Objective:** Let authorized teachers manage assessments.
-- **Prerequisites:** Identity/role boundaries and class/quiz data models.
+### P2.1 Teacher quiz authoring — `IN_PROGRESS` (demo-only milestone; verification pending)
+- **Objective:** Build the teacher authoring flow for quiz metadata, multiple-choice questions, answer keys, concept tags, explanations, preview, draft save, and publish.
+- **Prerequisites:** Demo-only quiz storage exists; production identity/role boundaries and class/assignment models remain prerequisites for secure class assignment.
 - **Affected files:** `features/assess/authoring`, teacher routes/actions, schema, class assignment UI.
-- **Approach:** Manual question/answer/explanation/concept editing; title/instruction/duration/availability/attempt settings; preview/draft/publish; assign to authorized classes.
-- **Acceptance:** Teacher can create/edit/preview/save/publish and assign a valid quiz; students receive only assigned eligible assessments.
-- **Verification:** Route/domain permission and lifecycle checks.
+- **Approach:** Implement manual question/answer/explanation/concept editing; title/instruction/duration/availability/attempt settings; student preview; draft save/edit; and draft-to-published transition. Keep class assignment out of this milestone until server-side auth and trusted class membership exist.
+- **Current implementation:** `components/teacher-quiz-builder.tsx`, `lib/services/teacher-quizzes.ts`, and `app/api/teacher/quizzes/*`; SQLite demo storage is per instance and ephemeral on Vercel when `:memory:` is configured.
+- **Acceptance:** Authoring, editing, preview, save, and publish pass UI/API tests; published drafts are locked; invalid question payloads are rejected. Class assignment remains incomplete.
+- **Verification:** **Pending** — run typecheck/lint/unit/integration/build and verify the UI against a checked-out branch before marking complete.
 
 ### P2.2 Student attempt, autosave, deadlines, and finalization — `NOT_STARTED`
 - **Objective:** Make the timed test reliable across refreshes and deadline boundaries.

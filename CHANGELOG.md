@@ -2,6 +2,8 @@
 
 ## Unreleased — 2026-10-10
 
+- Started the teacher quiz builder milestone on `feat/teacher-quiz-builder`: authoring UI, draft CRUD and publish API, validation, quiz metadata/question storage, student preview, and responsive styles. Implementation status and limitations are documented in `tasks/PROGRESS.md`; verification is still pending.
+
 - Created the user-approved public `awakenedarpit/LearnLoop-AI` repository and initialized the managed LearnLoop project workspace.
 - Added the approved product/design plan, outcome backlog, populated product/technical/architecture/schema/API/security/testing/demo documentation, agent instructions, README, persistent memory and progress tracking.
 - Configured pinned Next.js/TypeScript/Tailwind stack, pnpm lifecycle policy, TypeScript diagnostics, environment example, project logo metadata and source-controlled LearnLoop double-loop mark.

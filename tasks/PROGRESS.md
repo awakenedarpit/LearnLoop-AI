@@ -1,5 +1,26 @@
 # Progress Log
 
+## Current status — 2026-10-10 (teacher quiz builder milestone)
+
+**Phase:** Phase 2 — Teacher quiz authoring is now in progress on branch `feat/teacher-quiz-builder`. The editor, demo API routes, and SQLite-backed quiz draft service have been added to the branch. These changes have not yet been locally executed or verified; do not treat the milestone as build/test-passed until CI or local checks confirm it.
+
+### Teacher quiz builder implementation added (verification pending)
+
+- Added `components/teacher-quiz-builder.tsx`: quiz list, create/edit draft flow, four-option MCQ authoring, correct answer selection, concept tags, explanations, duration/attempt limit, optional availability window, student preview, save draft, and publish actions.
+- Added `lib/services/teacher-quizzes.ts`: demo SQLite table and CRUD/publish operations.
+- Added `app/api/teacher/quizzes/route.ts`, `app/api/teacher/quizzes/[quizId]/route.ts`, and `app/api/teacher/quizzes/[quizId]/publish/route.ts` with Zod validation and explicit demo-mode handling.
+- Replaced the teacher placeholder page with the builder and added responsive styles in `app/teacher/builder.css`.
+- Published status is a draft-locking state only. There are no class assignments, student delivery, teacher authentication, authorization boundaries, or shared cloud persistence yet. The deployed demo must use fictional data only.
+- **Tests added, verification pending:** `tests/teacher-quizzes.test.ts` covers draft creation/listing, draft updates, publish/idempotent publish, published-draft locking, and empty-quiz publication rejection. Typecheck, lint, all unit/integration tests, build, browser interaction, and Vercel deployment from this branch have not been run. GitHub contents API was used to author the branch; no claim of successful compilation or deployment.
+
+### Next verification/actions
+
+1. Run `pnpm typecheck`, `pnpm lint`, `pnpm test`, and `pnpm build` in CI or a checked-out workspace; fix any issues before merging.
+2. Run the new service tests and add route-level validation tests for malformed payloads and availability timestamps.
+3. Resolve production auth/persistence before adding class assignments or allowing real student data.
+
+---
+
 ## Current status — 2026-10-10
 
 **Phase:** Phase 1 — Student learning MVP implemented and locally verified. The source/docs milestone is ready for its user-approved public GitHub push; Phase 0 Git push is still in progress.
