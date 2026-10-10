@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — 2026-10-11
+
+- Added a teacher results and analytics dashboard on `feat/teacher-results-analytics`: quiz-level averages/high scores/pass-rate indicators, submission counts, recent finalized attempts, and per-question accuracy calculated from saved answer records.
+- Added the demo-only `GET /api/teacher/analytics` endpoint, responsive dashboard page, route manifest entry, and analytics aggregation tests. Verification remains pending; this is not an authenticated class report and uses the fixed fictional demo learner.
+
+# Changelog
+
 ## Unreleased — 2026-10-10
 
 - Started the teacher quiz builder milestone on `feat/teacher-quiz-builder`: authoring UI, draft CRUD and publish API, validation, quiz metadata/question storage, student preview, and responsive styles. Implementation status and limitations are documented in `tasks/PROGRESS.md`; verification is still pending.

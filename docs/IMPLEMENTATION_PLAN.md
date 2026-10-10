@@ -91,9 +91,10 @@ Statuses use `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, or `DONE`. A phase/task be
 - **Acceptance:** Configured requests are validated and handled safely; missing-key/provider failures use fallbacks; generated quizzes cannot publish without teacher review.
 - **Verification:** Unit tests with mocked provider, key-absence/failure/schema cases; live request only after key setup.
 
-### P3.2 Class, question, concept, and individual analytics — `NOT_STARTED`
+### P3.2 Class, question, concept, and individual analytics — `IN_PROGRESS` (demo-only subset added; verification pending)
 - **Objective:** Provide useful authorized insights and exports.
-- **Prerequisites:** Persisted assessment/learning records and P2.3 authorization.
+- **Current demo implementation:** `lib/services/teacher-analytics.ts`, `app/api/teacher/analytics/route.ts`, and `/teacher/analytics` calculate and display quiz-level scores, pass-rate indicators, recent submissions, and per-question correctness for the single fictional demo learner. No auth/class scope exists yet; source verification is pending.
+- **Prerequisites for full scope:** Persisted assessment/learning records and P2.3 authorization.
 - **Affected files:** analytics services/routes, class dashboard, CSV/print views.
 - **Approach:** Compute summaries from real submissions/responses; define ranking eligibility and tie behavior; export filtered authorized datasets.
 - **Acceptance:** Class scores, leaderboards, question correctness, concepts/common gaps, individual history, printable report and CSV all match stored data.
