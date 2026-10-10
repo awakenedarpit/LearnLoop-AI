@@ -1,5 +1,28 @@
 # Progress Log
 
+## Current status — 2026-10-11 (teacher results and analytics)
+
+**Phase:** Phase 2 assessment workflow expansion. Feature branch: `feat/teacher-results-analytics`, based on `feat/timed-quiz-autosave`. This milestone is **implemented in source; verification pending**. It must not be described as build/test-passed until checks run.
+
+### Teacher results and analytics added (verification pending)
+
+- Added `lib/services/teacher-analytics.ts` to calculate quiz/submission totals, average/highest score, 60% pass-rate indicator, recent finalized submissions, and per-question correctness from actual fictional SQLite attempt records.
+- Added `GET /api/teacher/analytics` with private/no-store caching and safe demo-mode error responses.
+- Added `/teacher/analytics` dashboard with quiz filtering, responsive result tables, question-accuracy bars, recent submission history, refresh, loading/error/empty states, and a clear one-demo-learner warning.
+- Linked the dashboard from the teacher quiz builder and registered the route in `public/manus-routes.json`.
+- Added `tests/teacher-analytics.test.ts` for honest empty metrics and aggregation from finalized attempts.
+- **Boundaries:** fictional local SQLite only; one fixed demo learner; no authenticated teacher role, class assignment, multi-learner cohort analytics, individual protected review, print report or CSV export. Tests/typecheck/lint/build/browser checks have not been run in this authoring environment.
+
+### Next verification/actions
+
+1. Run `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build` and `pnpm test:integration`; fix failures before marking verified.
+2. Review the analytics SQL/schema against the latest attempt service and test route-level demo/error behavior.
+3. Keep the PR stacked on the timed quiz branch; do not merge or claim deployment before CI/build evidence.
+
+---
+
+# Progress Log
+
 ## Current status — 2026-10-10 (teacher quiz builder milestone)
 
 **Phase:** Phase 2 — Teacher quiz authoring is now in progress on branch `feat/teacher-quiz-builder`. The editor, demo API routes, and SQLite-backed quiz draft service have been added to the branch. These changes have not yet been locally executed or verified; do not treat the milestone as build/test-passed until CI or local checks confirm it.
