@@ -58,3 +58,12 @@ Initial managed scaffold commit is `f594498` (`Initial project scaffold`). Inspe
 1. Inspect Git status/remotes and public-repo content for secrets/PII; commit and push the verified Phase 1 source/docs milestone to managed `origin` and the approved GitHub mirror, then verify both refs/SHA.
 2. Implement Phase 2 teacher assessment workflow in clearly labelled local demo mode only if role boundaries can be enforced server-side; keep Supabase auth/RLS blocked and document the demo-only boundary.
 3. Re-run affected checks, update memory/docs, then tackle Gemini (only with protected key) and report/security hardening without claiming unavailable cloud verification.
+
+ 
+### Follow-up feature work — 2026-10-10
+
+- Added a teacher quiz authoring demo in PR #2: `feat/teacher-quiz-builder`.
+- Added the student published-quiz attempt flow in PR #3: `feat/student-quiz-attempts`, stacked on the teacher quiz branch.
+- Student quiz API hides answer keys until submission, grades on the server, returns explanations after grading, and enforces configured attempt limits for the fixed fictional demo identity.
+- Added service tests for answer-key privacy, server grading, attempt limits, draft visibility and invalid question IDs.
+- Pending verification: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`, browser interaction and Vercel preview. Neither feature should be treated as production-ready; authentication/authorization and durable cloud persistence remain unimplemented.
