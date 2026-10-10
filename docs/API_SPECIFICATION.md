@@ -69,3 +69,14 @@ These endpoints currently serve only the non-production SQLite demo adapter. The
 | `POST /api/student/quizzes/:quizId/attempts` | Grades submitted MCQ answers on the server and returns score plus explanations. | Validates question IDs and option indexes; enforces configured attempt limit. |
 
 Student attempts are stored in the local SQLite demo adapter. No authentication, role authorization, shared cloud persistence, or server-enforced countdown timer is implemented. Use fictional data only; run typecheck, lint, tests, build and preview checks before merging.
+
+ 
+## Supabase identity scaffold (project configuration required)
+
+| Method/path | Behavior | Boundary |
+|---|---|---|
+| `GET /api/auth/me` | Returns the signed-in profile role or `data: null`. | Requires configured Supabase environment to return an authenticated profile; response is private/no-store. |
+| `GET /auth/callback?code=...` | Exchanges the Supabase email-link code for a session and redirects to a safe same-origin path. | Invalid/missing code returns to sign-in. |
+| `GET /sign-in` | Sends a Supabase email magic link. | Unavailable until project URL/key and email redirect settings are configured. |
+
+Server auth helpers expose role checks for route handlers. They do not automatically protect every route. The existing quiz routes still use demo SQLite; do not treat the Supabase schema/client scaffold as completed cloud persistence.
