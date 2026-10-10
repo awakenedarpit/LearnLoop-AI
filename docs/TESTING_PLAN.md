@@ -2,7 +2,7 @@
 
 ## Current status
 
-The Phase 1 student-learning MVP has been verified in the current workspace. `pnpm typecheck`, `pnpm test` (4 tests), `pnpm lint`, `pnpm build`, and `pnpm test:integration` passed. The HTTP integration run rendered eight main routes and exercised server-saved learning answers, recovery, scoring, fresh practice/reassessment, linked score comparison, idempotent completion, private answer withholding, and post-completion write rejection. This does **not** verify teacher assessments, authentication, Supabase RLS, Gemini, production persistence, or deployment; those remain unimplemented/blocked.
+The Phase 1 student-learning MVP has been verified in the current workspace. Teacher analytics tests have been added on `feat/teacher-results-analytics`, but have not yet been executed; that source milestone remains unverified. `pnpm typecheck`, `pnpm test` (4 tests), `pnpm lint`, `pnpm build`, and `pnpm test:integration` passed. The HTTP integration run rendered eight main routes and exercised server-saved learning answers, recovery, scoring, fresh practice/reassessment, linked score comparison, idempotent completion, private answer withholding, and post-completion write rejection. This does **not** verify teacher assessments, authentication, Supabase RLS, Gemini, production persistence, or deployment; those remain unimplemented/blocked.
 
 ## Test layers
 
