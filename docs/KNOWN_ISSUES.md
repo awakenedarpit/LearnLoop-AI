@@ -5,7 +5,7 @@
 - **The app is not yet connected to Supabase persistence.** Dedicated project `LearnLoop` (`rlglcgtamqwqzmkitdtn`, `ap-south-1`) exists in the approved `RajArpit` organization; project creation was checked at `$0/month`. Three migrations are applied, 14/14 application tables have RLS enabled, and grant/policy catalogs were inspected. However, application services still use local SQLite; production sign-in-to-data flow, trusted membership/bootstrap, and authenticated allowed/denied RLS behavior are not verified. Do not enter real learner data.
 - **Gemini is not live.** No protected `GEMINI_API_KEY` is configured, and no request has been made. Keep any future key in protected server configuration; never paste it into chat, commit it, or expose it to the browser.
 - **Production deployment is unverified.** Vercel previously reported `Deployment rate limited — retry in 24 hours`; no production URL is confirmed. No new deployment was attempted in this task.
-- **Git push is pending for the current working changes.** The local checkout is on `main` at `55fdcc5023f24d08bcc884b3a2c3916036cf2bc6`, matching public `origin/main` at last check. GitHub reports an enabled account, but an earlier authenticated clone operation returned an invalid connector token; recheck push authorization and remote configuration before claiming synchronization. Do not force-push.
+- **Source synchronization is complete; production deployment is not.** Commit `5482c379fe353c705a9290989b3a92162e17f9f2` is pushed to the user-approved public `main`, and the remote SHA was verified. This is not evidence of a live production deployment.
 
 ## Limitations to revisit
 

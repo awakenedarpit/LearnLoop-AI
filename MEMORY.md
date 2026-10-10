@@ -29,7 +29,7 @@ Build an Education prototype for Team Data Alchemists at HackOverflow 10.0 — A
 ## Git and integrations
 
 - Workspace `/home/ubuntu/learnloop`; branch `main`; initial managed scaffold `f594498` (`Initial project scaffold`). Preserve managed Webdev `origin`.
-- User-approved public GitHub target: `https://github.com/awakenedarpit/LearnLoop-AI`. Source/docs milestone push is still pending. Verify `github` remote and repo before push; do not overwrite `origin`.
+- User-approved public GitHub target: `https://github.com/awakenedarpit/LearnLoop-AI`. Production foundation and docs were pushed to `main` as `5482c379fe353c705a9290989b3a92162e17f9f2`; remote SHA was independently verified through `git ls-remote` and GitHub API.
 - Supabase project is provisioned; do not touch the two pre-existing unrelated projects. Current migration state and unresolved app integration are in `docs/SUPABASE_SETUP.md`.
 - Gemini key is absent. Never ask for it in chat or commit secrets; use a protected input flow if configured.
 
@@ -81,5 +81,5 @@ Never put secrets or credentials in memory. Keep statuses aligned with actual so
 3. **Advisor:** one intentional warning remains for signed-in SECURITY DEFINER `public.get_assigned_quiz`; it returns safe assigned published quiz fields only, omitting correct answer/explanation columns, and checks class membership/availability. No user-session RLS pass/fail tests have been run.
 4. **App updates:** `lib/auth/guards.ts` now derives role from trusted organization membership; `lib/auth/route-guard.ts` and all student/teacher assessment API handlers enforce server role gates in cloud mode. The data services remain SQLite-only; cloud APIs do not yet persist/load PostgreSQL. No initial admin or membership workflow, class/admin UI, Gemini key, or production deployment.
 5. **Verification:** final local typecheck/lint/unit tests/student HTTP integration/build passed (`20` unit tests); the integration run exercises only fictional demo mode, not cloud RLS. The generated `next-env.d.ts` modification was restored.
-6. **Git:** base checkout `main` at `55fdcc5023f24d08bcc884b3a2c3916036cf2bc6`, matching public `origin/main` at last read. Latest edits are uncommitted/unpushed. Earlier GitHub push tooling reported token problems; verify current push path and never force-push.
+6. **Git:** production-foundation commit `5482c379fe353c705a9290989b3a92162e17f9f2` is pushed to approved public `main`; GitHub API and `git ls-remote` both returned the same SHA. Worktree was clean after the push. Never force-push.
 7. **Next actions:** (i) add authenticated RLS allow/deny tests and transaction-safe scoring/finalization; (ii) implement cloud data repositories/class+org administration and provision a trusted first admin; (iii) configure protected Gemini and production hosting/Auth/email callbacks, then verify deployed service before calling it live.

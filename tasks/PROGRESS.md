@@ -19,7 +19,7 @@
 - No allowed/denied RLS tests with authenticated user sessions, first-admin/membership provisioning, class/organization CRUD, or actual student/teacher/admin workflows.
 - Access-denial and integrity tables exist, but app event-write/review paths are not implemented. Multi-student analytics and organization administration remain incomplete.
 - No Gemini API key or live Gemini call. No email/Auth callback delivery verification. No production hosting variables or successful deployment.
-- Source changes are not yet published; current checkout remains based on `main` at `55fdcc5023f24d08bcc884b3a2c3916036cf2bc6`, same as public origin at last check. Do not claim deployment.
+- Production-foundation source/docs commit `5482c379fe353c705a9290989b3a92162e17f9f2` is pushed to the user-approved public `main`; remote SHA was verified with both `git ls-remote` and GitHub API. This confirms source synchronization, not production deployment.
 
 ### Next actions
 
