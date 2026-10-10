@@ -28,6 +28,8 @@ function ensureTable(): void {
     );
     CREATE INDEX IF NOT EXISTS idx_active_attempts_student_quiz
       ON student_quiz_active_attempts(student_id, quiz_id, started_at DESC);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_one_active_attempt_per_student_quiz
+      ON student_quiz_active_attempts(student_id, quiz_id) WHERE status = 'in_progress';
   `);
 }
 
@@ -127,7 +129,9 @@ export function finalizeStudentQuizAttempt(
     throw new Error("ATTEMPT_NOT_ACTIVE");
   }
   const expired = forceExpired || Date.parse(row.expires_at) <= Date.now();
-  const merged = { ...JSON.parse(row.answers_json) as Record<string, number>, ...answers };
+  const savedAnswers = JSON.parse(row.answers_json) as Record<string, number>;
+  // After the server deadline, ignore late payloads and grade only acknowledged saved answers.
+  const merged = expired ? savedAnswers : { ...savedAnswers, ...answers };
   validateAnswers(quizId, merged);
   const result = submitStudentQuizAttempt(quizId, merged);
   if (!result) throw new Error("QUIZ_NOT_AVAILABLE");
