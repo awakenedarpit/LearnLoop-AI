@@ -24,6 +24,7 @@ export function StudentQuizExperience() {
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [activeAttempt, setActiveAttempt] = useState<ActiveAttempt | null>(null);
   const [saveState, setSaveState] = useState<"saved" | "saving" | "unsaved">("saved");
+  // eslint-disable-next-line react-hooks/purity -- This clock only drives display; the server remains authoritative for deadlines.
   const [now, setNow] = useState(Date.now());
   const [result, setResult] = useState<Result | null>(null);
   const [loading, setLoading] = useState(true);
@@ -45,6 +46,7 @@ export function StudentQuizExperience() {
     }
   }, []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional initial fetch synchronizes this client view with server data.
   useEffect(() => { void loadQuizzes(); }, [loadQuizzes]);
 
   async function beginQuiz(id: string) {
@@ -62,6 +64,7 @@ export function StudentQuizExperience() {
       setActiveAttempt(attemptPayload.data as ActiveAttempt);
       setAnswers(attemptPayload.data.answers as Record<string, number>);
       setSaveState("saved");
+      // eslint-disable-next-line react-hooks/purity -- Refresh the display clock after the user starts/resumes an attempt.
       setNow(Date.now());
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Could not open quiz.");
@@ -122,6 +125,7 @@ export function StudentQuizExperience() {
 
   useEffect(() => {
     if (!activeAttempt || !selectedQuiz || busy || Date.parse(activeAttempt.expiresAt) > now) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Deadline expiry is an external timer event that must trigger submission.
     void submitQuiz();
     // The API checks its own deadline and grades only acknowledged saved answers.
     // eslint-disable-next-line react-hooks/exhaustive-deps
