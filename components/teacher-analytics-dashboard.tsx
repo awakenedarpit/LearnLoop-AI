@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Activity, ArrowLeft, BarChart3, CheckCircle2, ClipboardList, FileQuestion, LoaderCircle, RefreshCw, TrendingUp, UsersRound } from "lucide-react";
+import { Activity, ArrowLeft, BarChart3, CheckCircle2, ClipboardList, Download, FileQuestion, LoaderCircle, RefreshCw, TrendingUp, UsersRound } from "lucide-react";
 
 type QuestionStat = { questionId: string; prompt: string; concept: string; submissions: number; correctCount: number; accuracyPercent: number };
 type QuizAnalytics = {
@@ -54,7 +54,10 @@ export function TeacherAnalyticsDashboard() {
   return <div className="teacher-analytics">
     <div className="analytics-toolbar">
       <Link href="/teacher" className="button button-secondary"><ArrowLeft size={14} /> Quiz builder</Link>
-      <button className="button button-secondary" onClick={() => void load()} disabled={loading}><RefreshCw size={14} /> Refresh data</button>
+      <div className="analytics-toolbar-actions">
+        <a className="button button-secondary" href={selectedId === "all" ? "/api/teacher/analytics/export" : "/api/teacher/analytics/export?quizId=" + encodeURIComponent(selectedId)}><Download size={14} /> Export CSV</a>
+        <button className="button button-secondary" onClick={() => void load()} disabled={loading}><RefreshCw size={14} /> Refresh data</button>
+      </div>
     </div>
     {error && <div className="builder-notice builder-notice-error" role="alert">{error}</div>}
     {data && <>
