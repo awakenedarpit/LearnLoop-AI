@@ -9,6 +9,6 @@
 ## Limitations to revisit
 
 - The student Learn MVP works with one fixed fictional identity and local Node `node:sqlite`; this Node module is experimental in the pinned runtime. The local database is not production-grade shared storage and must not contain real learner data.
-- Teacher authoring, classes, timed assessments/deadline finalization, submission review, access-denial/integrity records, analytics and reports/exports remain unimplemented.
+- Teacher quiz authoring, timed attempt/autosave code and demo analytics have been added on feature branches but verification is pending. Class assignment, authenticated individual submission review, access-denial/integrity records, printable reports and exports remain unimplemented. Analytics currently cover one fixed fictional learner only.
 - No production identity/roles, Supabase migrations/RLS policies/tests, or Gemini calls are available while cloud resources/credentials are missing.
 - No production deployment has been attempted; do not present a deployment URL as live.
