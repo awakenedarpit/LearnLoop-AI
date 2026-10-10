@@ -106,3 +106,26 @@ Initial managed scaffold commit is `f594498` (`Initial project scaffold`). Inspe
 - Added start/resume and per-attempt PATCH endpoints. Submission now requires an active attempt ID; after the deadline, late request payloads are ignored and only previously saved answers are graded.
 - Updated student UI with a countdown, save status and start/resume label; added service tests for refresh recovery and deadline enforcement.
 - This remains fictional SQLite demo functionality. No auth, cloud persistence or browser/CI verification has been completed for this branch.
+
+
+## Current status — 2026-10-11 (teacher submission review)
+
+**Phase:** Phase 2 assessment workflow. Branch: `feat/teacher-submission-review`, based on `feat/teacher-results-analytics`. Source changes are implemented; verification is pending.
+
+### Added
+
+- Added `lib/services/teacher-review.ts` to list finalized demo attempts and return question-by-question answer details from saved attempts and the corresponding quiz definition.
+- Added `GET /api/teacher/review`; optional `quizId` filters the submission list and `attemptId` retrieves one attempt. Responses are private/no-store and unknown attempt IDs return 404.
+- Added `components/teacher-submission-review.tsx` and `app/teacher/review/page.tsx`: submission inbox, assessment filter, score/time/unanswered summary, correct/selected answers, explanations, refresh, loading/error/empty states, and print-friendly output.
+- Added responsive and print styles in `app/teacher/review/review.css`, registered the page in `public/manus-routes.json`, linked it from analytics, and added `tests/teacher-review.test.ts`.
+- Scope remains a single fictional local-demo learner. This is not protected teacher review: authentication, class authorization, access-denial records and integrity-event review are still missing.
+
+### Verification
+
+No typecheck, lint, unit tests, build, integration test, browser test, or deployment has been run for this feature in this authoring environment. Do not mark it verified until those checks run. The demo API also requires `DEMO_MODE=true` in production/Vercel environments; use fictional data only.
+
+### Next actions
+
+1. Run `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`, and `pnpm test:integration` on the combined feature branch and fix any failures.
+2. Review the new route and UI in a browser, including empty state, quiz filtering, detail lookup, and print layout.
+3. Keep this PR stacked on teacher analytics and the timed-assessment branch; do not claim production authorization or deployment.
