@@ -2,7 +2,8 @@ import "server-only";
 
 import { randomUUID } from "node:crypto";
 import { DEMO_STUDENT_ID, getDemoDatabase } from "@/lib/db/demo-store";
-import { getStudentQuiz, listStudentQuizzes, submitStudentQuizAttempt, type StudentQuizResult } from "@/lib/services/student-quizzes";
+import { getStudentQuiz, listStudentQuizzes, type StudentQuizResult } from "@/lib/services/student-quizzes";
+import { getTeacherQuiz } from "@/lib/services/teacher-quizzes";
 
 export type ActiveQuizAttempt = {
   attemptId: string;
@@ -45,7 +46,9 @@ function decode(row: {
 }
 
 function validateAnswers(quizId: string, answers: Record<string, number>): void {
-  const quiz = getStudentQuiz(quizId);
+  // Active attempts may finish just after the quiz availability window closes.
+  // New attempts still require getStudentQuiz availability.
+  const quiz = getTeacherQuiz(quizId);
   if (!quiz) throw new Error("QUIZ_NOT_AVAILABLE");
   const questions = new Map(quiz.questions.map((question) => [question.id, question]));
   for (const [questionId, index] of Object.entries(answers)) {
@@ -133,9 +136,31 @@ export function finalizeStudentQuizAttempt(
   // After the server deadline, ignore late payloads and grade only acknowledged saved answers.
   const merged = expired ? savedAnswers : { ...savedAnswers, ...answers };
   validateAnswers(quizId, merged);
-  const result = submitStudentQuizAttempt(quizId, merged);
-  if (!result) throw new Error("QUIZ_NOT_AVAILABLE");
+  const quiz = getTeacherQuiz(quizId);
+  if (!quiz) throw new Error("QUIZ_NOT_AVAILABLE");
+  const answersResult = quiz.questions.map((question) => {
+    const selectedOptionIndex = merged[question.id] ?? null;
+    return {
+      questionId: question.id, prompt: question.prompt, selectedOptionIndex,
+      selectedAnswer: selectedOptionIndex === null ? null : question.options[selectedOptionIndex] ?? null,
+      correctOptionIndex: question.correctOptionIndex,
+      correctAnswer: question.options[question.correctOptionIndex] ?? "",
+      isCorrect: selectedOptionIndex === question.correctOptionIndex,
+      explanation: question.explanation, concept: question.concept,
+    };
+  });
+  const correctCount = answersResult.filter((answer) => answer.isCorrect).length;
+  const submittedAt = new Date().toISOString();
+  const result: StudentQuizResult = { attemptId, quizId, quizTitle: quiz.title,
+    scorePercent: Math.round((correctCount / quiz.questions.length) * 100),
+    correctCount, totalQuestions: quiz.questions.length, submittedAt, answers: answersResult };
+  db.prepare(`INSERT INTO student_quiz_attempts
+    (id, quiz_id, student_id, answers_json, score_percent, correct_count, total_questions, submitted_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`).run(
+      attemptId, quizId, DEMO_STUDENT_ID, JSON.stringify(merged), result.scorePercent,
+      correctCount, quiz.questions.length, submittedAt,
+    );
   db.prepare(`UPDATE student_quiz_active_attempts SET answers_json = ?, status = ?, result_json = ?, submitted_at = ? WHERE id = ?`)
-    .run(JSON.stringify(merged), expired ? "expired" : "submitted", JSON.stringify(result), result.submittedAt, attemptId);
+    .run(JSON.stringify(merged), expired ? "expired" : "submitted", JSON.stringify(result), submittedAt, attemptId);
   return result;
 }
