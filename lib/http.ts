@@ -1,5 +1,4 @@
 import { DemoModeUnavailableError } from "@/lib/db/demo-store";
-import { AssessmentServiceError } from "@/lib/services/assessments";
 import { LearningServiceError } from "@/lib/services/learning";
 
 export function jsonResponse(data: unknown, status = 200): Response {
@@ -10,9 +9,6 @@ export function jsonResponse(data: unknown, status = 200): Response {
 }
 
 export function errorResponse(error: unknown): Response {
-  if (error instanceof AssessmentServiceError) {
-    return jsonResponse({ error: { code: error.code, message: error.message } }, error.status);
-  }
   if (error instanceof LearningServiceError) {
     return jsonResponse({ error: { code: error.code, message: error.message } }, error.status);
   }

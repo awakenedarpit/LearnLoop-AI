@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { AssessmentRunner } from "@/components/assessment-runner";
+import { StudentQuizExperience } from "@/components/student-quiz-experience";
 
 export const metadata: Metadata = { title: "Assessments" };
 
-export default function AssessPage() { return <AssessmentRunner />; }
+export default function AssessPage() { return <StudentQuizExperience />; }
