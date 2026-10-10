@@ -52,3 +52,13 @@ Never put secrets or credentials in memory. Keep statuses aligned with actual so
 3. **PR:** PR #6 (`feat/teacher-results-analytics`) was merged into `feat/timed-quiz-autosave` on 2026-10-10; the analytics feature branch head is `f020f6a921b46c157a36df1e7fe511253fddd8db`. PR #7 adds teacher submission review, based on that analytics branch.
 4. **Verification:** no tests, typecheck, lint, build, integration or browser check has been executed for this branch. No GitHub Actions workflow runs were returned; Vercel status was pending. Do not claim success or deployment.
 5. **Next three actions:** (i) run checks and inspect diffs, especially sqlite schema/analytics aggregation; (ii) fix failures and update this handoff; (iii) review PR #6 and stacked assessment PRs in dependency order.
+
+
+## Dated handoff — 2026-10-11 (teacher submission review)
+
+1. **Implemented, verification pending:** branch `feat/teacher-submission-review`, based on `feat/teacher-results-analytics`. Added `lib/services/teacher-review.ts`, `app/api/teacher/review/route.ts`, `components/teacher-submission-review.tsx`, `app/teacher/review/page.tsx`, `app/teacher/review/review.css`, and `tests/teacher-review.test.ts`; updated analytics navigation, route manifest, README, TODO and progress notes.
+2. **Feature:** demo submission inbox; quiz filter; attempt detail lookup; selected/correct answers, explanations, unanswered count, score and timestamp; print-friendly individual review.
+3. **PR:** https://github.com/awakenedarpit/LearnLoop-AI/pull/7 (open), based on `feat/teacher-results-analytics`. Latest confirmed head at handoff update: `9eefe0935b5d1a99be78f0d9988e8cf40d00c288`.
+4. **Verification:** no local test/typecheck/lint/build/browser checks were run. GitHub Actions workflow runs for this head were empty. Do not claim checks or deployment succeeded.
+5. **Boundaries/blockers:** fictional local SQLite and one fixed demo learner; no teacher authentication/class authorization, access-denial or integrity-event review, durable cloud storage, or CSV export. Vercel demo needs `DEMO_MODE=true`; use fictional data only.
+6. **Next actions:** run typecheck, lint, unit tests, build and integration tests on the combined branch; review UI and print behavior; resolve production auth/cloud prerequisites before real learner data.
