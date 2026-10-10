@@ -7,6 +7,9 @@ import "./spin.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
 
+// The learning demo uses Node's built-in node:sqlite module.
+export const runtime = "nodejs";
+
 export const metadata: Metadata = {
   title: { default: "LearnLoop AI — Learn with purpose", template: "%s · LearnLoop AI" },
   description: "Turn Python learning gaps into clear next steps through diagnosis, practice, and fresh reassessment.",

@@ -21,11 +21,14 @@ export class DemoModeUnavailableError extends Error {
 
 export function isLocalDemoMode(): boolean {
   if (process.env.DEMO_MODE === "false") return false;
+  // An explicit opt-in permits a disposable demo deployment (e.g. Vercel).
+  // It must use :memory: storage and fictional data; this is not production persistence.
+  if (process.env.DEMO_MODE === "true") return true;
   if (process.env.NODE_ENV === "production") return false;
   const hasCloudCredentials = Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
   );
-  return process.env.DEMO_MODE === "true" || !hasCloudCredentials;
+  return !hasCloudCredentials;
 }
 
 export function assertLocalDemoMode(): void {
