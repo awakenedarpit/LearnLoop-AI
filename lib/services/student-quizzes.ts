@@ -1,5 +1,6 @@
 import "server-only";
 
+import { randomUUID } from "node:crypto";
 import { DEMO_STUDENT_ID, getDemoDatabase } from "@/lib/db/demo-store";
 import { getTeacherQuiz, listTeacherQuizzes, type TeacherQuiz } from "@/lib/services/teacher-quizzes";
 
@@ -38,7 +39,9 @@ export type StudentQuizResult = {
     questionId: string;
     prompt: string;
     selectedOptionIndex: number | null;
+    selectedAnswer: string | null;
     correctOptionIndex: number;
+    correctAnswer: string;
     isCorrect: boolean;
     explanation: string;
     concept: string;
@@ -140,7 +143,9 @@ export function submitStudentQuizAttempt(
       questionId: question.id,
       prompt: question.prompt,
       selectedOptionIndex,
+      selectedAnswer: selectedOptionIndex === null ? null : question.options[selectedOptionIndex] ?? null,
       correctOptionIndex: question.correctOptionIndex,
+      correctAnswer: question.options[question.correctOptionIndex] ?? "",
       isCorrect: selectedOptionIndex === question.correctOptionIndex,
       explanation: question.explanation,
       concept: question.concept,
@@ -149,7 +154,7 @@ export function submitStudentQuizAttempt(
   const correctCount = answers.filter((answer) => answer.isCorrect).length;
   const scorePercent = Math.round((correctCount / quiz.questions.length) * 100);
   const submittedAt = new Date().toISOString();
-  const attemptId = crypto.randomUUID();
+  const attemptId = randomUUID();
 
   database.prepare(`
     INSERT INTO student_quiz_attempts
