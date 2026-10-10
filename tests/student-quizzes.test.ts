@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
-import { closeDemoDatabase } from "@/lib/db/demo-store";
+import { closeDemoDatabase, getDemoDatabase } from "@/lib/db/demo-store";
+import { finalizeStudentQuizAttempt, saveStudentQuizAttemptAnswers, startOrResumeStudentQuizAttempt } from "@/lib/services/student-quiz-attempts";
 import { createTeacherQuiz, publishTeacherQuiz, type QuizInput } from "@/lib/services/teacher-quizzes";
 import { getStudentQuiz, listStudentQuizzes, submitStudentQuizAttempt } from "@/lib/services/student-quizzes";
 
@@ -55,4 +56,25 @@ describe("student quiz attempts demo service", () => {
     publishTeacherQuiz(quiz.id);
     expect(() => submitStudentQuizAttempt(quiz.id, { "not-a-question": 0 })).toThrow("INVALID_ANSWERS");
   });
+  it("autosaves and resumes the same active attempt after a simulated refresh", () => {
+    const quiz = createTeacherQuiz(input);
+    publishTeacherQuiz(quiz.id);
+    const started = startOrResumeStudentQuizAttempt(quiz.id);
+    saveStudentQuizAttemptAnswers(started.attemptId, quiz.id, { [quiz.questions[0]!.id]: 1 });
+    const resumed = startOrResumeStudentQuizAttempt(quiz.id);
+    expect(resumed.attemptId).toBe(started.attemptId);
+    expect(resumed.answers[quiz.questions[0]!.id]).toBe(1);
+  });
+
+  it("uses only server-saved answers after the deadline", () => {
+    const quiz = createTeacherQuiz(input);
+    publishTeacherQuiz(quiz.id);
+    const started = startOrResumeStudentQuizAttempt(quiz.id);
+    saveStudentQuizAttemptAnswers(started.attemptId, quiz.id, { [quiz.questions[0]!.id]: 1 });
+    getDemoDatabase().prepare("UPDATE student_quiz_active_attempts SET expires_at = ? WHERE id = ?").run(new Date(Date.now() - 1000).toISOString(), started.attemptId);
+    const result = finalizeStudentQuizAttempt(started.attemptId, quiz.id, { [quiz.questions[0]!.id]: 0 });
+    expect(result.scorePercent).toBe(50);
+    expect(result.answers[0]!.selectedOptionIndex).toBe(1);
+  });
+
 });
