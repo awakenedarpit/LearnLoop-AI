@@ -2,7 +2,7 @@
 
 ## Current status — 2026-10-11 (teacher results and analytics)
 
-**Phase:** Phase 2 assessment workflow expansion. Feature branch: `feat/teacher-results-analytics`, based on `feat/timed-quiz-autosave`. This milestone is **implemented in source; verification pending**. PR #6 is open at https://github.com/awakenedarpit/LearnLoop-AI/pull/6, stacked on `feat/timed-quiz-autosave`. It must not be described as build/test-passed until checks run.
+**Phase:** Phase 2 assessment workflow expansion. Feature branch: `feat/teacher-results-analytics`, based on `feat/timed-quiz-autosave`. This milestone is **implemented in source; verification pending**. PR #6 was merged into `feat/timed-quiz-autosave` on 2026-10-10 (merge commit `2679a07069458fa6382c6beaf933a1eada0aa74c`). PR #7 builds on the analytics branch. It must not be described as build/test-passed until checks run.
 
 ### Teacher results and analytics added (verification pending)
 
