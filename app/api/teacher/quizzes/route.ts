@@ -17,8 +17,8 @@ const quizSchema = z.object({
   title: z.string().trim().min(3).max(120),
   instructions: z.string().trim().max(2000).default(""),
   durationMinutes: z.number().int().min(1).max(240),
-  availableFrom: z.string().max(40).nullable().default(null),
-  availableUntil: z.string().max(40).nullable().default(null),
+  availableFrom: z.string().datetime().nullable().default(null),
+  availableUntil: z.string().datetime().nullable().default(null),
   attemptLimit: z.number().int().min(1).max(10),
   questions: z.array(questionSchema).min(1).max(100),
 }).strict().superRefine((quiz, context) => {
