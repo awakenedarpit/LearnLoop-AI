@@ -4,23 +4,23 @@
 
 LearnLoop AI is an Education-track prototype for HackOverflow 10.0 — Aarohan, NIT Durgapur, built by Team Data Alchemists. It connects personalized learning with meaningful assessment through **Diagnose → Understand → Practice → Reassess → Track Improvement**.
 
-> **Current milestone:** the student Python Fundamentals MVP has been verified locally. Demo-only teacher quiz authoring, student quiz attempts with server-backed autosave/deadlines, and a teacher results/analytics dashboard are now implemented on feature branches; verification is pending. Production authentication, durable cloud persistence, Gemini calls, and production deployment are not implemented/verified.
+> **Current milestone:** the student Python Fundamentals MVP is verified locally. Demo-only teacher quiz authoring/publishing, student timed attempts with server-backed autosave/recovery/deadlines, question-by-question review, teacher analytics, print-friendly review, and filtered CSV export are now integrated into `main`. GitHub Actions passed typecheck, lint, unit tests, and production build on the assessment milestone. The full assessment HTTP integration flow still needs its own verification. Production authentication, durable cloud persistence, Gemini calls, and successful deployment remain incomplete.
 
 ## Product scope
 
 - **LearnLoop Learn:** Python Fundamentals diagnostics for variables, data types, conditionals, loops, functions and lists; concept-based feedback; targeted practice; fresh reassessment; evidence-based progress/history.
-- **LearnLoop Assess (demo milestones, verification pending):** teacher quiz authoring/publish, timed student assessments with server-backed autosave/deadlines, and teacher aggregate/question analytics. Class assignments, authenticated individual review, and CSV exports remain incomplete. A print-friendly individual review exists in the demo branch, but is not protected by production authorization.
+- **LearnLoop Assess (demo-only, integrated):** teacher quiz authoring/publish, timed student attempts with server-backed autosave/recovery/deadlines, individual response review, aggregate/question analytics, print-friendly review, and filtered CSV export. These features use a single fictional learner and are not production-authorized. Class assignment, access-denial/integrity-event review, and organization-level workflows remain incomplete.
 - **Future roles:** Student, Teacher and Organization Admin, with server-side authorization and PostgreSQL Row Level Security in configured cloud mode.
 
 ## Technology and data boundary
 
-Next.js App Router 16.4, React 19, TypeScript 5.9, Tailwind CSS 4, Node `>=22.13.0`, pnpm `11.25.0`. The requested cloud target is Supabase Auth/PostgreSQL/RLS; the app also uses the official Google GenAI SDK dependency for the planned Gemini integration. The managed web server runs on port `3000`.
+Next.js App Router 16.4, React 19, TypeScript 5.9, Tailwind CSS 4, Node `>=22.13.0`, pnpm `10.12.1`. The requested cloud target is Supabase Auth/PostgreSQL/RLS; the app also uses the official Google GenAI SDK dependency for the planned Gemini integration. The managed web server runs on port `3000`.
 
 The dedicated Supabase project request was rejected because the selected organization had reached its two-active-project free-tier limit. No LearnLoop cloud project was created and no existing project was changed. Until that blocker is resolved, **local demo mode** stores fictional learning sessions and answers on the server using Node’s built-in `node:sqlite`. This Node module is experimental in the pinned Node release; the fallback is for local demonstration only, not shared production storage. No cloud synchronization, production sign-in/RLS, or Gemini request is verified. Do not enter real student or organization data.
 
 ## Deploy a demo to Vercel
 
-The repository includes a Vercel-compatible **disposable demo mode**. It can host the current student-learning prototype, but it is **not a production multi-user service**: authentication and cloud persistence are not implemented, and in-memory SQLite data can reset or differ between serverless instances. Use fictional data only.
+The repository includes a Vercel-compatible **disposable demo mode** for the student-learning and assessment prototype, but it is **not a production multi-user service**: authentication and cloud persistence are not implemented, and in-memory SQLite data can reset or differ between serverless instances. Use fictional data only.
 
 1. Push this repository to GitHub and import it at [Vercel](https://vercel.com/new).
 2. Keep the detected Next.js framework and root directory defaults.
@@ -64,11 +64,11 @@ pnpm test:integration
 
 ## Current boundaries
 
-- Teacher quiz authoring, timed student attempts, autosave/deadline handling, and aggregate/question analytics have been added on feature branches but are not verified yet. Class assignments, authenticated individual review, printable reports and CSV exports are not available.
+- Teacher quiz authoring, timed student attempts, autosave/deadline handling, question-by-question review, aggregate/question analytics, print-friendly review, and CSV export are integrated. GitHub Actions has passed typecheck, lint, unit tests, and production build for the combined assessment milestone; the full assessment HTTP integration flow is not yet verified. Class assignments and authenticated access-denial/integrity review remain unavailable.
 - No production user accounts or role switching are available. Local progress belongs to one fixed fictional demo learner; it is not a multi-user auth system.
 - No LearnLoop Supabase project exists, so cloud persistence, Supabase SSR authentication, PostgreSQL migrations/RLS and their security tests are blocked.
 - No `GEMINI_API_KEY` is configured; student explanations currently use curated content. AI drafting/explanations are not live.
-- No production deployment has been attempted; there is no live deployment URL.
+- No successful production deployment is verified. Vercel's check reported a deployment rate limit, so do not treat any deployment URL as confirmed live.
 
 ## Project documentation
 
