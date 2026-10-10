@@ -80,3 +80,13 @@ Student attempts are stored in the local SQLite demo adapter. No authentication,
 | `GET /sign-in` | Sends a Supabase email magic link. | Unavailable until project URL/key and email redirect settings are configured. |
 
 Server auth helpers expose role checks for route handlers. They do not automatically protect every route. The existing quiz routes still use demo SQLite; do not treat the Supabase schema/client scaffold as completed cloud persistence.
+
+## Timed student quiz attempts (fictional SQLite demo)
+
+| Method/path | Behavior | Boundary |
+|---|---|---|
+| `POST /api/student/quizzes/:quizId/attempts/start` | Starts an attempt or resumes the student's existing active attempt, returning server start/deadline timestamps and saved answers. | Fixed fictional demo identity; configured attempt limit applies. |
+| `PATCH /api/student/quizzes/:quizId/attempts/:attemptId` | Validates and persists answer changes. | Rejects unknown question IDs, inactive attempts and expired attempts. |
+| `POST /api/student/quizzes/:quizId/attempts` | Finalizes an active attempt and returns graded feedback. | Requires the server-issued attempt ID; after deadline, only previously saved answers are graded. |
+
+The browser countdown is a display and submission trigger only; the server checks the authoritative deadline on save/finalization. The local SQLite adapter is not durable/shared on serverless deployments, and there is still no authenticated student identity. Use fictional data only.
