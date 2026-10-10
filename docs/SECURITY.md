@@ -31,3 +31,8 @@ Use relative browser-facing URLs in Preview. Do not use frame-denying headers th
 ## Setup blocker and residual risk
 
 A local SQLite demo may persist fictional test answers on the server, but it lacks production-grade shared hosting, account identity and cloud/RLS guarantees. Do not use real student or organization data. Before public release, configure the dedicated Supabase project and Gemini key, verify authorization and policy tests, set deployment secrets, review provider advisories and document all remaining limitations.
+
+ 
+## Supabase auth foundation follow-up
+
+The auth scaffold now includes a server client, browser client, session-refresh proxy, server-side profile/role lookup helpers, email magic-link page/callback, and `GET /api/auth/me`. A migration draft adds RLS-protected profiles and quiz tables, default-student signup profiles, and an allowlisted student quiz DTO function that omits answer keys. These pieces have not been applied to a configured Supabase project or verified against PostgreSQL. The existing demo routes remain the active implementation; the auth guards are helper functions and must be explicitly called by every protected route before cloud workflows can be considered enforced.
