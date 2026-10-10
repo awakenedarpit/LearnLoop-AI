@@ -118,11 +118,14 @@ export function StudentQuizExperience() {
     return () => window.clearTimeout(timeout);
   }, [answers, selectedQuiz, activeAttempt, result, busy]);
 
+
+
   useEffect(() => {
-    if (!activeAttempt) return;
-    const timer = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(timer);
-  }, [activeAttempt]);
+    if (!activeAttempt || !selectedQuiz || busy || Date.parse(activeAttempt.expiresAt) > now) return;
+    void submitQuiz();
+    // The API checks its own deadline and grades only acknowledged saved answers.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [now, activeAttempt, selectedQuiz, busy]);
 
   if (loading) return <div className="student-quiz-state" role="status">Loading available quizzes…</div>;
 
