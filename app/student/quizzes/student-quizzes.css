@@ -48,3 +48,7 @@
 .student-result-item p:not(.student-result-index) { margin: 7px 0 0; color: #64748b; line-height: 1.5; font-size: .9rem; }
 .student-demo-note { margin: 16px 0 0; color: #8390a5; text-align: center; font-size: .8rem; }
 @media (max-width: 600px) { .student-quizzes-page { padding: 24px 14px 36px; } .student-quiz-workspace { border-radius: 18px; padding: 16px; } .student-quiz-list-heading { align-items: flex-start; } .student-quiz-card-footer { align-items: flex-start; flex-direction: column; } .student-submit-row { align-items: flex-start; flex-direction: column; } .student-submit-row .student-primary-button { width: 100%; } }
+
+.student-quiz-timer { display: inline-flex; align-items: center; border: 1px solid #dbe6f7; border-radius: 999px; padding: 7px 12px; color: #214d91; background: #eff5ff; font-weight: 800; font-variant-numeric: tabular-nums; }
+.student-quiz-timer.is-urgent { color: #a12d35; background: #fff0f0; border-color: #f2c5c5; }
+.student-save-status { margin: 10px 0 0; color: #63738b; font-size: .82rem; }
