@@ -112,10 +112,17 @@ create policy "users can read their own profile"
 on public.profiles for select to authenticated
 using (id = (select auth.uid()));
 
-create policy "users can update their own display name"
-on public.profiles for update to authenticated
-using (id = (select auth.uid()))
-with check (id = (select auth.uid()) and role = (select p.role from public.profiles p where p.id = (select auth.uid())));
+-- Profile writes are intentionally not granted to end users. Role changes
+-- require trusted administrative tooling, never a user-controlled update.
+
+create policy "assigned students can read published quizzes"
+on public.teacher_quizzes for select to authenticated
+using (
+  status = 'published'
+  and (available_from is null or available_from <= now())
+  and (available_until is null or available_until >= now())
+  and exists (select 1 from public.quiz_assignments a where a.quiz_id = id and a.student_id = (select auth.uid()))
+);
 
 create policy "teachers manage their own quizzes"
 on public.teacher_quizzes for all to authenticated
@@ -160,9 +167,20 @@ create policy "students see their own attempts"
 on public.quiz_attempts for select to authenticated
 using (student_id = (select auth.uid()));
 
-create policy "students create their own attempts"
+create policy "students create attempts for assigned published quizzes"
 on public.quiz_attempts for insert to authenticated
-with check (student_id = (select auth.uid()) and status = 'in_progress');
+with check (
+  student_id = (select auth.uid())
+  and status = 'in_progress'
+  and exists (
+    select 1 from public.quiz_assignments a
+    join public.teacher_quizzes q on q.id = a.quiz_id
+    where a.quiz_id = quiz_id and a.student_id = (select auth.uid())
+      and q.status = 'published'
+      and (q.available_from is null or q.available_from <= now())
+      and (q.available_until is null or q.available_until >= now())
+  )
+);
 
 create policy "teachers read attempts for owned quizzes"
 on public.quiz_attempts for select to authenticated
@@ -180,9 +198,51 @@ with check (exists (
   select 1 from public.quiz_attempts a where a.id = attempt_id and a.student_id = (select auth.uid()) and a.status = 'in_progress'
 ));
 
-grant select, update on public.profiles to authenticated;
+grant select on public.profiles to authenticated;
 grant select, insert, update, delete on public.teacher_quizzes to authenticated;
 grant select, insert, update, delete on public.quiz_questions to authenticated;
 grant select, insert, delete on public.quiz_assignments to authenticated;
 grant select, insert on public.quiz_attempts to authenticated;
 grant select, insert, update, delete on public.quiz_attempt_answers to authenticated;
+
+
+-- Safe quiz payload for assigned students. The table itself does not grant
+-- students SELECT access to quiz_questions, because RLS cannot hide a single
+-- answer-key column. All student delivery must use this allowlisted RPC/DTO.
+create or replace function public.get_assigned_quiz(p_quiz_id uuid)
+returns jsonb
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select jsonb_build_object(
+    'id', q.id,
+    'title', q.title,
+    'instructions', q.instructions,
+    'durationMinutes', q.duration_minutes,
+    'availableFrom', q.available_from,
+    'availableUntil', q.available_until,
+    'attemptLimit', q.attempt_limit,
+    'questions', coalesce((
+      select jsonb_agg(jsonb_build_object(
+        'id', question.id,
+        'prompt', question.prompt,
+        'options', question.options,
+        'concept', question.concept
+      ) order by question.position)
+      from public.quiz_questions question
+      where question.quiz_id = q.id
+    ), '[]'::jsonb)
+  )
+  from public.teacher_quizzes q
+  join public.quiz_assignments a on a.quiz_id = q.id
+  where q.id = p_quiz_id
+    and a.student_id = (select auth.uid())
+    and q.status = 'published'
+    and (q.available_from is null or q.available_from <= now())
+    and (q.available_until is null or q.available_until >= now())
+$$;
+
+revoke all on function public.get_assigned_quiz(uuid) from public;
+grant execute on function public.get_assigned_quiz(uuid) to authenticated;
