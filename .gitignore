@@ -1,0 +1,39 @@
+# Dependencies and package-manager artifacts
+node_modules/
+.pnpm-store/
+
+# Next.js and build outputs
+.next/
+out/
+build/
+dist/
+.vercel/
+.turbo/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+
+# Local-only environment values; retain the safe template
+.env
+.env.*
+!.env.example
+
+# Local demo databases and SQLite sidecars
+data/*.sqlite
+data/*.sqlite3
+data/*.db
+*.sqlite-wal
+*.sqlite-shm
+*.db-journal
+
+# Logs, caches and operating-system/editor noise
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+*.log
+.cache/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

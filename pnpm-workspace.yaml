@@ -1,0 +1,12 @@
+packages:
+  - .
+
+allowBuilds:
+  '@google/genai': false
+  better-sqlite3: false
+  esbuild: true
+  protobufjs: false
+  unrs-resolver: true
+
+minimumReleaseAgeExclude:
+  - lucide-react@1.55.0
