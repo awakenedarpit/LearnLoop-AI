@@ -55,3 +55,17 @@ When Supabase is unavailable, demo routes use the explicitly labelled local serv
 | `GET /api/learn/progress` | Returns actual local session history, concept indicators and baseline-linked comparison. | No cloud synchronization; fixed fictional student only. |
 
 These endpoints currently serve only the non-production SQLite demo adapter. They must not be described as authenticated or multi-tenant until Supabase identity and database policies are configured and verified.
+
+## Teacher and student quiz demo routes
+
+| Method/path | Current behavior | Verified boundary |
+|---|---|---|
+| `GET /api/teacher/quizzes` | Lists fictional teacher-authored quizzes. | Demo adapter only; no teacher authorization. |
+| `POST /api/teacher/quizzes` | Validates and creates a draft quiz. | Zod validation; demo storage only. |
+| `PUT /api/teacher/quizzes/:quizId` | Updates an editable draft. | Published quizzes are locked. |
+| `POST /api/teacher/quizzes/:quizId/publish` | Publishes a quiz draft. | Publishing does not assign a class or authenticate students. |
+| `GET /api/student/quizzes` | Lists currently available published quizzes and attempt counts. | Fixed fictional demo student identity. |
+| `GET /api/student/quizzes/:quizId` | Returns a published quiz without correct-answer keys or explanations. | Availability windows are checked server-side. |
+| `POST /api/student/quizzes/:quizId/attempts` | Grades submitted MCQ answers on the server and returns score plus explanations. | Validates question IDs and option indexes; enforces configured attempt limit. |
+
+Student attempts are stored in the local SQLite demo adapter. No authentication, role authorization, shared cloud persistence, or server-enforced countdown timer is implemented. Use fictional data only; run typecheck, lint, tests, build and preview checks before merging.

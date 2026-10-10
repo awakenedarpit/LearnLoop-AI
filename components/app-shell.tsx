@@ -9,6 +9,7 @@ import type { ReactNode } from "react";
 const navigation = [
   { href: "/", label: "Overview", icon: LayoutDashboard },
   { href: "/learn", label: "Learn", icon: Compass },
+  { href: "/student/quizzes", label: "Student quizzes", icon: BookOpenCheck },
   { href: "/assess", label: "Assess", icon: ClipboardList },
   { href: "/teacher", label: "Teacher space", icon: UsersRound },
 ];
@@ -69,7 +70,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <footer className="app-footer"><span>LearnLoop AI</span><span>From learning gaps to lasting growth.</span></footer>
       </div>
       <nav className="mobile-nav" aria-label="Mobile navigation">
-        {navigation.slice(0, 3).map(({ href, label, icon: Icon }) => {
+        {navigation.slice(0, 4).map(({ href, label, icon: Icon }) => {
           const active = href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
           return <Link key={href} href={href} className={active ? "mobile-nav-link mobile-nav-active" : "mobile-nav-link"} aria-current={active ? "page" : undefined}><Icon size={19} aria-hidden="true" /><span>{label}</span></Link>;
         })}
