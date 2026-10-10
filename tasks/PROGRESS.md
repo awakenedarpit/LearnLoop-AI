@@ -11,12 +11,12 @@
 - Added `app/api/teacher/quizzes/route.ts`, `app/api/teacher/quizzes/[quizId]/route.ts`, and `app/api/teacher/quizzes/[quizId]/publish/route.ts` with Zod validation and explicit demo-mode handling.
 - Replaced the teacher placeholder page with the builder and added responsive styles in `app/teacher/builder.css`.
 - Published status is a draft-locking state only. There are no class assignments, student delivery, teacher authentication, authorization boundaries, or shared cloud persistence yet. The deployed demo must use fictional data only.
-- **Not verified yet:** typecheck, lint, unit/integration tests, build, browser interaction, or Vercel deployment from this branch. GitHub contents API was used to author the branch; no claim of successful compilation or deployment.
+- **Tests added, verification pending:** `tests/teacher-quizzes.test.ts` covers draft creation/listing, draft updates, publish/idempotent publish, published-draft locking, and empty-quiz publication rejection. Typecheck, lint, all unit/integration tests, build, browser interaction, and Vercel deployment from this branch have not been run. GitHub contents API was used to author the branch; no claim of successful compilation or deployment.
 
 ### Next verification/actions
 
 1. Run `pnpm typecheck`, `pnpm lint`, `pnpm test`, and `pnpm build` in CI or a checked-out workspace; fix any issues before merging.
-2. Add focused tests for quiz schema validation, draft create/update, published draft locking, and publish lifecycle.
+2. Run the new service tests and add route-level validation tests for malformed payloads and availability timestamps.
 3. Resolve production auth/persistence before adding class assignments or allowing real student data.
 
 ---
