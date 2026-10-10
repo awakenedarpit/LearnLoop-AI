@@ -48,7 +48,7 @@ describe("teacher analytics demo service", () => {
     expect(analytics.overallAverageScore).toBe(75);
     expect(analytics.quizzes[0]?.averageScore).toBe(75);
     expect(analytics.quizzes[0]?.highestScore).toBe(100);
-    expect(analytics.quizzes[0]?.passRate).toBe(100);
+    expect(analytics.quizzes[0]?.passRate).toBe(50);
     expect(analytics.quizzes[0]?.questionStats[0]?.accuracyPercent).toBe(50);
     expect(analytics.quizzes[0]?.questionStats[1]?.accuracyPercent).toBe(100);
     expect(analytics.recentSubmissions).toHaveLength(2);
