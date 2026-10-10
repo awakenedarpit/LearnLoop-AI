@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 import "./sign-in.css";
 
@@ -11,7 +11,7 @@ export default function SignInPage() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
-  async function sendSignInLink(event: React.FormEvent<HTMLFormElement>) {
+  async function sendSignInLink(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true);
     setMessage("");
