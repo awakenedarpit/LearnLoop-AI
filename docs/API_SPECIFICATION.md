@@ -1,6 +1,6 @@
 # API Specification — LearnLoop AI
 
-**Status:** Local demo health/learning handlers are implemented and the teacher quiz draft/list/edit/publish handlers have been added on `feat/teacher-quiz-builder` (verification pending). Teacher routes currently use fictional demo SQLite storage and have no authentication or role authorization. Timed student attempts, class assignments, reports, Supabase auth/RLS, and Gemini remain planned. Page paths are separately synchronized with `public/manus-routes.json`.
+**Status:** Teacher quiz authoring, timed student attempts, and teacher analytics handlers are implemented on feature branches; verification is pending. Teacher/student quiz routes use fictional demo SQLite storage without authentication or role authorization. Class assignments, authenticated individual review, exports, Supabase auth/RLS, and Gemini remain incomplete. Page paths are synchronized with `public/manus-routes.json`.
 
 ## Conventions
 
@@ -30,7 +30,7 @@ Same-origin relative requests. JSON responses use `{ "data": ... }` on success a
 | `POST /api/teacher/quizzes/:id/ai-draft` | Authorized teacher | Validated request to Gemini; returns editable draft, never publishes. Uses fallback/error if key unavailable. |
 | `POST /api/teacher/quizzes/:id/publish` | Demo-only; no auth yet | Changes a saved draft to published and locks editing. Does not create class assignments or deliver quizzes to students. |
 | `GET /api/teacher/assessments/:id/submissions` | Teacher authorized for assigned class | Filtered submission/denial/integrity summaries for that assessment. |
-| `GET /api/teacher/analytics` | Teacher authorized for selected class/assessment | Real aggregate metrics, question correctness and concept gaps. |
+| `GET /api/teacher/analytics` | Demo-only; no auth yet | Aggregate quiz counts, submission scores, pass rate, recent submissions and per-question accuracy from fictional SQLite records. No class/individual identity or authorization scope exists yet. |
 | `GET /api/teacher/reports/:id.csv` | Authorized teacher | CSV for authorized assessment and class records; safe escaping. |
 | `GET /api/teacher/reports/:id/print` | Authorized teacher | Print-friendly report based on the same authorized data. |
 
@@ -90,3 +90,12 @@ Server auth helpers expose role checks for route handlers. They do not automatic
 | `POST /api/student/quizzes/:quizId/attempts` | Finalizes an active attempt and returns graded feedback. | Requires the server-issued attempt ID; after deadline, only previously saved answers are graded. |
 
 The browser countdown is a display and submission trigger only; the server checks the authoritative deadline on save/finalization. The local SQLite adapter is not durable/shared on serverless deployments, and there is still no authenticated student identity. Use fictional data only.
+
+
+## Teacher analytics demo route (verification pending)
+
+| Method/path | Current behavior | Boundary |
+|---|---|---|
+| `GET /api/teacher/analytics` | Returns aggregate quiz/submission counts, average/highest scores, a 60% pass-rate indicator, recent finalized attempts and per-question accuracy for the fixed demo student. | Values are calculated from local SQLite attempt records; no fabricated seed analytics are used. No teacher authentication, class membership, multi-learner comparison, or production authorization exists. Empty score metrics are `null` when there are no submissions. |
+
+The `/teacher/analytics` page is a demo-only results view. Do not describe it as a class dashboard or production-secure teacher report until class assignments, trusted identity and server-side authorization are implemented and tested.
