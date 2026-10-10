@@ -9,7 +9,7 @@ LearnLoop AI is an Education-track prototype for HackOverflow 10.0 — Aarohan, 
 ## Product scope
 
 - **LearnLoop Learn:** Python Fundamentals diagnostics for variables, data types, conditionals, loops, functions and lists; concept-based feedback; targeted practice; fresh reassessment; evidence-based progress/history.
-- **LearnLoop Assess (demo milestones, verification pending):** teacher quiz authoring/publish, timed student assessments with server-backed autosave/deadlines, and teacher aggregate/question analytics. Class assignments, authenticated individual review, printable reports and CSV exports remain incomplete.
+- **LearnLoop Assess (demo milestones, verification pending):** teacher quiz authoring/publish, timed student assessments with server-backed autosave/deadlines, and teacher aggregate/question analytics. Class assignments, authenticated individual review, and CSV exports remain incomplete. A print-friendly individual review exists in the demo branch, but is not protected by production authorization.
 - **Future roles:** Student, Teacher and Organization Admin, with server-side authorization and PostgreSQL Row Level Security in configured cloud mode.
 
 ## Technology and data boundary
