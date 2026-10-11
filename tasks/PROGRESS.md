@@ -2,14 +2,14 @@
 
 ## Latest update — 2026-10-11 (assessment HTTP audit)
 
-**Branch:** `feat/assessment-http-integration`, created from verified GitHub `main` SHA `43f5b6a5bfd879deb4ec24704907df80345b3ac6`. Commit `e5ca043e2076f7f99915d2c415a742d1e85a4ae5` is pushed and remote-ref verified. PR #9 is open against `main` (https://github.com/awakenedarpit/LearnLoop-AI/pull/9). GitHub Actions run `38118386150` passed typecheck, lint, unit tests, student HTTP integration and production build in 48s. Non-blocking runner annotations warn that actions target Node 20 and `ubuntu-latest` will migrate to Ubuntu 26.
+**Branch:** `feat/assessment-http-integration`, created from GitHub `main` SHA `43f5b6a5bfd879deb4ec24704907df80345b3ac6`. Implementation commit `e5ca043e2076f7f99915d2c415a742d1e85a4ae5` plus docs-only follow-up `bf00ef57288f7222a16f15335baf57e4b2714f46` are pushed; remote branch tip is verified. PR #9 is open against `main` (https://github.com/awakenedarpit/LearnLoop-AI/pull/9). CI run `38118472151` passed on the final commit in 53s. Non-blocking annotations warn that actions target Node 20 and `ubuntu-latest` will migrate to Ubuntu 26.
 
 - Added `scripts/verify-assessment-flow.mjs` and integrated it into `pnpm test:integration`. The expanded HTTP run passed quiz validation/draft visibility/publish/key withholding; timed start, autosave/recovery, expiry, attempt limits, server scoring and idempotent finalization; teacher review/analytics/CSV and formula injection neutralization. Existing student learning integration passed in the same run. All data is isolated fictional SQLite.
 - Current branch `pnpm typecheck`, `pnpm lint`, `pnpm test` (20/20), `DEMO_MODE=true DEMO_DB_PATH=:memory: pnpm build`, and `git diff --check` all pass. The expanded HTTP integration also passes.
 - The user confirmed the correct Supabase account is now connected. Read-only inspection verified LearnLoop `rlglcgtamqwqzmkitdtn`, `ap-south-1`, `ACTIVE_HEALTHY`; four recorded migrations; 14/14 public tables RLS-enabled, zero rows; policies and grants were inspected. No database changes were made and no authenticated-user RLS tests were run.
 - Security Advisor reports five authenticated-callable public `SECURITY DEFINER` assessment RPC warnings. Manual definitions showed empty search paths and auth/ownership checks; direct authenticated tests remain required. Performance Advisor reports 16 unused indexes and six multiple-permissive-policy notices.
 - The live ledger includes fourth migration `secure_assessment_attempt_lifecycle`, but source migrations 001–003 only exist in this checkout. Recover exact migration 004 source before any further migration work.
-- Current Vercel lookup found no project/team linked to the GitHub repo. No deployment, Gemini call or live Supabase write was attempted.
+- PR #9 automatically created a Vercel `READY` preview at `https://learn-loop-6vy56fpsw-wprofile2007-8440.vercel.app`. Direct requests redirect to Vercel Authentication; Vercel MCP preview-bypass access returned 403 because its connector is not authorized for that project/team. No production promotion, Gemini call or live Supabase write was attempted.
 - Current authoritative audit/status: `docs/COMPLETION_AUDIT.md`; setup/security details: `docs/SUPABASE_SETUP.md`, `docs/SECURITY.md`.
 
 ---

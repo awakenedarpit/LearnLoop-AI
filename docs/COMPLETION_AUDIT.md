@@ -33,8 +33,8 @@ This audit compares checked-out source with tests and live read-only inspection 
 | Supabase Security Advisor findings | `PARTIALLY_IMPLEMENTED` | Five public SECURITY DEFINER RPCs are intentionally callable by `authenticated`; function bodies manually inspected | Advisor warning remains. Keep exact warnings documented, determine whether public wrappers should remain exposed, and test direct RPC role/ownership behavior before any production use. Performance advisor has 16 unused-index and six multiple-permissive-policy notices. |
 | Gemini explanations/practice/drafts | `NOT_IMPLEMENTED` | `@google/genai` dependency only; no application provider module/route found | Implement server-only bounded calls, schema validation, timeout/provider-error tests and teacher-review gate. Live call requires protected key; none was verified. |
 | Security/quality coverage | `PARTIALLY_IMPLEMENTED` | Input validation, key withholding, server scoring, no-store responses, CSV neutralization, role gate scaffold | New HTTP test covers selected demo boundaries. Missing authenticated/RLS isolation, access-denial/integrity workflow, rate limits, browser accessibility review and dependency vulnerability review. |
-| CI and local quality | `COMPLETE_AND_VERIFIED` for current branch | `.github/workflows/ci.yml`; CI run `38118386150` on commit `e5ca043e2076f7f99915d2c415a742d1e85a4ae5` | Current branch `pnpm typecheck`, `pnpm lint`, `pnpm test` (20/20), `DEMO_MODE=true DEMO_DB_PATH=:memory: pnpm build`, `git diff --check`, and expanded `pnpm test:integration` passed. GitHub CI passed typecheck, lint, unit tests, student HTTP integration and production build in 48s. |
-| Production config and deployment | `BLOCKED_BY_EXTERNAL_CONFIGURATION` | Next.js/Vercel-compatible project and demo setup guide | Vercel lookup found no linked project/team; no deployment. Connect or identify intended Vercel project, configure safe environment and run deployed smoke test before publishing a URL. |
+| CI and local quality | `COMPLETE_AND_VERIFIED` for current branch | `.github/workflows/ci.yml`; run `38118472151` passed on final docs commit `bf00ef57288f7222a16f15335baf57e4b2714f46` | Current branch typecheck, lint, 20 unit tests, expanded integration, demo production build and `git diff --check` passed. GitHub CI passed typecheck, lint, unit tests, student HTTP integration and production build in 53s. |
+| Preview/production deployment | `PARTIALLY_IMPLEMENTED` | PR #9 preview, Vercel project `learn-loop-ai`, deployment `dpl_4xSPzFco2Kn3ZLAomRYAtAmkaSNR` | Preview is `READY` at `https://learn-loop-6vy56fpsw-wprofile2007-8440.vercel.app`, but Vercel Authentication blocked direct HTTP smoke tests and connector bypass was denied (403, team/project access). No production promotion/deployment was made. |
 | Current docs and migration reproducibility | `PARTIALLY_IMPLEMENTED` | Documentation exists, but some status was stale and migration 004 is absent from source | Synchronize live project facts, RPC warning, zero rows, migration source gap and current integration evidence. |
 
 ## Verification run in this task
@@ -54,7 +54,7 @@ This audit compares checked-out source with tests and live read-only inspection 
 | Supabase public schema | Read-only PASS — 14 tables, all 14 RLS-enabled, zero rows; no authenticated-session RLS test |
 | Supabase policies and grants | Read-only metadata inspected; no user-role allow/deny behavior tested |
 | Supabase Security Advisor | Five SECURITY DEFINER callable warnings; reviewable definitions manually inspected; warnings remain open |
-| Vercel linked-project lookup | No project/team context; deployment not attempted |
+| Vercel preview deployment | READY for final PR commit; direct health/page requests returned 302 to Vercel Authentication; connector bypass returned 403 due to project/team authorization; runtime smoke test remains blocked |
 | Gemini | Not called; app integration absent |
 
 ## Immediate next steps
@@ -62,4 +62,4 @@ This audit compares checked-out source with tests and live read-only inspection 
 1. Recover and review the exact SQL source for the fourth migration before claiming the Supabase database is fully reproducible from Git.
 2. Implement Postgres-backed learning and assessment services, trusted membership/admin provisioning, and atomic attempt finalization; keep SQLite only as an explicitly separate demo.
 3. Create controlled synthetic Supabase identities and exercise authenticated RLS/RPC allowed and denied cases. Review the five public SECURITY DEFINER warnings against those tests.
-4. Configure Gemini through protected secret management and identify the intended Vercel project. Re-run all local checks/CI and a deployed smoke test before claiming production readiness.
+4. Configure Gemini through protected secret management; authorize the Vercel connector for project/team access (or test with an already-authorized browser) to smoke-test the protected PR preview. No production promotion has been made; use the production release process only after the cloud/security work is complete.
