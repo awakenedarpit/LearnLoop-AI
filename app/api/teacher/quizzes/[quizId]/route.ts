@@ -1,7 +1,8 @@
 import { authorizeRoute } from "@/lib/auth/route-guard";
 import { z } from "zod";
-import { DemoModeUnavailableError } from "@/lib/db/demo-store";
+import { DemoModeUnavailableError, isLocalDemoMode } from "@/lib/db/demo-store";
 import { updateTeacherQuiz } from "@/lib/services/teacher-quizzes";
+import { updateCloudTeacherQuiz } from "@/lib/services/cloud-teacher-quizzes";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -37,9 +38,11 @@ export async function PATCH(request: Request, context: { params: Promise<{ quizI
     if (!parsed.success) {
       return Response.json({ error: { code: "QUIZ_INPUT_INVALID", message: parsed.error.issues[0]?.message ?? "Check the quiz fields." } }, { status: 422 });
     }
-    const quiz = updateTeacherQuiz(quizId, parsed.data);
+    const quiz = isLocalDemoMode()
+      ? updateTeacherQuiz(quizId, parsed.data)
+      : await updateCloudTeacherQuiz(quizId, parsed.data);
     if (!quiz) return Response.json({ error: { code: "QUIZ_NOT_FOUND", message: "That quiz could not be found." } }, { status: 404 });
-    return Response.json({ data: quiz, mode: "fictional_demo" }, { headers: { "Cache-Control": "private, no-store, max-age=0" } });
+    return Response.json({ data: quiz, mode: isLocalDemoMode() ? "fictional_demo" : "cloud" }, { headers: { "Cache-Control": "private, no-store, max-age=0" } });
   } catch (error) {
     if (error instanceof DemoModeUnavailableError) {
       return Response.json({ error: { code: "DEMO_MODE_UNAVAILABLE", message: "Teacher quiz demo mode is not enabled." } }, { status: 503 });
