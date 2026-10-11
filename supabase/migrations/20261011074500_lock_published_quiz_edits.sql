@@ -35,7 +35,17 @@ begin
     return new;
   end if;
 
-  if tg_op = 'DELETE' then
+  if tg_op = 'UPDATE' then
+    select q.status into v_status from public.teacher_quizzes q where q.id = old.quiz_id;
+    if v_status = 'published' then
+      raise exception 'PUBLISHED_QUIZ_LOCKED';
+    end if;
+    select q.status into v_status from public.teacher_quizzes q where q.id = new.quiz_id;
+    if v_status = 'published' then
+      raise exception 'PUBLISHED_QUIZ_LOCKED';
+    end if;
+    return new;
+  elsif tg_op = 'DELETE' then
     v_quiz_id := old.quiz_id;
   else
     v_quiz_id := new.quiz_id;
