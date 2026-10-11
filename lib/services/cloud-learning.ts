@@ -158,7 +158,9 @@ export async function createCloudLearningSession(kind: LearningKind): Promise<Le
   const gaps = diagnosticView?.result?.gaps ?? [];
   const targetConcepts = kind === "diagnostic"
     ? CONCEPTS.map((concept) => concept.id)
-    : gaps.length ? gaps : latestDiagnostic ? [] : CONCEPTS.map((concept) => concept.id);
+    : kind === "practice"
+      ? (gaps.length ? gaps : latestDiagnostic ? [] : CONCEPTS.map((concept) => concept.id))
+      : (gaps.length ? gaps : CONCEPTS.map((concept) => concept.id));
 
   const sessionIds = sessions.map((row) => row.session_id);
   let used = new Set<string>();
