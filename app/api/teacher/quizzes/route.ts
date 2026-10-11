@@ -1,7 +1,8 @@
 import { authorizeRoute } from "@/lib/auth/route-guard";
 import { z } from "zod";
-import { DemoModeUnavailableError } from "@/lib/db/demo-store";
+import { DemoModeUnavailableError, isLocalDemoMode } from "@/lib/db/demo-store";
 import { createTeacherQuiz, listTeacherQuizzes } from "@/lib/services/teacher-quizzes";
+import { createCloudTeacherQuiz, listCloudTeacherQuizzes } from "@/lib/services/cloud-teacher-quizzes";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -40,7 +41,8 @@ export async function GET(): Promise<Response> {
   const denied = await authorizeRoute(["teacher"]);
   if (denied) return denied;
   try {
-    return Response.json({ data: listTeacherQuizzes(), mode: "fictional_demo" }, {
+    const data = isLocalDemoMode() ? listTeacherQuizzes() : await listCloudTeacherQuizzes();
+    return Response.json({ data, mode: isLocalDemoMode() ? "fictional_demo" : "cloud" }, {
       headers: { "Cache-Control": "private, no-store, max-age=0" },
     });
   } catch (error) {
@@ -56,8 +58,10 @@ export async function POST(request: Request): Promise<Response> {
     if (!parsed.success) {
       return Response.json({ error: { code: "QUIZ_INPUT_INVALID", message: parsed.error.issues[0]?.message ?? "Check the quiz fields." } }, { status: 422 });
     }
-    const quiz = createTeacherQuiz(parsed.data);
-    return Response.json({ data: quiz, mode: "fictional_demo" }, { status: 201, headers: { "Cache-Control": "private, no-store, max-age=0" } });
+    const quiz = isLocalDemoMode()
+      ? createTeacherQuiz(parsed.data)
+      : await createCloudTeacherQuiz(parsed.data);
+    return Response.json({ data: quiz, mode: isLocalDemoMode() ? "fictional_demo" : "cloud" }, { status: 201, headers: { "Cache-Control": "private, no-store, max-age=0" } });
   } catch (error) {
     return errorResponse(error);
   }
