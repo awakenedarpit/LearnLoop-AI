@@ -33,7 +33,7 @@ This audit compares checked-out source with tests and live read-only inspection 
 | Supabase Security Advisor findings | `PARTIALLY_IMPLEMENTED` | Five public SECURITY DEFINER RPCs are intentionally callable by `authenticated`; function bodies manually inspected | Advisor warning remains. Keep exact warnings documented, determine whether public wrappers should remain exposed, and test direct RPC role/ownership behavior before any production use. Performance advisor has 16 unused-index and six multiple-permissive-policy notices. |
 | Gemini explanations/practice/drafts | `NOT_IMPLEMENTED` | `@google/genai` dependency only; no application provider module/route found | Implement server-only bounded calls, schema validation, timeout/provider-error tests and teacher-review gate. Live call requires protected key; none was verified. |
 | Security/quality coverage | `PARTIALLY_IMPLEMENTED` | Input validation, key withholding, server scoring, no-store responses, CSV neutralization, role gate scaffold | New HTTP test covers selected demo boundaries. Missing authenticated/RLS isolation, access-denial/integrity workflow, rate limits, browser accessibility review and dependency vulnerability review. |
-| CI and local quality | `COMPLETE_AND_VERIFIED` for current branch | `.github/workflows/ci.yml`; run `38118472151` passed on final docs commit `bf00ef57288f7222a16f15335baf57e4b2714f46` | Current branch typecheck, lint, 20 unit tests, expanded integration, demo production build and `git diff --check` passed. GitHub CI passed typecheck, lint, unit tests, student HTTP integration and production build in 53s. |
+| CI and local quality | `COMPLETE_AND_VERIFIED` for current branch | `.github/workflows/ci.yml`; PR #10 run `38118768439` passed on documentation-only commit `69faac35ae3f73d63d540556432eba09392eee36` | Current branch typecheck, lint, 20 unit tests, expanded integration, demo production build and `git diff --check` passed. GitHub CI passed typecheck, lint, unit tests, student HTTP integration and production build in 61s. |
 | Preview/production deployment | `PARTIALLY_IMPLEMENTED` | PR #9 preview, Vercel project `learn-loop-ai`, deployment `dpl_4xSPzFco2Kn3ZLAomRYAtAmkaSNR` | Preview is `READY` at `https://learn-loop-6vy56fpsw-wprofile2007-8440.vercel.app`, but Vercel Authentication blocked direct HTTP smoke tests and connector bypass was denied (403, team/project access). No production promotion/deployment was made. |
 | Current docs and migration reproducibility | `PARTIALLY_IMPLEMENTED` | Documentation exists, but some status was stale and migration 004 is absent from source | Synchronize live project facts, RPC warning, zero rows, migration source gap and current integration evidence. |
 
@@ -49,7 +49,8 @@ This audit compares checked-out source with tests and live read-only inspection 
 | `DEMO_MODE=true DEMO_DB_PATH=:memory: pnpm build` | PASS on current feature branch |
 | `git diff --check` | PASS on current feature branch |
 | GitHub Actions | PASS — run `38080674882`, SHA `43f5b6a5bfd879deb4ec24704907df80345b3ac6` |
-| GitHub Actions (PR #9) | PASS — run `38118386150`, commit `e5ca043e2076f7f99915d2c415a742d1e85a4ae5` |
+| GitHub Actions (PR #9) | PASS — run `38118472151`, commit `e5ca043e2076f7f99915d2c415a742d1e85a4ae5` |
+| GitHub Actions (PR #10) | PASS — run `38118768439`, docs-only commit `69faac35ae3f73d63d540556432eba09392eee36` |
 | Supabase project and migration ledger | Read-only PASS — exact project healthy; 4 migrations recorded; no writes |
 | Supabase public schema | Read-only PASS — 14 tables, all 14 RLS-enabled, zero rows; no authenticated-session RLS test |
 | Supabase policies and grants | Read-only metadata inspected; no user-role allow/deny behavior tested |
