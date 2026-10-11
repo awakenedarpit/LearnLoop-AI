@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-11 — Supabase Auth Phase 2
+
+- Replaced the magic-link-only auth screen with password sign-in, student signup, email-link sign-in, forgot-password initiation, and password reset completion.
+- Added callback-safe redirect validation, client session restoration, proxy session refresh, and authenticated shell sign-out.
+- Preserved trusted role provisioning: signup cannot self-assign a role or organization; new profiles still come from the database trigger.
+- Added auth redirect hardening tests and documented the remaining protected-credential, membership-provisioning, and cloud-RLS verification boundary.
+
+
 ## 2026-10-11 — Gemini learning assistance
 
 - Added a server-only Gemini provider with structured JSON output validation, bounded input/output, timeout handling, limited retry behavior, and explicit curated fallbacks.

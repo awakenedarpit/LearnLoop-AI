@@ -20,6 +20,15 @@
 4. **Boundary:** `GEMINI_API_KEY` is not configured in this checkout; no live Gemini request was made. Cloud repositories, multi-user auth/RLS verification, class workflows and admin provisioning remain incomplete.
 5. **Next actions:** connect recommendations to the authenticated cloud progress repository, add cloud-backed assessment services and RLS tests, then run a protected-key live smoke test and deployment verification.
 
+
+## Dated handoff — 2026-10-11 (Supabase Auth Phase 2)
+
+1. **Implemented:** `app/sign-in/page.tsx` supports password sign-in, student signup, email magic-link sign-in, and password recovery initiation. `app/reset-password/page.tsx` validates the recovery session and updates the password.
+2. **Session path:** `app/auth/callback/route.ts` exchanges confirmation/recovery codes, rejects unsafe redirects, `proxy.ts` refreshes the SSR cookie session with `getUser()`, and the app shell restores browser auth state and exposes sign-out.
+3. **Security boundary:** signup accepts only an optional display name. It never accepts a role or organization. The existing database trigger creates a profile; trusted membership provisioning is still required before role-protected APIs become available.
+4. **Tests:** `tests/auth-redirects.test.ts` covers relative-path allowlisting and external/ambiguous redirect rejection. Full checks pass: 25 unit tests, typecheck, lint, existing HTTP integration, and production build.
+5. **Next actions:** configure protected Supabase credentials, run synthetic signup/confirmation/password-reset/session-expiry journeys, provision a test organization/membership through a trusted admin path, then replace SQLite repositories and run authenticated RLS allow/deny tests.
+
 ## Goal and scope
 
 Build an Education prototype for Team Data Alchemists at HackOverflow 10.0 — Aarohan, NIT Durgapur. Core loop: Diagnose → Understand → Practice → Reassess → Track Improvement. Full scope includes student Python learning, teacher/class assessments, reliable server saves/deadlines, review/analytics/reports, production roles, AI assistance, durable Supabase persistence and reproducible fictional demo data.

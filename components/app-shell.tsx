@@ -2,9 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Activity, BookOpenCheck, ChevronDown, ClipboardList, Compass, LayoutDashboard, Settings2, UsersRound } from "lucide-react";
 import type { ReactNode } from "react";
+import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
+import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 
 const navigation = [
   { href: "/", label: "Overview", icon: LayoutDashboard },
@@ -28,6 +31,28 @@ function NavLink({ href, label, icon: Icon }: (typeof navigation)[number]) {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [account, setAccount] = useState<{ email: string; displayName: string | null; role: string } | null>(null);
+  useEffect(() => {
+    let active = true;
+    try {
+      const supabase = createSupabaseBrowserClient();
+      void fetch("/api/auth/me", { cache: "no-store" }).then(async (response) => {
+        const body = await response.json() as { data?: { displayName: string | null; role: string }; };
+        const { data: { user } } = await supabase.auth.getUser();
+        if (active && response.ok && user?.email) setAccount({ email: user.email, displayName: body.data?.displayName ?? null, role: body.data?.role ?? "pending provisioning" });
+      }).catch(() => undefined);
+      const { data: listener } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
+        if (!session?.user) setAccount(null);
+      });
+      return () => { active = false; listener.subscription.unsubscribe(); };
+    } catch {
+      return () => { active = false; };
+    }
+  }, []);
+  async function signOut() {
+    try { await createSupabaseBrowserClient().auth.signOut(); } finally { router.push("/sign-in?message=signed-out"); }
+  }
   return (
     <div className="app-frame">
       <aside className="sidebar" aria-label="Primary navigation">
@@ -55,9 +80,9 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div><strong>Keep your progress</strong><p>Local demo data stays on this workspace.</p></div>
         </div>
         <div className="profile-row">
-          <div className="avatar">MC</div>
-          <div className="profile-copy"><strong>Maya Chen</strong><span>Student demo</span></div>
-          <span className="online-dot" aria-label="Demo profile" />
+          <div className="avatar">{account ? (account.displayName || account.email).slice(0, 2).toUpperCase() : "MC"}</div>
+          <div className="profile-copy"><strong>{account?.displayName || account?.email || "Maya Chen"}</strong><span>{account ? account.role.replace("_", " ") : "Student demo"}</span></div>
+          {account ? <button className="profile-signout" type="button" onClick={() => void signOut()}>Sign out</button> : <span className="online-dot" aria-label="Demo profile" />}
         </div>
       </aside>
       <div className="main-column">

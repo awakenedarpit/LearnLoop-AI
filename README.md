@@ -4,7 +4,7 @@
 
 LearnLoop AI is an Education-track prototype for HackOverflow 10.0 — Aarohan, NIT Durgapur, built by Team Data Alchemists. It connects personalized learning with meaningful assessment through **Diagnose → Understand → Practice → Reassess → Track Improvement**.
 
-> **Current milestone:** The Python Fundamentals learning flow and demo-only teacher assessment workflow pass local unit/HTTP checks using isolated fictional SQLite data. The expanded test verifies authoring, publish, answer-key withholding, autosave/recovery, deadlines, server scoring, idempotence, review, analytics, and CSV formula neutralization. Supabase cloud persistence/RLS and verified real-user authentication remain incomplete; Phase 1 now includes a server-only Gemini integration with safe fallbacks and mocked tests. PR #9 has a Vercel `READY` preview, but Vercel Authentication blocked an authorized smoke test; no production deployment was made. See [`docs/COMPLETION_AUDIT.md`](docs/COMPLETION_AUDIT.md).
+> **Current milestone:** The Python Fundamentals learning flow and demo-only teacher assessment workflow pass local unit/HTTP checks using isolated fictional SQLite data. The expanded test verifies authoring, publish, answer-key withholding, autosave/recovery, deadlines, server scoring, idempotence, review, analytics, and CSV formula neutralization. Supabase cloud persistence/RLS and trusted role provisioning remain incomplete; Phase 2 now includes password sign-up/sign-in, magic links, recovery/reset, session refresh, and sign-out UI with mocked redirect tests. Phase 1 Gemini integration remains available with safe fallbacks. PR #9 has a Vercel `READY` preview, but Vercel Authentication blocked an authorized smoke test; no production deployment was made. See [`docs/COMPLETION_AUDIT.md`](docs/COMPLETION_AUDIT.md).
 
 ## Product scope
 
@@ -14,7 +14,7 @@ LearnLoop AI is an Education-track prototype for HackOverflow 10.0 — Aarohan, 
 
 ## Technology and data boundary
 
-Next.js App Router 16.4, React 19, TypeScript 5.9, Tailwind CSS 4, Node `>=22.13.0`, pnpm `10.12.1`. The intended cloud target is Supabase Auth/PostgreSQL/RLS; the Google GenAI SDK powers a server-only provider for explanations, recommendations, and teacher-reviewed quiz drafts. The app's only implemented data adapter is fictional local SQLite using Node's experimental `node:sqlite`; local/demo persistence is not shared production storage and may reset or differ across serverless instances. Never enter real learner data in demo mode.
+Next.js App Router 16.4, React 19, TypeScript 5.9, Tailwind CSS 4, Node `>=22.13.0`, pnpm `10.12.1`. The intended cloud target is Supabase Auth/PostgreSQL/RLS; the Google GenAI SDK powers a server-only provider for explanations, recommendations, and teacher-reviewed quiz drafts; Supabase Auth powers the browser/server session path when configured. The app's only implemented data adapter is fictional local SQLite using Node's experimental `node:sqlite`; local/demo persistence is not shared production storage and may reset or differ across serverless instances. Never enter real learner data in demo mode.
 
 ### Supabase project status
 
@@ -53,7 +53,7 @@ pnpm test:integration
 ## Current boundaries
 
 - Demo learning and assessment records use local SQLite and one fictional student. This is not multi-user identity, shared cloud storage, or suitable for real student data.
-- Supabase auth/client scaffolding and trusted-membership role lookup exist in source, but the project/account configuration used in historical work is unavailable in the current connector session. Application services still use SQLite; no authenticated RLS/persistence journey is verified.
+- Supabase Auth browser/server session workflows are implemented, including password sign-up/sign-in, email-link sign-in, password recovery/reset, callback-safe redirects, proxy refresh, and sign-out. New accounts receive a profile through the database trigger but no privileged role; trusted organization/membership provisioning and authenticated RLS/persistence journeys remain unverified. Application services still use SQLite.
 - Class/organization administration, assignment-based eligibility, trusted initial-admin/membership provisioning, access-denial and integrity-event workflows, and cross-user/class isolation remain incomplete.
 - Gemini integration is implemented behind `GEMINI_API_KEY`: completed learning answers can request a labeled explanation, recommendations have a bounded provider path, and teacher quiz drafts remain review-only. This checkout has no protected key, so local tests exercise mocked responses and curated fallbacks; no live Gemini request is claimed.
 - No Vercel project was found linked to this repository in the current Vercel connector, and no successful deployment is verified.

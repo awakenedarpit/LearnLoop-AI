@@ -49,7 +49,7 @@ The local integration runner starts Next.js on port 3000 and uses an isolated te
 - `lib/supabase/server.ts` and `lib/supabase/browser.ts` create cookie-aware SSR and browser clients from public project URL/publishable key.
 - `proxy.ts` refreshes/validates Supabase sessions when project settings are configured; it intentionally leaves the fictional demo available when no project credentials exist.
 - `lib/auth/guards.ts` resolves roles from trusted organization membership rows and provides 401/403 response helpers for handlers.
-- `app/sign-in` implements email magic-link initiation, `app/auth/callback` exchanges the callback code, and `/api/auth/me` reports the authenticated profile.
+- `app/sign-in` implements password sign-in, student signup, email magic-link initiation, and password-recovery initiation; `app/reset-password` completes a verified recovery session; `app/auth/callback` exchanges confirmation/recovery codes; `proxy.ts` refreshes the SSR session; and `/api/auth/me` reports the authenticated profile.
 - Source migrations `202610100001`–`003` describe profile/org/class/assessment/audit schema, grants/RLS policy correlations, private helpers, and a safe student quiz DTO RPC. The live project records a fourth lifecycle migration (`secure_assessment_attempt_lifecycle`) whose source is missing from this checkout.
 
 The current teacher/student quiz services still use SQLite. The Supabase schema/client scaffolding is not a cloud persistence adapter; membership bootstrap, class/org administration, atomic Postgres attempt grading, mandatory sign-in routing, and authenticated RLS tests remain incomplete. Do not enable real learner workflows until those are implemented and verified.

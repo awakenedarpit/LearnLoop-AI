@@ -77,6 +77,8 @@ Student attempts are stored in the local SQLite demo adapter. No authentication,
 |---|---|---|
 | `GET /api/auth/me` | Returns the signed-in profile role or `data: null`. | Requires configured Supabase environment to return an authenticated profile; response is private/no-store. |
 | `GET /auth/callback?code=...` | Exchanges the Supabase email-link code for a session and redirects to a safe same-origin path. | Invalid/missing code returns to sign-in. |
+| `POST /auth/session` | Provider-owned browser calls establish password sign-in, signup, email-link, and recovery sessions; the server receives refreshed cookies through Supabase SSR middleware. | Signup never accepts a role or organization; protected API routes still require a trusted membership. |
+| `GET /reset-password` | Completes a recovery session by validating the current Supabase user and calling `auth.updateUser({ password })`. | Expired or invalid recovery sessions cannot submit the form. |
 | `GET /sign-in` | Sends a Supabase email magic link. | Unavailable until project URL/key and email redirect settings are configured. |
 
 Server auth helpers expose role checks for route handlers. They do not automatically protect every route. The existing quiz routes still use demo SQLite; do not treat the Supabase schema/client scaffold as completed cloud persistence.

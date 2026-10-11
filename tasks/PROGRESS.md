@@ -1,5 +1,14 @@
 # Progress Log
 
+## Latest update — 2026-10-11 (Supabase Auth Phase 2)
+
+- Replaced the magic-link-only screen with password sign-in, student signup, email-link sign-in, forgot-password initiation, and password reset completion.
+- Added callback-safe same-origin redirect validation, session refresh through the existing Supabase SSR proxy, client auth-state restoration, and authenticated shell sign-out.
+- New accounts use the existing `handle_new_user` trigger for a profile; signup does not accept or assign privileged roles. Membership and organization provisioning remain trusted/admin-only work.
+- Added redirect-hardening tests. Verification: typecheck PASS, lint PASS, unit tests PASS (25/25), existing learning/assessment HTTP integration PASS, production build PASS.
+- No live Auth email/password journey was claimed because protected Supabase app credentials and synthetic test accounts are not configured in this checkout.
+
+
 ## Latest update — 2026-10-11 (Gemini Phase 1)
 
 - Added `lib/ai/provider.ts` with server-side `@google/genai` calls, structured response schemas, bounded prompts, timeout/retry handling, and clearly labeled curated fallbacks when the key/provider is unavailable.
