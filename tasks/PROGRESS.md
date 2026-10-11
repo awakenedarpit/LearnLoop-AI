@@ -1,3 +1,13 @@
+## Latest update — 2026-10-11 (student assessment cloud adapter)
+
+- Added `lib/services/cloud-student-assessments.ts`, which calls the authenticated Supabase RPCs for assigned quiz listing/detail, starting/resuming attempts, saving answers, and finalizing server-scored attempts.
+- Student quiz API routes now use those cloud functions outside demo mode; cloud failures return errors and do not silently fall back to the fictional SQLite learner.
+- Added tests for list/detail mapping and invalid ID rejection. GitHub Actions is the verification source; tests/build have not yet been confirmed successful on the latest commit.
+- Updated the student quiz page's note so it distinguishes fictional demo mode from cloud mode.
+- Remaining: migrate the core Python Fundamentals learning sessions/progress and teacher quiz authoring/review/analytics; recover/review migration 4 source; provision memberships through a trusted process; run authenticated multi-user RLS/RPC tests and cloud smoke tests.
+
+---
+
 ## Latest update — 2026-10-11 (tenant-context hardening)
 
 - Added `lib/auth/membership.ts` to resolve only one unambiguous, trusted organization membership and reject missing, multiple, or invalid membership data.
