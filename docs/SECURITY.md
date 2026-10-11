@@ -8,7 +8,7 @@ The web application still runs learning and teacher-assessment services through 
 
 ## Identity and authorization
 
-Cloud-mode assessment route gates validate a Supabase Auth user with `auth.getUser()` and resolve role from a trusted `organization_memberships` row. Never accept a client-supplied role, `student_id`, class ownership or teacher authorization as truth. This is only route-gate scaffolding: no trusted membership/admin provisioning exists, app services remain demo-backed, no authenticated user journey passed, and multi-organization context selection is incomplete.
+Cloud-mode assessment route gates validate a Supabase Auth user with `auth.getUser()` and resolve role from a trusted `organization_memberships` row. Until an organization selector exists, profile resolution now fails closed unless exactly one valid membership is returned; it no longer silently picks the oldest row. Never accept a client-supplied role, `student_id`, class ownership or teacher authorization as truth. This is only route-gate scaffolding: no trusted membership/admin provisioning exists, app services remain demo-backed, no authenticated user journey passed, and multi-organization context selection is incomplete.
 
 Every future cloud handler must verify identity, organization, class membership, quiz assignment, attempt owner and lifecycle. RLS must enforce the same row boundaries. Demo mode uses a fixed fictional learner and is never a substitute for sign-in; do not enter real learner records.
 
