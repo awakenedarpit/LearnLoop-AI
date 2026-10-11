@@ -59,6 +59,8 @@ create table public.learning_responses (
   primary key (session_id, question_id)
 );
 
+create unique index learning_sessions_one_active_kind_idx
+  on public.learning_sessions(student_id, kind) where status = 'in_progress';
 create index learning_sessions_student_started_idx
   on public.learning_sessions(student_id, started_at desc);
 create index learning_sessions_student_kind_status_idx
@@ -86,11 +88,15 @@ set search_path = ''
 as $
 declare
   v_valid integer;
+  v_unique integer;
 begin
-  select count(*) into v_valid
+  select count(*), count(distinct item.question_id)
+    into v_valid, v_unique
   from jsonb_array_elements_text(new.question_ids) item(question_id)
   join public.learning_question_keys q on q.question_id = item.question_id;
-  if v_valid <> jsonb_array_length(new.question_ids) or v_valid = 0 then
+  if v_valid <> jsonb_array_length(new.question_ids)
+     or v_unique <> v_valid
+     or v_valid = 0 then
     raise exception 'INVALID_SESSION_QUESTIONS';
   end if;
   return new;
