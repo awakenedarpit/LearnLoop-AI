@@ -2,6 +2,9 @@
 
 ## Unreleased — 2026-10-11
 
+- Added an assessment HTTP integration verifier to the existing disposable demo harness. It covers draft validation/visibility, publishing, answer-key withholding, attempt autosave/recovery/deadline/limits, server scoring, idempotent finalization, review, analytics, CSV export, and formula neutralization.
+- Expanded setup/security/testing/architecture documentation and added a source-backed completion audit.
+- Rechecked the intended Supabase project read-only: four migrations recorded, 14/14 public application tables have RLS enabled and report zero rows. Five public authenticated SECURITY DEFINER RPC warnings remain; the source for the fourth live migration is absent from this checkout. No database changes were made.
 - Merged PR #8 to `main` as `cefae2c`: consolidated teacher quiz authoring, student timed attempts with autosave/recovery/deadlines, teacher analytics, question-by-question submission review, print-friendly review, filtered CSV export, and GitHub Actions CI.
 - Fixed React lint findings in assessment views and corrected CI setup ordering. GitHub Actions run `38078124788` passed typecheck, lint, unit tests, and production build on the combined branch. Full assessment HTTP integration remains unverified.
 - Added `GET /api/teacher/analytics/export` with assessment filtering, safe CSV quoting, and formula-like cell neutralization. All assessment data remains fictional demo data for one learner; production authorization/cloud persistence are not available.

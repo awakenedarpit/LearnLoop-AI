@@ -1,6 +1,20 @@
 # Progress Log
 
-## Current status — 2026-10-11 (production foundation)
+## Latest update — 2026-10-11 (assessment HTTP audit)
+
+**Branch:** `feat/assessment-http-integration`, created from verified GitHub `main` SHA `43f5b6a5bfd879deb4ec24704907df80345b3ac6`. Local changes are not yet committed/pushed at the time of this entry.
+
+- Added `scripts/verify-assessment-flow.mjs` and integrated it into `pnpm test:integration`. The expanded HTTP run passed quiz validation/draft visibility/publish/key withholding; timed start, autosave/recovery, expiry, attempt limits, server scoring and idempotent finalization; teacher review/analytics/CSV and formula injection neutralization. Existing student learning integration passed in the same run. All data is isolated fictional SQLite.
+- Current branch `pnpm typecheck`, `pnpm lint`, `pnpm test` (20/20), `DEMO_MODE=true DEMO_DB_PATH=:memory: pnpm build`, and `git diff --check` all pass. The expanded HTTP integration also passes.
+- The user confirmed the correct Supabase account is now connected. Read-only inspection verified LearnLoop `rlglcgtamqwqzmkitdtn`, `ap-south-1`, `ACTIVE_HEALTHY`; four recorded migrations; 14/14 public tables RLS-enabled, zero rows; policies and grants were inspected. No database changes were made and no authenticated-user RLS tests were run.
+- Security Advisor reports five authenticated-callable public `SECURITY DEFINER` assessment RPC warnings. Manual definitions showed empty search paths and auth/ownership checks; direct authenticated tests remain required. Performance Advisor reports 16 unused indexes and six multiple-permissive-policy notices.
+- The live ledger includes fourth migration `secure_assessment_attempt_lifecycle`, but source migrations 001–003 only exist in this checkout. Recover exact migration 004 source before any further migration work.
+- Current Vercel lookup found no project/team linked to the GitHub repo. No deployment, Gemini call or live Supabase write was attempted.
+- Current authoritative audit/status: `docs/COMPLETION_AUDIT.md`; setup/security details: `docs/SUPABASE_SETUP.md`, `docs/SECURITY.md`.
+
+---
+
+## Historical status — 2026-10-11 (production foundation before this audit)
 
 **Phase:** Production configuration foundations implemented; application remains in fictional demo mode and is not production-ready.
 
@@ -29,7 +43,7 @@
 
 ---
 
-## Current status — 2026-10-11 (assessment workflow integrated)
+## Historical status — 2026-10-11 (assessment workflow integrated before HTTP audit)
 
 **Phase:** Phase 2 demo assessment milestone integrated into `main`. Assessment code milestone commit: `cefae2c777a2d3abcc140af749e46c29a45909fc` (`Integrate assessment workflow and CSV analytics export`). PR #8 is merged.
 

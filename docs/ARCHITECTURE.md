@@ -1,6 +1,6 @@
 # Architecture — LearnLoop AI
 
-**Status (2026-10-11):** student learning and teacher assessments run in fictional SQLite demo mode. Dedicated Supabase project, RLS-enabled schema and cloud-mode assessment role gates exist, but services are not PostgreSQL-backed and authenticated row-level behavior is unverified. Gemini/deployment remain unconfigured.
+**Status (2026-10-11):** student learning and teacher assessments run in fictional SQLite demo mode. Assessment HTTP lifecycle verification now covers authoring through review/export. The intended Supabase project is confirmed healthy with four recorded migrations, 14 RLS-enabled tables and zero rows; source for the fourth migration is missing locally, and authenticated row-level behavior is untested. Security Advisor flags five public SECURITY DEFINER RPCs. App services are not PostgreSQL-backed; Gemini/deployment remain unconfigured.
 
 ## Implemented source modules
 
@@ -16,7 +16,7 @@
 - `lib/auth/` includes Supabase session/role checks and route authorization gates; do not equate these with cloud persistence or proven RLS.
 - `features/assess/` behavior exists for demo quiz authoring, timed attempts, review and analytics. Production class assignment and tenant-scoped workflow integration remain outstanding.
 - `lib/ai/` for Gemini server-only clients, schemas, validation and curated fallbacks.
-- Supabase schema and grant/policy migrations are applied; authenticated RLS policy tests and data repositories remain outstanding.
+- Supabase schema and grant/policy migrations are applied; authenticated RLS behavior tests and data repositories remain outstanding. Live source for the fourth migration is absent from this checkout.
 
 ## Current data flow
 
@@ -41,7 +41,7 @@ Cloud-mode assessment handlers now derive identity from `auth.getUser()` and rol
 
 ## Current environment reality
 
-Managed server is enabled on port 3000; managed database is disabled. Dedicated Supabase project `rlglcgtamqwqzmkitdtn` is healthy, with three migrations applied and 14/14 public tables RLS-enabled. Local `node:sqlite` is experimental and remains the only application data store. Gemini and production deployment are not configured.
+The local integration runner starts Next.js on port 3000 and uses an isolated temporary SQLite database. Live LearnLoop project `rlglcgtamqwqzmkitdtn` metadata was rechecked: four migrations, 14 public tables with RLS enabled, zero rows. No authenticated RLS session test has passed; the fourth migration source is missing locally. Local `node:sqlite` remains the only application data store. Gemini and production deployment are not configured or verified.
 
  
 ## Supabase foundation (scaffolded, not activated)
@@ -50,6 +50,6 @@ Managed server is enabled on port 3000; managed database is disabled. Dedicated 
 - `proxy.ts` refreshes/validates Supabase sessions when project settings are configured; it intentionally leaves the fictional demo available when no project credentials exist.
 - `lib/auth/guards.ts` resolves roles from trusted organization membership rows and provides 401/403 response helpers for handlers.
 - `app/sign-in` implements email magic-link initiation, `app/auth/callback` exchanges the callback code, and `/api/auth/me` reports the authenticated profile.
-- Migrations `202610100001`–`003` establish profile/org/class/assessment/audit schema, tightened grants/RLS policy correlations, private helpers, and a safe quiz DTO RPC.
+- Source migrations `202610100001`–`003` describe profile/org/class/assessment/audit schema, grants/RLS policy correlations, private helpers, and a safe student quiz DTO RPC. The live project records a fourth lifecycle migration (`secure_assessment_attempt_lifecycle`) whose source is missing from this checkout.
 
 The current teacher/student quiz services still use SQLite. The Supabase schema/client scaffolding is not a cloud persistence adapter; membership bootstrap, class/org administration, atomic Postgres attempt grading, mandatory sign-in routing, and authenticated RLS tests remain incomplete. Do not enable real learner workflows until those are implemented and verified.

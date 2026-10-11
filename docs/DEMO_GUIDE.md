@@ -2,18 +2,18 @@
 
 ## Current readiness
 
-The student Python Fundamentals flow and demo teacher assessment/analytics/review/export flows are implemented and locally verified using fictional data. The dedicated Supabase project `rlglcgtamqwqzmkitdtn` is provisioned and has three migrations applied, but app services still use local SQLite and authenticated RLS has not been tested. There is no trusted membership/admin workflow, class assignment UI, production data persistence, Gemini key/request, or verified deployment. Local demo progress is not cloud-synced. Do not enter real student or organization data.
+The student Python Fundamentals journey and demo teacher assessment/review/analytics/export flows are implemented and locally verified against fictional SQLite data. The intended Supabase project `rlglcgtamqwqzmkitdtn` is healthy and has four recorded migrations; live metadata shows 14 public tables with RLS enabled and zero rows. The fourth live migration source is missing from this checkout, five public assessment RPCs remain flagged by Security Advisor, and no authenticated-user RLS behavior tests have been run. App services remain local SQLite. There is no class assignment UI, cloud persistence, verified real-user sign-in, Gemini request, or confirmed production deployment. Use fictional data only.
 
 ## Local setup
 
-Prerequisites: Node `>=22.13.0`, pnpm `11.25.0`, and port `3000` available.
+Prerequisites: Node `>=22.13.0`, pnpm `10.12.1`, and port `3000` available.
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-When running in development with no Supabase credentials, the app automatically uses the fictional local demo. A visible label identifies this mode. The persistent local database is `data/learnloop-demo.sqlite` (ignored by Git); it uses Node's built-in `node:sqlite`, which is experimental in the pinned Node 22 runtime.
+When running in development without configured Supabase credentials, the app uses the fictional local demo. A visible label identifies this mode. The persistent local database is `data/learnloop-demo.sqlite` (ignored by Git); it uses Node's built-in `node:sqlite`, which is experimental in the pinned Node 22 runtime.
 
 To reset local demo progress, stop the dev server first:
 
@@ -22,29 +22,32 @@ pnpm demo:reset
 pnpm dev
 ```
 
-Restarting the server ensures the reset database is re-opened. The helper refuses to delete paths outside the project `data/` directory.
+Restart the server so the reset database is reopened. The helper refuses to delete paths outside the project `data/` directory.
 
-## Student rehearsal
+## Student learning rehearsal
 
 1. Open the dashboard and choose the Python Fundamentals diagnostic.
-2. Answer the six questions covering variables, data types, conditionals, loops, functions and lists; confidence can be recorded with each selected answer.
-3. Use a hint when needed. The app saves each answer server-side and shows a saved/unsaved state; refreshing the session restores the latest successful save.
-4. Complete the diagnostic to see the actual score, correct answers, beginner-friendly explanations and concept gaps.
-5. Start targeted practice for those gaps. The demo chooses unseen question variants when available and does not invent gaps when no diagnostic exists.
-6. Complete practice and use the fresh-question reassessment path.
-7. Compare the reassessment only with its linked diagnostic baseline; progress shows actual stored attempts and leaves untested concepts unmastered.
-8. Review saved sessions in Learning History.
+2. Answer the six questions for variables, data types, conditionals, loops, functions and lists; confidence may be recorded with each selection.
+3. Use hints if needed. The app saves answers server-side; refresh to see the latest successful save restored.
+4. Complete the diagnostic to see the score, explanations and concept gaps.
+5. Start targeted practice for those gaps, then take the fresh-question reassessment.
+6. Compare the reassessment only with its linked diagnostic baseline. Progress reflects stored attempts; untested concepts remain unmastered.
+7. Review saved sessions in Learning History.
 
-## Automated end-to-end rehearsal
+## Teacher/student assessment rehearsal
 
-Run with port 3000 available:
+The UI uses fictional shared demo identity/data. The same journey is also verified automatically:
 
 ```bash
 pnpm test:integration
 ```
 
-This command starts a temporary Next.js server and disposable SQLite database, verifies the 8 main page routes and `/manus-routes.json`, then tests diagnostic session resume, correct-answer withholding, server answer saves and refresh recovery, scoring, gap practice, fresh reassessment, linked score comparison, idempotent completion, and rejection of answer updates after completion. It runs against fictional test records and cleans up the temporary database.
+The assessment verifier creates a synthetic quiz, confirms invalid input is rejected and draft quizzes are hidden from students, publishes the quiz, confirms active students do not receive answer keys, starts an attempt, autosaves and resumes answers, checks malformed answers/attempt limits/deadlines, finalizes using server-held scoring, replays finalization, verifies post-submit immutability, inspects teacher review/analytics and downloads a filtered CSV. It also checks formula-like user content is neutralized for spreadsheets. Deadline expiry is simulated by advancing only the isolated test SQLite database's timestamp.
 
-## Not ready for the demo
+## Automated integration details
 
-Teacher quiz creation/publishing, classes/assignments, timed assessments/deadlines, access-denial and integrity records, submission review, class analytics, printable/CSV reports, Supabase authentication/PostgreSQL/RLS, Gemini assistance and public deployment are not implemented. The original ten-step student-plus-teacher demonstration remains incomplete until those phases are delivered and verified.
+`pnpm test:integration` starts a temporary Next.js server, a disposable SQLite database and checks the 8 main page routes plus `/manus-routes.json`. It then runs the learner journey and teacher/student assessment flow above. Tests use fictional records and clean up their temporary database. They verify local demo behavior only, not Supabase, authenticated authorization, cross-user/class access, deployed runtime, or real database transactions.
+
+## Not yet ready
+
+Do not use real learner or organization data. The app is not production-ready: services do not persist to Supabase; memberships/admins and classes/assignments are not provisioned in the product; user-session RLS/RPC tests are missing; exact source for the fourth applied database migration is absent; five Security Advisor warnings remain open; Gemini calls and a linked Vercel deployment are unverified. See [`COMPLETION_AUDIT.md`](COMPLETION_AUDIT.md) for the full status matrix.

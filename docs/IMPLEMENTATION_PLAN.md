@@ -63,15 +63,15 @@ Statuses use `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, or `DONE`. A phase/task be
 - **Approach:** Implement manual question/answer/explanation/concept editing; title/instruction/duration/availability/attempt settings; student preview; draft save/edit; and draft-to-published transition. Keep class assignment out of this milestone until server-side auth and trusted class membership exist.
 - **Current implementation:** `components/teacher-quiz-builder.tsx`, `lib/services/teacher-quizzes.ts`, and `app/api/teacher/quizzes/*`; SQLite demo storage is per instance and ephemeral on Vercel when `:memory:` is configured.
 - **Acceptance:** Authoring, editing, preview, save, and publish pass UI/API tests; published drafts are locked; invalid question payloads are rejected. Class assignment remains incomplete.
-- **Verification:** GitHub Actions passed typecheck, lint, unit tests and production build on the combined assessment branch. Assessment-specific integration/browser verification and class authorization remain incomplete.
+- **Verification:** Base CI passed typecheck, lint, unit tests and production build. New local HTTP integration passed invalid input, draft hiding, publish, student key withholding, saved attempt/recovery and published-edit lock. Browser-specific authoring and class authorization remain unverified.
 
 ### P2.2 Student attempt, autosave, deadlines, and finalization — `IN_PROGRESS` (demo-only implementation)
 - **Objective:** Make the timed test reliable across refreshes and deadline boundaries.
 - **Prerequisites:** P2.1 and persistent answer store.
 - **Affected files:** `features/assess/attempt`, save/finalize services, answer/session API.
 - **Approach:** Server saves each answer; UI shows last-successful-save state; server time enforces deadline; finalization idempotently scores the latest saved answers; prevent writes after finalization; record policy termination/access denials/integrity events.
-- **Current demo implementation:** student quiz UI/API supports timed attempts, server autosave/recovery, deadline checks and submission/finalization. Full combined integration and race-condition verification remains pending; access-denial records are not implemented.
-- **Verification:** Integration tests for save/restore/deadline/duplicate-submit/race conditions and access-denial behavior.
+- **Current demo implementation:** student quiz UI/API supports timed attempts, server autosave/recovery, deadline checks and submission/finalization. The new isolated HTTP journey verifies save/restore, expiry, late-write rejection, attempt limit, duplicate-submit and post-finalization rejection. Access-denial records and race-condition tests are not implemented.
+- **Verification:** Demo HTTP lifecycle passes; authenticated cloud persistence, Postgres transaction/race conditions and access-denial behavior remain unverified.
 
 ### P2.3 Individual review and integrity review — `IN_PROGRESS` (demo review subset)
 - **Objective:** Give authorized teachers actionable submission review.
@@ -93,7 +93,7 @@ Statuses use `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, or `DONE`. A phase/task be
 
 ### P3.2 Class, question, concept, and individual analytics — `IN_PROGRESS` (demo subset integrated; CI checks passed)
 - **Objective:** Provide useful authorized insights and exports.
-- **Current demo implementation:** `lib/services/teacher-analytics.ts`, `app/api/teacher/analytics/route.ts`, `/teacher/analytics`, and `/api/teacher/analytics/export` calculate quiz-level scores, pass-rate indicators, recent submissions, per-question correctness, and downloadable filtered CSV for the single fictional demo learner. CI passed typecheck/lint/unit tests/build on the combined milestone. No auth/class scope exists yet; assessment-specific integration remains pending.
+- **Current demo implementation:** `lib/services/teacher-analytics.ts`, `app/api/teacher/analytics/route.ts`, `/teacher/analytics`, and `/api/teacher/analytics/export` calculate quiz-level scores, pass-rate indicators, recent submissions, per-question correctness, and downloadable filtered CSV for the single fictional demo learner. New HTTP integration verifies analytics and filtered CSV, including formula neutralization. No real class scope exists yet.
 - **Prerequisites for full scope:** Persisted assessment/learning records and P2.3 authorization.
 - **Affected files:** analytics services/routes, class dashboard, CSV/print views.
 - **Approach:** Compute summaries from real submissions/responses; define ranking eligibility and tie behavior; export filtered authorized datasets.
@@ -102,13 +102,13 @@ Statuses use `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, or `DONE`. A phase/task be
 
 ## Phase 4 — Supabase hardening and deployment
 
-### P4.1 Dedicated Supabase project and RLS — `IN_PROGRESS` (schema provisioned; app integration/tests incomplete)
+### P4.1 Dedicated Supabase project and RLS — `IN_PROGRESS` (live schema verified; app integration/tests incomplete)
 - **Objective:** Run the production persistence/auth target requested by the user.
 - **Prerequisites:** User-approved organization and project cost; dedicated LearnLoop project (provisioned, cost check `$0/month`) and protected connection configuration.
 - **Affected files:** `supabase/migrations/*`, `supabase/tests/*`, `lib/db/supabase/*`, `lib/auth/*`, security docs.
-- **Approach:** Applied schema/membership/class/assessment/event migrations to dedicated project; narrowed default grants; corrected policy correlations; moved internal definer helpers to the private schema; inspected advisors. Next, build tenant-scoped cloud repositories and transactional attempt scoring, provision trusted memberships, and test tenant/class/student/teacher/admin visibility.
+- **Approach:** Live LearnLoop project is healthy; four migrations are recorded, 14 public tables have RLS enabled, and zero rows are reported. Policy/grant metadata was inspected. Security Advisor flags five authenticated-callable SECURITY DEFINER RPCs; their definitions use empty search paths and auth/ownership checks, but direct-user tests are missing. The fourth migration source is missing from this checkout. Next recover that source, build tenant-scoped cloud repositories and transactional attempt scoring, provision trusted memberships, and test tenant/class/student/teacher/admin visibility.
 - **Acceptance:** Dedicated Supabase project and 14 RLS-enabled public tables exist; role-gated API handlers derive roles from trusted memberships; however app services still use SQLite and no user-session row-isolation test has passed. Phase remains open until cloud persistence/auth, admin bootstrap, allowed/denied policy tests, and recovery are verified.
-- **Verification:** Live table/grant/policy/advisory inspection completed. Still required: authenticated role-scoped integration checks and persistent cloud flow tests in this dedicated project. Do not write to unrelated existing projects.
+- **Verification:** Live project/table/migration/policy/grant/advisor catalog inspection completed read-only. Still required: restore migration-source reproducibility, authenticated role-scoped integration and persistent cloud-flow tests in this dedicated project. No live data was written.
 
 ### P4.2 Edge cases, responsive quality, demo, and deployment preparation — `NOT_STARTED`
 - **Objective:** Complete the reproducible hackathon prototype and deployment instructions.

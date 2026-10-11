@@ -2,9 +2,9 @@
 
 ## Current environment facts
 
-The workspace is `/home/ubuntu/learnloop`, branch `main`; Node `v22.13.0`, pnpm `11.25.0`, Next.js `16.4.0`, React `19.3.0`, TypeScript `5.9.3`, Tailwind CSS `4.3.3`, managed runtime port `3000`. TypeScript host-managed diagnostics are registered. The managed Webdev project has `server:true`, `database:false`; its `origin` is Manus-managed.
+Current audit checkout is `/home/ubuntu/learnloop-audit`, branch `feat/assessment-http-integration`; Node `v22.13.0`, pnpm `11.25.0`, Next.js `16.4.0`, React `19.3.0`, TypeScript `5.9.3`, Tailwind CSS `4.3.3`, runtime port `3000`. The managed workspace lives separately at `/home/ubuntu/learnloop`.
 
-The user approved the public GitHub repository `awakenedarpit/LearnLoop-AI`; inspect active origin and refs before each push. Dedicated Supabase project `LearnLoop` (`rlglcgtamqwqzmkitdtn`, `ap-south-1`) exists in `RajArpit`; three schema/security migrations are applied. Cloud repositories, live auth/member provisioning, and user-scoped RLS tests are not complete. No Gemini API key is configured.
+The user approved the public GitHub repository `awakenedarpit/LearnLoop-AI`; active remote is `origin`, and pushes must be verified. Dedicated Supabase project LearnLoop (`rlglcgtamqwqzmkitdtn`, `ap-south-1`) is healthy. The live ledger has four migrations and 14 RLS-enabled tables (zero rows); migration 004 source is missing locally and local filename prefixes do not match ledger versions. Cloud repositories, live auth/member provisioning, and user-scoped RLS tests are incomplete. Five SECURITY DEFINER RPC warnings remain open. No Gemini API key is configured.
 
 ## Stack and serving
 
@@ -21,17 +21,17 @@ The browser calls relative same-origin routes. Correct answers/explanations are 
 
 Phase 1 includes the shared responsive product shell; a Python Fundamentals question bank with three variants for each of six concepts; diagnostic sessions, confidence capture, saved answers, server scoring/gap analysis, curated hints/explanations, unseen gap-targeted practice, fresh reassessment linked to its actual diagnostic baseline, and a data-backed progress/history view. Local learning answers are persisted on the server; reload recovers saved answers. Production mode refuses the local demo adapter.
 
-Demo teacher quiz authoring, timed tests, review, analytics, and export are integrated. Production class/organization administration, Postgres persistence, authenticated RLS behavior tests, Gemini calls, and deployment remain incomplete.
+Demo teacher quiz authoring, timed tests, review, analytics, and export are integrated and now HTTP-tested. Production class/organization administration, Postgres persistence, authenticated RLS behavior tests, Gemini calls, and deployment remain incomplete.
 
 ## Environment variable names
 
-See root `.env.example`; it contains empty placeholders only. Names include `DEMO_MODE`, `DEMO_DB_PATH`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `GEMINI_API_KEY`, and `GEMINI_MODEL`. Cloud values are not currently configured. Do not place secrets in chat, source, or public documentation; use protected project configuration when available. No service-role key is used by the current demo.
+See root `.env.example`; it contains empty placeholders only. Names include `DEMO_MODE`, `DEMO_DB_PATH`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `GEMINI_API_KEY`, and `GEMINI_MODEL`. App cloud values and Gemini are not configured. Do not place secrets in chat, source, or public documentation; use protected project configuration. No service-role key is used by the current demo.
 
 ## Routes and modules
 
-Implemented HTTP endpoints: `GET /api/health`; `GET|POST /api/learn/sessions`; `GET /api/learn/sessions/:sessionId`; `PUT /api/learn/sessions/:sessionId/answers/:questionId`; `POST /api/learn/sessions/:sessionId/complete`; `GET /api/learn/progress`. Full request contracts and unimplemented future routes are listed in `API_SPECIFICATION.md`.
+Implemented HTTP endpoints include `GET /api/health`, learner session/progress APIs, student quiz/attempt APIs, teacher quiz authoring/publish APIs, teacher review/analytics and CSV export. Full request contracts and cloud/data limitations are listed in `API_SPECIFICATION.md`.
 
-Current source includes `app/` pages and handlers, `components/` shell/session/dashboard UI, `lib/learning/` question bank and pure scorer, `lib/db/demo-store.ts`, `lib/services/learning.ts`, `tests/learning-scoring.test.ts`, and demo/integration scripts. Supabase and teacher/AI modules remain planned.
+Current source includes learning and assessment pages/routes, teacher/student services and UI, `lib/auth/` role-gate scaffold, `lib/supabase/` clients, local SQLite demo store, unit tests and HTTP integration scripts. Gemini provider code and Supabase-backed service repositories remain absent.
 
 ## Build and dependency policy
 
@@ -39,9 +39,9 @@ Pin pnpm 11 in `package.json`; use `pnpm-workspace.yaml` `allowBuilds` decisions
 
 ## Verification and blockers
 
-Verified after the current auth gate and schema changes: `pnpm typecheck`, `pnpm lint`, `pnpm test` (20 tests), `pnpm test:integration` (8 routes plus local student lifecycle, recovery and scoring), and production `pnpm build`.
+On `feat/assessment-http-integration`, `pnpm typecheck`, `pnpm lint`, `pnpm test` (20/20), expanded `pnpm test:integration` (learning and assessment flows), and `DEMO_MODE=true DEMO_DB_PATH=:memory: pnpm build` all passed.
 
-The dedicated project's three migrations, RLS flags, grants and helper locations were inspected. Not yet verified: real-user auth/membership provisioning, effective RLS allow/deny behavior, PostgreSQL-backed application persistence, Gemini, class/admin operations, and production deployment. The demo teacher assessment flows are local-only. Do not claim any of the unverified paths are live or passed.
+Live project migrations, RLS flags, grants, policies and helpers were inspected read-only. Not verified: real-user auth/membership provisioning, effective RLS allow/deny behavior, PostgreSQL-backed application persistence, Gemini, class/admin operations, or production deployment. The teacher assessment flows remain local-only. Do not claim unverified paths are live or passed.
 
 ## Official references consulted
 

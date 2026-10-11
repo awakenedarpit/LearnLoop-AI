@@ -1,16 +1,25 @@
 # Known Issues and Blockers
 
-## Confirmed blockers
+## Confirmed implementation gaps
 
-- **The app is not yet connected to Supabase persistence.** Dedicated project `LearnLoop` (`rlglcgtamqwqzmkitdtn`, `ap-south-1`) exists in the approved `RajArpit` organization; project creation was checked at `$0/month`. Three migrations are applied, 14/14 application tables have RLS enabled, and grant/policy catalogs were inspected. However, application services still use local SQLite; production sign-in-to-data flow, trusted membership/bootstrap, and authenticated allowed/denied RLS behavior are not verified. Do not enter real learner data.
-- **Gemini is not live.** No protected `GEMINI_API_KEY` is configured, and no request has been made. Keep any future key in protected server configuration; never paste it into chat, commit it, or expose it to the browser.
-- **Production deployment is unverified.** Vercel previously reported `Deployment rate limited — retry in 24 hours`; no production URL is confirmed. No new deployment was attempted in this task.
-- **Source synchronization is complete; production deployment is not.** Commit `5482c379fe353c705a9290989b3a92162e17f9f2` is pushed to the user-approved public `main`, and the remote SHA was verified. This is not evidence of a live production deployment.
+- **No production persistence.** Learning and assessment services still use the fictional local `node:sqlite` adapter. It is not shared cloud storage or suitable for real multi-user data.
+- **Live database migration source is incomplete in Git.** LearnLoop project `rlglcgtamqwqzmkitdtn` is healthy and records four migrations, but only source migrations 001–003 are present in this checkout. The fourth `secure_assessment_attempt_lifecycle` migration's source must be recovered/reviewed before the database state is reproducible; do not reconstruct or reapply it blindly.
+- **Authentication is a scaffold, not a completed user journey.** Supabase SSR clients, callback, magic-link UI, session proxy and trusted membership role lookup exist, but app URL/key, email redirects and real sign-in are not verified. There is no trusted initial-admin/membership provisioning.
+- **Authorization and multitenancy are incomplete.** Some routes have role gates and RLS policies exist in the database, but data services remain demo-backed and there are no authenticated cross-student/class/organization tests. Class/organization admin CRUD, assignment lifecycle and admin bootstrap remain absent.
+- **Security Advisor findings remain open.** Five public `SECURITY DEFINER` RPCs are executable by authenticated users. Source/definitions were reviewed and actor/ownership checks exist, but direct RPC testing with authenticated synthetic users is still needed. Performance Advisor also reported 16 unused indexes and six multiple-permissive-policy notices; assess after workload tests.
+- **Gemini is not integrated.** The SDK is a dependency, but no provider-call service or live call exists. No app key was verified/configured.
+- **Deployment is unverified.** Current Vercel lookup returned no project linked to this GitHub repository and no team context. No deployment or public URL is confirmed.
 
-## Limitations to revisit
+## Verified fictional-demo behavior
 
-- The student Learn MVP and teacher assessment demo still use one fixed fictional identity and local Node `node:sqlite`; this Node module is experimental and the demo is not shared production storage.
-- Demo assessment authoring, attempts/autosave/deadlines, review, quiz-level analytics and CSV export are implemented. Full assessment HTTP/browser integration and edge-case coverage remain incomplete. Class/organization administration and multi-student analytics UI are not implemented.
-- Assessment API handlers now require authenticated student/teacher organization roles in cloud mode, but the service layer still uses SQLite rather than Postgres. The account has no organization membership provisioned, no trusted first-admin workflow, and no email delivery/callback verification.
-- Database metadata was reviewed, but no real-user allowed/denied RLS integration test has been run. The Supabase security advisor retains one intentional warning for the signed-in safe student quiz DTO `get_assigned_quiz`; see [remediation guidance](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable).
-- Access-denial/integrity-event tables exist in the schema, but app event creation/review routes and workflows do not.
+- Student diagnostic, gap analysis, curated feedback, targeted practice, reassessment and saved progress are exercised by `pnpm test:integration` against isolated local SQLite.
+- Teacher quiz authoring/publishing, timed student attempt, answer-key withholding, autosave/recovery, deadline handling, server scoring, duplicate finalization, review, analytics and CSV are exercised by the expanded HTTP verifier. These tests cover only the fixed fictional demo identity, not cloud persistence or production authorization.
+- Unit tests cover scoring, quizzes, analytics, review and CSV safety. The integration journey covers selected routes/lifecycle boundaries, not all permissions or browser interaction.
+
+## Live database facts
+
+The intended Supabase project is LearnLoop `rlglcgtamqwqzmkitdtn` in `ap-south-1`, `ACTIVE_HEALTHY`. Four migrations are recorded; 14 public application tables have RLS enabled and report zero rows. Policies/grants were inspected as metadata, but no authenticated-session allow/deny behavior has been run. See [`SUPABASE_SETUP.md`](SUPABASE_SETUP.md) and [`COMPLETION_AUDIT.md`](COMPLETION_AUDIT.md).
+
+## Residual work
+
+Add authenticated RLS and direct-RPC tests; implement class assignment and tenant-scoped repositories; make attempt finalization transaction-safe on Postgres; add access-denial/integrity-event workflows and rate limits; recover the fourth migration source; review security advisor warnings; audit dependencies; test accessibility/browser/mobile/print behavior; and identify/configure the intended Vercel project before any deployment claim.
