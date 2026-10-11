@@ -220,3 +220,9 @@ No typecheck, lint, unit tests, build, integration test, browser test, or deploy
 1. Run `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`, and `pnpm test:integration` on the combined feature branch and fix any failures.
 2. Review the new route and UI in a browser, including empty state, quiz filtering, detail lookup, and print layout.
 3. Keep this PR stacked on teacher analytics and the timed-assessment branch; do not claim production authorization or deployment.
+
+
+### Migration source recovery — 2026-10-11
+
+- Retrieved the recorded `20261010195206 secure_assessment_attempt_lifecycle` SQL statements from the active LearnLoop Supabase migration ledger and restored them to `supabase/migrations/20261010195206_secure_assessment_attempt_lifecycle.sql` on this feature branch.
+- This restores source history only. The migration was **not** replayed on the already-migrated project. Review the recovered file in Git before treating migrations as reproducible end-to-end.
