@@ -42,6 +42,6 @@
 
 ## Current unverified items
 
-- Teacher assessment workflows, production auth/role authorization, Supabase schema/migrations/RLS policy tests, Gemini calls, deployment and the complete teacher demo are not implemented/verified.
-- The exact supported Supabase project slot and current cost must be checked again before retrying creation.
+- Teacher assessments are implemented only as a fictional SQLite demo. Production auth/role authorization, app-to-Postgres persistence, authenticated RLS/RPC behavior tests, Gemini calls, and deployment remain unverified.
+- The intended Supabase project now exists and is healthy (`rlglcgtamqwqzmkitdtn`, `ap-south-1`), with four ledger migrations and 14 RLS-enabled public tables. The fourth migration source is missing from the current checkout. Security Advisor reports five authenticated-callable SECURITY DEFINER RPC warnings; direct authenticated tests remain outstanding.
 - Gemini key and provider behavior remain unverified.

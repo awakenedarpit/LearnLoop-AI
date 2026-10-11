@@ -2,6 +2,15 @@
 
 **Last updated:** 2026-10-11
 
+## Current handoff — 2026-10-11 (assessment HTTP audit)
+
+- Active checkout: `/home/ubuntu/learnloop-audit`, branch `feat/assessment-http-integration`, based on GitHub `main` SHA `43f5b6a5bfd879deb4ec24704907df80345b3ac6`; commit `e5ca043e2076f7f99915d2c415a742d1e85a4ae5` is pushed. PR #9: https://github.com/awakenedarpit/LearnLoop-AI/pull/9. CI run `38118386150` passed typecheck/lint/unit tests/student integration/build. Non-blocking annotations note Node 20 action deprecation and future Ubuntu runner migration.
+- Added assessment HTTP journey `scripts/verify-assessment-flow.mjs` to `pnpm test:integration`. Expanded integration passes learning plus teacher quiz create/publish, student key withholding, attempt save/recovery/expiry/limits/scoring/idempotence, teacher review/analytics/export and CSV formula safety. Current branch typecheck, lint, 20 unit tests, fictional-demo production build, and whitespace check all pass.
+- Correct Supabase account is connected. LearnLoop `rlglcgtamqwqzmkitdtn`, `ap-south-1`, `ACTIVE_HEALTHY`; four migration versions recorded; 14/14 public tables RLS enabled and zero rows. Policies/grants inspected read-only; no authenticated behavior tests or writes. Fourth live migration `secure_assessment_attempt_lifecycle` has no source file in this checkout.
+- Current Security Advisor: five public SECURITY DEFINER RPCs executable by `authenticated`; definitions use `search_path=''` and auth/ownership checks, but warnings remain open pending direct synthetic-user tests. Performance notices: 16 unused indexes and six multiple-permissive-policy findings.
+- App services still use local fictional SQLite; no production Postgres persistence, Gemini call, or verified Vercel deployment. Current Vercel connector finds no linked project/team for this repository.
+- Authoritative status: `docs/COMPLETION_AUDIT.md`; live project/setup boundary: `docs/SUPABASE_SETUP.md` and `docs/SECURITY.md`.
+
 ## Goal and scope
 
 Build an Education prototype for Team Data Alchemists at HackOverflow 10.0 — Aarohan, NIT Durgapur. Core loop: Diagnose → Understand → Practice → Reassess → Track Improvement. Full scope includes student Python learning, teacher/class assessments, reliable server saves/deadlines, review/analytics/reports, production roles, AI assistance, durable Supabase persistence and reproducible fictional demo data.
@@ -11,15 +20,15 @@ Build an Education prototype for Team Data Alchemists at HackOverflow 10.0 — A
 - Next.js App Router 16.4.0, React 19.3.0, TypeScript 5.9.3, Tailwind CSS 4.3.3; Node `v22.13.0`; pnpm `11.25.0`.
 - Managed server capability on port 3000; managed database disabled; host-managed TypeScript diagnostics registered.
 - **Implemented local fallback:** server-side Node `node:sqlite` with fictional learning data. `node:sqlite` is experimental in this Node release; local demo is not production/shared/cloud storage and is disabled in production. Do not enter real student data. Browser storage is not authoritative for saved answers.
-- **Cloud foundation provisioned, app still disconnected:** dedicated LearnLoop Supabase project `rlglcgtamqwqzmkitdtn`, `ap-south-1`, approved org `RajArpit`; project cost checked at `$0/month`. Three migrations applied; all 14 public app tables have RLS enabled and table grants/policy catalog were inspected. Cloud data repositories, allowed/denied user-session tests, admin/membership bootstrap, email/Auth URL setup and real data-flow verification remain incomplete.
+- **Cloud foundation provisioned, app still disconnected:** dedicated LearnLoop Supabase project `rlglcgtamqwqzmkitdtn`, `ap-south-1`, `ACTIVE_HEALTHY`; four migrations are in the live ledger, but the fourth migration source is missing from the current checkout. All 14 public app tables have RLS enabled and zero rows; policy/grant metadata were inspected, but authenticated behavior tests are outstanding. Five RPC Security Advisor warnings remain open.
 - **AI target, not live:** Gemini via protected server-side key; no `GEMINI_API_KEY` configured.
 - Design: calm editorial learning console, neutral surfaces, blue/lavender accents, custom double-loop SVG mark.
 
 ## Verified implementation status
 
 - Phase 1 student Learning MVP: diagnostic across variables/data types/conditionals/loops/functions/lists; 3 question variants per concept; confidence field; safe active-session response; server-side saves/recovery; score/gap analysis; curated hints/explanations; unseen targeted practice; fresh reassessment linked to actual diagnostic; server-rendered progress/history; honest comparison.
-- Teacher quiz authoring, timed attempts/autosave/deadlines, demo analytics/review, print review and CSV export are integrated. Cloud-mode assessment API role gates now resolve trusted organization memberships, but services still target the demo adapter; class/admin UI, denial/integrity workflow and multi-student analytics remain incomplete.
-- Latest local checks after authorization/schema edits: `pnpm typecheck` PASS; `pnpm lint` PASS; `pnpm test` PASS (20 tests); `pnpm test:integration` PASS (8 pages plus student loop in explicit demo mode); `pnpm build` PASS. No live authenticated RLS test or deployment has passed. Detail is in `tasks/PROGRESS.md` and `docs/TESTING_PLAN.md`.
+- Teacher quiz authoring, timed attempts/autosave/deadlines, demo analytics/review, print review and CSV export are integrated. Assessment HTTP lifecycle integration now passes locally, but cloud services, class/admin UI, denial/integrity workflow and multi-student analytics remain incomplete.
+- Base local checks after authorization/schema edits passed: typecheck, lint, 20 unit tests, student integration and production build. Expanded assessment integration passed on current feature branch. Rerun all checks/build on finished branch. No live authenticated RLS test or deployment has passed.
 - No public deployment URL exists.
 
 ## Important paths
@@ -28,9 +37,9 @@ Build an Education prototype for Team Data Alchemists at HackOverflow 10.0 — A
 
 ## Git and integrations
 
-- Workspace `/home/ubuntu/learnloop`; branch `main`; initial managed scaffold `f594498` (`Initial project scaffold`). Preserve managed Webdev `origin`.
+- Historical managed workspace `/home/ubuntu/learnloop`; current GitHub clone `/home/ubuntu/learnloop-audit`, branch `feat/assessment-http-integration`; preserve configured origins/remotes and avoid force-push.
 - User-approved public GitHub target: `https://github.com/awakenedarpit/LearnLoop-AI`. Production foundation and docs were pushed to `main` as `5482c379fe353c705a9290989b3a92162e17f9f2`; remote SHA was independently verified through `git ls-remote` and GitHub API.
-- Supabase project is provisioned; do not touch the two pre-existing unrelated projects. Current migration state and unresolved app integration are in `docs/SUPABASE_SETUP.md`.
+- Supabase project is provisioned and live metadata rechecked read-only. No project changes occurred. Current migration-source drift and unresolved app integration are in `docs/SUPABASE_SETUP.md`.
 - Gemini key is absent. Never ask for it in chat or commit secrets; use a protected input flow if configured.
 
 ## Dated handoff — 2026-10-10

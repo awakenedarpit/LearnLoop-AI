@@ -21,16 +21,21 @@ try {
     server.once("error", reject);
     server.listen(port, "127.0.0.1", resolve);
   });
-  const child = spawn(process.execPath, ["scripts/verify-learning-flow.mjs"], {
-    cwd: process.cwd(),
-    env: { ...process.env, LEARNLOOP_BASE_URL: `http://127.0.0.1:${port}` },
-    stdio: "inherit",
-  });
-  const exitCode = await new Promise((resolve, reject) => {
-    child.once("error", reject);
-    child.once("close", (code) => resolve(code ?? 1));
-  });
-  if (exitCode !== 0) process.exitCode = exitCode;
+  for (const verifier of ["scripts/verify-learning-flow.mjs", "scripts/verify-assessment-flow.mjs"]) {
+    const child = spawn(process.execPath, [verifier], {
+      cwd: process.cwd(),
+      env: { ...process.env, LEARNLOOP_BASE_URL: `http://127.0.0.1:${port}` },
+      stdio: "inherit",
+    });
+    const exitCode = await new Promise((resolve, reject) => {
+      child.once("error", reject);
+      child.once("close", (code) => resolve(code ?? 1));
+    });
+    if (exitCode !== 0) {
+      process.exitCode = exitCode;
+      break;
+    }
+  }
 } catch (error) {
   console.error("Could not run the local integration verifier:", error);
   process.exitCode = 1;

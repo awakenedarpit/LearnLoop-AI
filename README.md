@@ -4,33 +4,21 @@
 
 LearnLoop AI is an Education-track prototype for HackOverflow 10.0 — Aarohan, NIT Durgapur, built by Team Data Alchemists. It connects personalized learning with meaningful assessment through **Diagnose → Understand → Practice → Reassess → Track Improvement**.
 
-> **Current milestone:** the student Python Fundamentals MVP is verified locally. Demo-only teacher quiz authoring/publishing, student timed attempts with server-backed autosave/recovery/deadlines, question-by-question review, teacher analytics, print-friendly review, and filtered CSV export are now integrated into `main`. GitHub Actions passed typecheck, lint, unit tests, and production build on the assessment milestone. The full assessment HTTP integration flow still needs its own verification. Production authentication, durable cloud persistence, Gemini calls, and successful deployment remain incomplete.
+> **Current milestone:** The Python Fundamentals learning flow and demo-only teacher assessment workflow are implemented. Local unit checks and the expanded HTTP integration journey pass using isolated fictional SQLite data. The assessment integration verifies authoring, publish, answer-key withholding, autosave/recovery, deadlines, server scoring, idempotence, review, analytics, and CSV formula neutralization. Supabase cloud persistence/RLS, verified real-user authentication, Gemini calls, and production deployment remain incomplete or blocked. See [`docs/COMPLETION_AUDIT.md`](docs/COMPLETION_AUDIT.md) for evidence and blockers.
 
 ## Product scope
 
 - **LearnLoop Learn:** Python Fundamentals diagnostics for variables, data types, conditionals, loops, functions and lists; concept-based feedback; targeted practice; fresh reassessment; evidence-based progress/history.
-- **LearnLoop Assess (demo-only, integrated):** teacher quiz authoring/publish, timed student attempts with server-backed autosave/recovery/deadlines, individual response review, aggregate/question analytics, print-friendly review, and filtered CSV export. These features use a single fictional learner and are not production-authorized. Class assignment, access-denial/integrity-event review, and organization-level workflows remain incomplete.
-- **Future roles:** Student, Teacher and Organization Admin, with server-side authorization and PostgreSQL Row Level Security in configured cloud mode.
+- **LearnLoop Assess (fictional demo):** teacher quiz authoring/publishing, student timed attempts with SQLite-backed autosave/recovery/deadlines, individual response review, quiz/question analytics, print-friendly review and filtered CSV export. The prototype uses one fictional learner identity; it has no class assignment or production authorization.
+- **Intended production roles:** Student, Teacher and Organization Admin, with server-side authorization and PostgreSQL Row Level Security. These are not yet production-ready.
 
 ## Technology and data boundary
 
-Next.js App Router 16.4, React 19, TypeScript 5.9, Tailwind CSS 4, Node `>=22.13.0`, pnpm `10.12.1`. The requested cloud target is Supabase Auth/PostgreSQL/RLS; the app also uses the official Google GenAI SDK dependency for the planned Gemini integration. The managed web server runs on port `3000`.
+Next.js App Router 16.4, React 19, TypeScript 5.9, Tailwind CSS 4, Node `>=22.13.0`, pnpm `10.12.1`. The intended cloud target is Supabase Auth/PostgreSQL/RLS; the Google GenAI SDK is installed but Gemini is not integrated. The app's only implemented data adapter is fictional local SQLite using Node's experimental `node:sqlite`; local/demo persistence is not shared production storage and may reset or differ across serverless instances. Never enter real learner data in demo mode.
 
-The dedicated **LearnLoop** Supabase project has now been provisioned in the approved `RajArpit` organization (project ref `rlglcgtamqwqzmkitdtn`, region `ap-south-1`; the project-creation cost check returned `$0/month`). Repository migrations created organization/class membership, quizzes, assignments, attempts, saved answers, submissions, access-denial and integrity-event tables. All 14 public application tables have RLS enabled; grant and policy corrections were applied and inspected. However, application services still use the fictional SQLite adapter, and the live Supabase identity-to-data path, allowed/denied-user RLS tests, membership/bootstrap workflow, email delivery, Gemini, and deployment remain unverified. Do not enter real student or organization data.
+### Supabase project status
 
-## Deploy a demo to Vercel
-
-The repository includes a Vercel-compatible **disposable demo mode** for the student-learning and assessment prototype, but it is **not a production multi-user service**: authentication and cloud persistence are not implemented, and in-memory SQLite data can reset or differ between serverless instances. Use fictional data only.
-
-1. Push this repository to GitHub and import it at [Vercel](https://vercel.com/new).
-2. Keep the detected Next.js framework and root directory defaults.
-3. Add these environment variables for **Production, Preview, and Development**:
-   - `DEMO_MODE=true`
-   - `DEMO_DB_PATH=:memory:`
-4. Deploy using the included `pnpm-lock.yaml`. The project pins Node 22.x and pnpm 10.x.
-5. After deployment, open the site and `/api/health`. The health route should return `status: "ok"` and `mode: "local_demo"`.
-
-Do not add real student information, production credentials, or a Gemini key for this demo. Do not set `DEMO_MODE=true` for a production service that needs durable or private learner records. The dedicated project and schema now exist, but a cloud repository adapter, end-to-end authorization/persistence, verified RLS behavior, and deployment are still incomplete.
+The intended LearnLoop project `rlglcgtamqwqzmkitdtn` in `ap-south-1` is now confirmed and healthy. Read-only inspection found four recorded migrations and 14 public application tables with RLS enabled, currently empty. No authenticated-user RLS behavior tests have been run. One recorded live migration, `secure_assessment_attempt_lifecycle`, is missing from the checked-out repository source. Five public assessment RPCs also remain flagged by Security Advisor for authenticated `SECURITY DEFINER` execution; the functions were inspected but warnings remain open pending direct authenticated tests. No live database changes were made in this task. See [`docs/SUPABASE_SETUP.md`](docs/SUPABASE_SETUP.md) and [`docs/COMPLETION_AUDIT.md`](docs/COMPLETION_AUDIT.md).
 
 ## Local setup
 
@@ -39,7 +27,7 @@ pnpm install
 pnpm dev
 ```
 
-With no cloud credentials configured, development mode automatically shows the clearly labelled fictional demo. The local SQLite file is written under `data/` and ignored by Git. Optional local environment configuration may be copied from `.env.example`; keep `.env.local` private and do not add real learner data.
+With no cloud credentials configured, development uses the clearly labelled fictional demo. The local SQLite file is written under `data/` and ignored by Git. Optional local environment configuration may be copied from `.env.example`; keep `.env.local` private and do not add real learner data.
 
 To reset the default local demo data, stop the dev server first, then run:
 
@@ -48,7 +36,7 @@ pnpm demo:reset
 pnpm dev
 ```
 
-The reset command only removes a database path inside the project’s `data/` directory. Restarting the server is required for a reset to take effect.
+The reset command only removes a database path inside the project’s `data/` directory. Restart the server for the reset to take effect.
 
 ## Verification commands
 
@@ -60,23 +48,23 @@ pnpm build
 pnpm test:integration
 ```
 
-`pnpm test:integration` starts a temporary Next.js development server with a disposable SQLite database, checks eight page routes and the route manifest, then exercises diagnostic → saved-answer recovery → scoring → targeted practice → fresh reassessment → exact baseline comparison, including duplicate finalization and rejected post-completion edits. It uses fictional data only and cleans up its temporary database. Run it only when port `3000` is available.
+`pnpm test:integration` starts a temporary Next.js development server with a disposable SQLite database, checks the main page routes and route manifest, and executes the student learning journey and teacher/student assessment lifecycle. The tests use synthetic fictional records and clean up their temporary database. The deadline case advances the test database clock directly to make expiry deterministic; it is not a live cloud/database test. Run when port `3000` is available.
 
 ## Current boundaries
 
-- Teacher quiz authoring, timed student attempts, autosave/deadline handling, question-by-question review, aggregate/question analytics, print-friendly review, and CSV export are integrated. GitHub Actions has passed typecheck, lint, unit tests, and production build for the combined assessment milestone; the full assessment HTTP integration flow is not yet verified. Class assignments and authenticated access-denial/integrity review remain unavailable.
-- No production user accounts or role switching are available. Local progress belongs to one fixed fictional demo learner; it is not a multi-user auth system.
-- A dedicated LearnLoop Supabase project and RLS-enabled schema now exist. Assessment handlers require trusted student/teacher organization membership in cloud mode, but services still use the demo adapter and do not provide cloud persistence; the sign-in-to-data workflow and allowed/denied RLS tests remain unverified.
-- No `GEMINI_API_KEY` is configured; student explanations currently use curated content. AI drafting/explanations are not live.
-- No successful production deployment is verified. Vercel's earlier check reported a deployment rate limit, so do not treat any deployment URL as confirmed live.
+- Demo learning and assessment records use local SQLite and one fictional student. This is not multi-user identity, shared cloud storage, or suitable for real student data.
+- Supabase auth/client scaffolding and trusted-membership role lookup exist in source, but the project/account configuration used in historical work is unavailable in the current connector session. Application services still use SQLite; no authenticated RLS/persistence journey is verified.
+- Class/organization administration, assignment-based eligibility, trusted initial-admin/membership provisioning, access-denial and integrity-event workflows, and cross-user/class isolation remain incomplete.
+- No Gemini provider calls are implemented or verified. `GEMINI_API_KEY` is not available/configured for this application.
+- No Vercel project was found linked to this repository in the current Vercel connector, and no successful deployment is verified.
 
 ## Project documentation
 
-Start with [`AGENTS.md`](AGENTS.md), [`MEMORY.md`](MEMORY.md), [`plan.md`](plan.md), [`TODO.md`](TODO.md), [`tasks/PROGRESS.md`](tasks/PROGRESS.md), and [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md). Product, technical, schema, API, security, testing, demo, decision and known-issue documents are under `docs/`.
+Start with [`AGENTS.md`](AGENTS.md), [`MEMORY.md`](MEMORY.md), [`TODO.md`](TODO.md), [`tasks/PROGRESS.md`](tasks/PROGRESS.md), and [`docs/COMPLETION_AUDIT.md`](docs/COMPLETION_AUDIT.md). Product, technical, schema, API, security, testing, demo, decision and known-issue documents are under `docs/`.
 
 ## Repository and delivery
 
-Public GitHub project (user-approved): https://github.com/awakenedarpit/LearnLoop-AI. Preserve the managed Webdev `origin` and use a separate GitHub push remote. Push each meaningful verified milestone; do not force-push or commit secrets/local data. A public deployment URL will be added only after deployment succeeds.
+Public GitHub project (user-approved): https://github.com/awakenedarpit/LearnLoop-AI. Preserve the managed Git origin and use the authorized GitHub integration for feature branches and pull requests. Do not force-push or commit secrets/local data. A public deployment URL will be added only after a deployment is verified.
 
 ## License
 
