@@ -1,3 +1,12 @@
+## Latest update — 2026-10-11 (tenant-context hardening)
+
+- Added `lib/auth/membership.ts` to resolve only one unambiguous, trusted organization membership and reject missing, multiple, or invalid membership data.
+- Updated `lib/auth/guards.ts` to fetch at most two membership rows and fail closed when the user belongs to multiple organizations, rather than silently selecting the oldest membership.
+- Added `tests/auth-membership.test.ts` for accepted and rejected membership cases.
+- Changes are on `feat/supabase-persistence-foundation`. Checks have not yet been run from this editing session; review GitHub Actions before merge. This is a security hardening step only: cloud repositories, trusted membership provisioning, and an organization selector remain unfinished.
+
+---
+
 # Progress Log
 
 ## Latest update — 2026-10-11 (Supabase Auth Phase 2)
