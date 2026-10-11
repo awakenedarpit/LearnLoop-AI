@@ -15,7 +15,7 @@ This audit compares checked-out source with tests and live read-only inspection 
 - Supabase Security Advisor currently reports five `authenticated_security_definer_function_executable` warnings for public `get_assigned_quiz`, `list_assigned_quizzes`, `start_assessment_attempt`, `save_assessment_answers`, and `finalize_assessment_attempt`. Manual read-only inspection found `search_path=''`, actor binding via `auth.uid()`, ownership/assignment checks and safe pre-submission quiz fields in the relevant definitions. This is a preliminary code review, **not a substitute for authenticated tests or a reason to dismiss the warnings**. Advisor remediation: [Supabase database linter 0029](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable).
 - Performance Advisor reported 16 unused-index notices (expected on an empty/new database) and six multiple-permissive-policy notices. No database changes were made.
 - **Migration-source drift:** Supabase records the fourth lifecycle migration, but the checked-out repository only contains migration source files `202610100001`–`003`; the live fourth migration's SQL source is absent. Do not recreate/replay or claim all database changes are reproducible until the exact migration source is recovered and reviewed.
-- Vercel project lookup for `awakenedarpit/LearnLoop-AI` returned no linked project and no team context. No deployment was attempted. No Gemini call/key verification was made.
+- The PR integration created a Vercel preview automatically; no production deployment or promotion was attempted. The latest preview for PR #10 is `READY`, but Vercel Authentication and connector authorization prevented an endpoint smoke test. No Gemini call/key verification was made.
 
 ## Requirement audit
 
@@ -33,9 +33,9 @@ This audit compares checked-out source with tests and live read-only inspection 
 | Supabase Security Advisor findings | `PARTIALLY_IMPLEMENTED` | Five public SECURITY DEFINER RPCs are intentionally callable by `authenticated`; function bodies manually inspected | Advisor warning remains. Keep exact warnings documented, determine whether public wrappers should remain exposed, and test direct RPC role/ownership behavior before any production use. Performance advisor has 16 unused-index and six multiple-permissive-policy notices. |
 | Gemini explanations/practice/drafts | `NOT_IMPLEMENTED` | `@google/genai` dependency only; no application provider module/route found | Implement server-only bounded calls, schema validation, timeout/provider-error tests and teacher-review gate. Live call requires protected key; none was verified. |
 | Security/quality coverage | `PARTIALLY_IMPLEMENTED` | Input validation, key withholding, server scoring, no-store responses, CSV neutralization, role gate scaffold | New HTTP test covers selected demo boundaries. Missing authenticated/RLS isolation, access-denial/integrity workflow, rate limits, browser accessibility review and dependency vulnerability review. |
-| CI and local quality | `COMPLETE_AND_VERIFIED` for current branch | `.github/workflows/ci.yml`; PR #10 run `38118768439` passed on documentation-only commit `69faac35ae3f73d63d540556432eba09392eee36` | Current branch typecheck, lint, 20 unit tests, expanded integration, demo production build and `git diff --check` passed. GitHub CI passed typecheck, lint, unit tests, student HTTP integration and production build in 61s. |
-| Preview/production deployment | `PARTIALLY_IMPLEMENTED` | PR #9 preview, Vercel project `learn-loop-ai`, deployment `dpl_4xSPzFco2Kn3ZLAomRYAtAmkaSNR` | Preview is `READY` at `https://learn-loop-6vy56fpsw-wprofile2007-8440.vercel.app`, but Vercel Authentication blocked direct HTTP smoke tests and connector bypass was denied (403, team/project access). No production promotion/deployment was made. |
-| Current docs and migration reproducibility | `PARTIALLY_IMPLEMENTED` | Documentation exists, but some status was stale and migration 004 is absent from source | Synchronize live project facts, RPC warning, zero rows, migration source gap and current integration evidence. |
+| CI and local quality | `COMPLETE_AND_VERIFIED` for current branch | `.github/workflows/ci.yml`; PR #10 run `38118887823` passed on commit `ad7d13ab1e2a0dce7e2c5ab50092830138853564` | Current branch typecheck, lint, 20 unit tests, expanded integration, demo production build and `git diff --check` passed. GitHub CI passed typecheck, lint, unit tests, student HTTP integration and production build in 53s. |
+| Preview/production deployment | `PARTIALLY_IMPLEMENTED` | PR #10 Vercel preview, project `learn-loop-ai`, deployment `dpl_3ifjvJ4RzkejfyyD5NB1uHtwgXoF` | Latest preview is `READY` at `https://learn-loop-20xww1auc-wprofile2007-8440.vercel.app`, sourced from commit `ad7d13a`. Vercel Authentication blocked direct HTTP smoke tests; connector bypass was denied (403, team/project access). No production promotion/deployment was made. |
+| Current docs and migration reproducibility | `PARTIALLY_IMPLEMENTED` | Documentation was refreshed; migration 004 is still not copied into source and version names are not reconciled | Current project/security/test/preview facts are documented. Export/review exact migration SQL from the ledger and reconcile filename versions before using Supabase CLI. |
 
 ## Verification run in this task
 
@@ -51,11 +51,12 @@ This audit compares checked-out source with tests and live read-only inspection 
 | GitHub Actions | PASS — run `38080674882`, SHA `43f5b6a5bfd879deb4ec24704907df80345b3ac6` |
 | GitHub Actions (PR #9) | PASS — run `38118472151`, commit `e5ca043e2076f7f99915d2c415a742d1e85a4ae5` |
 | GitHub Actions (PR #10) | PASS — run `38118768439`, docs-only commit `69faac35ae3f73d63d540556432eba09392eee36` |
+| GitHub Actions (PR #10 latest head) | PASS — run `38118887823`, commit `ad7d13ab1e2a0dce7e2c5ab50092830138853564` |
 | Supabase project and migration ledger | Read-only PASS — exact project healthy; 4 migrations recorded; no writes |
 | Supabase public schema | Read-only PASS — 14 tables, all 14 RLS-enabled, zero rows; no authenticated-session RLS test |
 | Supabase policies and grants | Read-only metadata inspected; no user-role allow/deny behavior tested |
 | Supabase Security Advisor | Five SECURITY DEFINER callable warnings; reviewable definitions manually inspected; warnings remain open |
-| Vercel preview deployment | READY for final PR commit; direct health/page requests returned 302 to Vercel Authentication; connector bypass returned 403 due to project/team authorization; runtime smoke test remains blocked |
+| Vercel preview deployment | READY for PR #10 head; direct health/page requests returned 302 to Vercel Authentication; connector bypass returned 403 due to project/team authorization; runtime smoke test remains blocked |
 | Gemini | Not called; app integration absent |
 
 ## Immediate next steps
