@@ -1,5 +1,6 @@
 import "server-only";
 
+import { resolveSingleMembership } from "@/lib/auth/membership";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type AppRole = "student" | "teacher" | "org_admin";
@@ -32,21 +33,22 @@ export async function getAuthenticatedProfile(): Promise<AuthenticatedProfile | 
 
   const [{ data: profile, error: profileError }, { data: memberships, error: membershipError }] = await Promise.all([
     supabase.from("profiles").select("id, display_name").eq("id", user.id).maybeSingle(),
+    // Fetch at most two rows: enough to detect ambiguity without loading every membership.
+    // Until an organization selector is implemented, ambiguous tenant context must fail closed.
     supabase.from("organization_memberships")
-      .select("organization_id, role, created_at")
+      .select("organization_id, role")
       .eq("user_id", user.id)
-      .order("created_at", { ascending: true })
-      .limit(1),
+      .limit(2),
   ]);
 
-  if (profileError || membershipError || !profile || !memberships?.length) return null;
-  const membership = memberships[0];
-  if (!membership || !["student", "teacher", "org_admin"].includes(membership.role)) return null;
+  if (profileError || membershipError || !profile) return null;
+  const membership = resolveSingleMembership(memberships);
+  if (!membership) return null;
 
   return {
     id: user.id,
-    organizationId: membership.organization_id,
-    role: membership.role as AppRole,
+    organizationId: membership.organizationId,
+    role: membership.role,
     displayName: profile.display_name,
   };
 }

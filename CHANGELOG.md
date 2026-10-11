@@ -61,3 +61,9 @@
 - Applied schema, grant/policy correction, and private-helper migrations. Verified 14/14 public application tables have RLS enabled, narrowed authenticated grants, and no direct user writes to submissions or attempt result/lifecycle fields. One documented advisor warning remains for the signed-in safe quiz DTO RPC.
 - Added trusted organization-membership role resolution and cloud-mode student/teacher route gates. These routes still use demo-only service implementations; cloud persistence and authorization behavior are not fully verified.
 - Re-ran typecheck, lint, 20 unit tests, and production build successfully. Live authenticated RLS tests, Gemini, cloud repository integration, email/Auth callback configuration, and production deployment remain incomplete.
+
+## Unreleased — 2026-10-11 (tenant-context hardening)
+
+- Changed server-side profile resolution to fail closed when an authenticated user has zero or multiple organization memberships. The previous oldest-membership selection could silently choose an ambiguous tenant context.
+- Added a pure membership resolver and tests for single valid membership, missing/ambiguous membership, unknown roles, and missing organization IDs.
+- Automated checks have not yet been run in this editing session; CI results must be reviewed before merge. This does not implement cloud persistence or a multi-organization selector.
