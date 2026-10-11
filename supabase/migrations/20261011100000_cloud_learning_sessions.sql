@@ -74,8 +74,8 @@ grant select on public.learning_sessions, public.learning_responses to authentic
 grant insert(student_id, kind, status, question_ids, comparison_session_id, total_questions)
   on public.learning_sessions to authenticated;
 grant update(status) on public.learning_sessions to authenticated;
-grant insert(session_id, question_id, selected_option_id, confidence),
-  update(selected_option_id, confidence)
+grant insert(session_id, question_id, selected_option_id, confidence, answered_at),
+  update(selected_option_id, confidence, answered_at)
   on public.learning_responses to authenticated;
 
 create or replace function public.validate_learning_session_questions()
