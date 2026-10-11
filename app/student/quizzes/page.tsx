@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { StudentQuizExperience } from "@/components/student-quiz-experience";
+import { isLocalDemoMode } from "@/lib/db/demo-store";
 import "./student-quizzes.css";
 
 export const metadata: Metadata = { title: "Student Quizzes" };
@@ -13,7 +14,7 @@ export default function StudentQuizzesPage() {
         <p>Take a published quiz, check your understanding, and learn from every answer.</p>
       </div>
       <StudentQuizExperience />
-      <p className="student-demo-note">Demo workspace · progress uses fictional demo data and may reset.</p>
+      <p className="student-demo-note">{isLocalDemoMode() ? "Demo workspace · progress uses fictional demo data and may reset." : "Cloud workspace · your assigned quizzes and attempts are saved to your account."}</p>
     </section>
   );
 }
