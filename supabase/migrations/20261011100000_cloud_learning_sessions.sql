@@ -78,6 +78,29 @@ grant insert(session_id, question_id, selected_option_id, confidence),
   update(selected_option_id, confidence)
   on public.learning_responses to authenticated;
 
+create or replace function public.validate_learning_session_questions()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $
+declare
+  v_valid integer;
+begin
+  select count(*) into v_valid
+  from jsonb_array_elements_text(new.question_ids) item(question_id)
+  join public.learning_question_keys q on q.question_id = item.question_id;
+  if v_valid <> jsonb_array_length(new.question_ids) or v_valid = 0 then
+    raise exception 'INVALID_SESSION_QUESTIONS';
+  end if;
+  return new;
+end;
+$;
+revoke all on function public.validate_learning_session_questions() from public, anon, authenticated;
+create trigger validate_learning_session_questions_before_insert
+  before insert on public.learning_sessions
+  for each row execute function public.validate_learning_session_questions();
+
 create policy "learners read their own learning sessions"
   on public.learning_sessions for select to authenticated
   using (student_id = (select auth.uid()));
@@ -92,12 +115,6 @@ create policy "learners create their own learning sessions"
     and gaps is null
     and completed_at is null
     and total_questions = jsonb_array_length(question_ids)
-    and not exists (
-      select 1
-      from jsonb_array_elements_text(question_ids) q(question_id)
-      left join public.learning_question_keys bank on bank.question_id = q.question_id
-      where bank.question_id is null
-    )
   );
 create policy "learners complete their own active learning sessions"
   on public.learning_sessions for update to authenticated
