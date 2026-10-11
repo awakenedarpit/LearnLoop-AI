@@ -1,3 +1,13 @@
+## Latest update — 2026-10-11 (student assessment cloud adapter)
+
+- Added `lib/services/cloud-student-assessments.ts`, which calls the authenticated Supabase RPCs for assigned quiz listing/detail, starting/resuming attempts, saving answers, and finalizing server-scored attempts.
+- Student quiz API routes now use those cloud functions outside demo mode; cloud failures return errors and do not silently fall back to the fictional SQLite learner.
+- Added tests for list/detail mapping and invalid ID rejection. GitHub Actions is the verification source; tests/build have not yet been confirmed successful on the latest commit.
+- Updated the student quiz page's note so it distinguishes fictional demo mode from cloud mode.
+- Remaining: migrate the core Python Fundamentals learning sessions/progress and teacher quiz authoring/review/analytics; recover/review migration 4 source; provision memberships through a trusted process; run authenticated multi-user RLS/RPC tests and cloud smoke tests.
+
+---
+
 ## Latest update — 2026-10-11 (tenant-context hardening)
 
 - Added `lib/auth/membership.ts` to resolve only one unambiguous, trusted organization membership and reject missing, multiple, or invalid membership data.
@@ -210,3 +220,9 @@ No typecheck, lint, unit tests, build, integration test, browser test, or deploy
 1. Run `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`, and `pnpm test:integration` on the combined feature branch and fix any failures.
 2. Review the new route and UI in a browser, including empty state, quiz filtering, detail lookup, and print layout.
 3. Keep this PR stacked on teacher analytics and the timed-assessment branch; do not claim production authorization or deployment.
+
+
+### Migration source recovery — 2026-10-11
+
+- Retrieved the recorded `20261010195206 secure_assessment_attempt_lifecycle` SQL statements from the active LearnLoop Supabase migration ledger and restored them to `supabase/migrations/20261010195206_secure_assessment_attempt_lifecycle.sql` on this feature branch.
+- This restores source history only. The migration was **not** replayed on the already-migrated project. Review the recovered file in Git before treating migrations as reproducible end-to-end.

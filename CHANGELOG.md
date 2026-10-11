@@ -67,3 +67,10 @@
 - Changed server-side profile resolution to fail closed when an authenticated user has zero or multiple organization memberships. The previous oldest-membership selection could silently choose an ambiguous tenant context.
 - Added a pure membership resolver and tests for single valid membership, missing/ambiguous membership, unknown roles, and missing organization IDs.
 - Automated checks have not yet been run in this editing session; CI results must be reviewed before merge. This does not implement cloud persistence or a multi-organization selector.
+
+## Unreleased — 2026-10-11 (student assessment cloud adapter)
+
+- Added a server-only adapter for the existing Supabase assignment-scoped RPCs and routed student quiz listing/detail, attempt start/resume, answer autosave, and finalization through it when cloud mode is active.
+- Preserved local fictional SQLite demo behavior only when demo mode is active; cloud failures do not silently switch to demo data. Quiz grading and deadline enforcement remain database-side.
+- Added adapter tests and made the student quiz workspace label reflect demo vs cloud mode. CI is running; live authenticated account/RLS smoke tests remain outstanding.
+- This does not yet migrate the Python Fundamentals Diagnose → Practice → Reassess services or teacher authoring/review/analytics to cloud storage.
