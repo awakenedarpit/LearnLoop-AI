@@ -235,3 +235,12 @@ No typecheck, lint, unit tests, build, integration test, browser test, or deploy
 - Routed the existing learning-session, answer, completion, and progress endpoints to the cloud adapter when local demo mode is disabled. The fictional SQLite path remains for explicit local/demo mode.
 - This is code-only so far: the new migration has **not** been applied to the live Supabase project. Apply it through the migration workflow after review, then run authenticated multi-user authorization and persistence smoke tests.
 - Remaining: wire teacher authoring/review/analytics to Supabase, add stronger adapter/route tests, verify environment variables and live deployment, and resolve/review Supabase Security Advisor findings.
+
+
+## Cloud teacher quiz authoring milestone — 2026-10-11
+
+- Added a Supabase adapter for teacher quiz listing, draft creation/editing, and publishing, scoped to the authenticated teacher's single trusted organization membership.
+- Routed the existing teacher quiz API endpoints to cloud persistence outside local demo mode.
+- Added a database trigger migration to make published quiz content immutable through direct REST writes, not only through the app UI.
+- This migration is not applied to the live project yet. CI and review should pass before applying it; then verify with a real teacher account.
+- Remaining: cloud class/quiz assignment, teacher submission review and analytics, trusted first-admin/org provisioning, and live deployment verification.
