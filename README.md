@@ -4,7 +4,7 @@
 
 LearnLoop AI is an Education-track prototype for HackOverflow 10.0 — Aarohan, NIT Durgapur, built by Team Data Alchemists. It connects personalized learning with meaningful assessment through **Diagnose → Understand → Practice → Reassess → Track Improvement**.
 
-> **Current milestone:** The Python Fundamentals learning flow and demo-only teacher assessment workflow are implemented. Local unit checks and the expanded HTTP integration journey pass using isolated fictional SQLite data. The assessment integration verifies authoring, publish, answer-key withholding, autosave/recovery, deadlines, server scoring, idempotence, review, analytics, and CSV formula neutralization. Supabase cloud persistence/RLS, verified real-user authentication, Gemini calls, and production deployment remain incomplete or blocked. See [`docs/COMPLETION_AUDIT.md`](docs/COMPLETION_AUDIT.md) for evidence and blockers.
+> **Current milestone:** The Python Fundamentals learning flow and demo-only teacher assessment workflow pass local unit/HTTP checks using isolated fictional SQLite data. The expanded test verifies authoring, publish, answer-key withholding, autosave/recovery, deadlines, server scoring, idempotence, review, analytics, and CSV formula neutralization. Supabase cloud persistence/RLS, verified real-user authentication and Gemini remain incomplete. PR #9 has a Vercel `READY` preview, but Vercel Authentication blocked an authorized smoke test; no production deployment was made. See [`docs/COMPLETION_AUDIT.md`](docs/COMPLETION_AUDIT.md).
 
 ## Product scope
 

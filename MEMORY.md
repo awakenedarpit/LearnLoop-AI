@@ -4,11 +4,11 @@
 
 ## Current handoff — 2026-10-11 (assessment HTTP audit)
 
-- Active checkout: `/home/ubuntu/learnloop-audit`, branch `feat/assessment-http-integration`, based on GitHub `main` SHA `43f5b6a5bfd879deb4ec24704907df80345b3ac6`; commit `e5ca043e2076f7f99915d2c415a742d1e85a4ae5` is pushed. PR #9: https://github.com/awakenedarpit/LearnLoop-AI/pull/9. CI run `38118386150` passed typecheck/lint/unit tests/student integration/build. Non-blocking annotations note Node 20 action deprecation and future Ubuntu runner migration.
+- Active checkout: `/home/ubuntu/learnloop-audit`, branch `feat/assessment-http-integration`. PR #9 containing `e5ca043` and `bf00ef5` was merged by repository owner `awakenedarpit` at 2026-10-11 06:35:29Z as merge commit `00f71a239208f5e1a8d71bba932811a573c17649`; CI run `38118472151` passed. Post-merge docs are in open PR #10 (https://github.com/awakenedarpit/LearnLoop-AI/pull/10); CI run `38119007870` passed on commit `90c10ec3b5721fac807606a7fbfa9238c5e8fafe`. Non-blocking CI annotations note Node 20 action deprecation and future Ubuntu runner migration.
 - Added assessment HTTP journey `scripts/verify-assessment-flow.mjs` to `pnpm test:integration`. Expanded integration passes learning plus teacher quiz create/publish, student key withholding, attempt save/recovery/expiry/limits/scoring/idempotence, teacher review/analytics/export and CSV formula safety. Current branch typecheck, lint, 20 unit tests, fictional-demo production build, and whitespace check all pass.
 - Correct Supabase account is connected. LearnLoop `rlglcgtamqwqzmkitdtn`, `ap-south-1`, `ACTIVE_HEALTHY`; four migration versions recorded; 14/14 public tables RLS enabled and zero rows. Policies/grants inspected read-only; no authenticated behavior tests or writes. Fourth live migration `secure_assessment_attempt_lifecycle` has no source file in this checkout.
 - Current Security Advisor: five public SECURITY DEFINER RPCs executable by `authenticated`; definitions use `search_path=''` and auth/ownership checks, but warnings remain open pending direct synthetic-user tests. Performance notices: 16 unused indexes and six multiple-permissive-policy findings.
-- App services still use local fictional SQLite; no production Postgres persistence, Gemini call, or verified Vercel deployment. Current Vercel connector finds no linked project/team for this repository.
+- App services still use local fictional SQLite; no production Postgres persistence or Gemini call. Latest PR #10 Vercel preview is `READY` at `https://learn-loop-58hatjmqx-wprofile2007-8440.vercel.app`, but Authentication protects it and the connector cannot bypass because it lacks project/team access; no runtime smoke test or production promotion was verified.
 - Authoritative status: `docs/COMPLETION_AUDIT.md`; live project/setup boundary: `docs/SUPABASE_SETUP.md` and `docs/SECURITY.md`.
 
 ## Goal and scope
@@ -29,7 +29,7 @@ Build an Education prototype for Team Data Alchemists at HackOverflow 10.0 — A
 - Phase 1 student Learning MVP: diagnostic across variables/data types/conditionals/loops/functions/lists; 3 question variants per concept; confidence field; safe active-session response; server-side saves/recovery; score/gap analysis; curated hints/explanations; unseen targeted practice; fresh reassessment linked to actual diagnostic; server-rendered progress/history; honest comparison.
 - Teacher quiz authoring, timed attempts/autosave/deadlines, demo analytics/review, print review and CSV export are integrated. Assessment HTTP lifecycle integration now passes locally, but cloud services, class/admin UI, denial/integrity workflow and multi-student analytics remain incomplete.
 - Base local checks after authorization/schema edits passed: typecheck, lint, 20 unit tests, student integration and production build. Expanded assessment integration passed on current feature branch. Rerun all checks/build on finished branch. No live authenticated RLS test or deployment has passed.
-- No public deployment URL exists.
+- A protected PR preview exists; no public production URL or production deployment is verified.
 
 ## Important paths
 
