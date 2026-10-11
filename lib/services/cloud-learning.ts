@@ -220,6 +220,7 @@ export async function saveCloudLearningAnswer(
     question_id: questionId,
     selected_option_id: selectedOptionId,
     confidence,
+    answered_at: new Date().toISOString(),
   }, { onConflict: "session_id,question_id" }).select("answered_at").single();
   if (error || !data) throw new LearningServiceError("Could not save your answer.", 502, "LEARNING_STORAGE_FAILED");
   return { savedAt: data.answered_at, questionId };
