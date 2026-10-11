@@ -11,6 +11,15 @@
 - App services still use local fictional SQLite; no production Postgres persistence or Gemini call. Latest PR #10 Vercel preview is `READY` at `https://learn-loop-58hatjmqx-wprofile2007-8440.vercel.app`, but Authentication protects it and the connector cannot bypass because it lacks project/team access; no runtime smoke test or production promotion was verified.
 - Authoritative status: `docs/COMPLETION_AUDIT.md`; live project/setup boundary: `docs/SUPABASE_SETUP.md` and `docs/SECURITY.md`.
 
+
+## Dated handoff — 2026-10-11 (Gemini Phase 1)
+
+1. **Implemented:** `lib/ai/provider.ts` uses the existing `@google/genai` SDK server-side with structured JSON schemas, Zod validation, bounded prompts, timeout/retry handling, and explicit fallback labeling.
+2. **Connected:** `/api/ai/explanation` is wired into completed learner questions; `/api/ai/recommendations` and `/api/ai/quiz-draft` are available with student/teacher role gates. Quiz output is draft-only and cannot publish automatically.
+3. **Tests:** mocked provider tests pass (3 new; 23 total), plus typecheck, lint, production build and the existing local learning/assessment HTTP integration.
+4. **Boundary:** `GEMINI_API_KEY` is not configured in this checkout; no live Gemini request was made. Cloud repositories, multi-user auth/RLS verification, class workflows and admin provisioning remain incomplete.
+5. **Next actions:** connect recommendations to the authenticated cloud progress repository, add cloud-backed assessment services and RLS tests, then run a protected-key live smoke test and deployment verification.
+
 ## Goal and scope
 
 Build an Education prototype for Team Data Alchemists at HackOverflow 10.0 — Aarohan, NIT Durgapur. Core loop: Diagnose → Understand → Practice → Reassess → Track Improvement. Full scope includes student Python learning, teacher/class assessments, reliable server saves/deadlines, review/analytics/reports, production roles, AI assistance, durable Supabase persistence and reproducible fictional demo data.

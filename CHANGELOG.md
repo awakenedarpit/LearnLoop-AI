@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-11 — Gemini learning assistance
+
+- Added a server-only Gemini provider with structured JSON output validation, bounded input/output, timeout handling, limited retry behavior, and explicit curated fallbacks.
+- Added learner explanation, recommendation, and teacher quiz-draft API routes. Generated quiz content is always marked as requiring teacher review.
+- Added a completed-session “Explain this with AI” action that never changes authoritative scoring.
+- Added mocked success, missing-key, and malformed-response tests.
+
+
 ## Unreleased — 2026-10-11
 
 - Added an assessment HTTP integration verifier to the existing disposable demo harness. It covers draft validation/visibility, publishing, answer-key withholding, attempt autosave/recovery/deadline/limits, server scoring, idempotent finalization, review, analytics, CSV export, and formula neutralization.

@@ -1,5 +1,14 @@
 # Progress Log
 
+## Latest update — 2026-10-11 (Gemini Phase 1)
+
+- Added `lib/ai/provider.ts` with server-side `@google/genai` calls, structured response schemas, bounded prompts, timeout/retry handling, and clearly labeled curated fallbacks when the key/provider is unavailable.
+- Added `/api/ai/explanation`, `/api/ai/recommendations`, and `/api/ai/quiz-draft`; completed learning sessions expose the explanation action without changing deterministic scores or answer keys.
+- Added `tests/ai-provider.test.ts`; mocked success, missing-key fallback, and malformed-response fallback pass.
+- Verification on this checkout: typecheck PASS, lint PASS, unit tests PASS (23/23), production build PASS, `pnpm test:integration` PASS for the existing learning and assessment lifecycle.
+- No protected `GEMINI_API_KEY` is configured, so no live Gemini request is claimed. Supabase cloud persistence/auth/RLS user-session verification remains incomplete.
+
+
 ## Latest update — 2026-10-11 (assessment HTTP audit)
 
 **Branch:** `feat/assessment-http-integration`, created from GitHub `main` SHA `43f5b6a5bfd879deb4ec24704907df80345b3ac6`. Implementation commit `e5ca043e2076f7f99915d2c415a742d1e85a4ae5` plus docs-only follow-up `bf00ef57288f7222a16f15335baf57e4b2714f46` were included in PR #9 and merged by repository owner `awakenedarpit` on 2026-10-11 06:35:29Z; merge commit `00f71a239208f5e1a8d71bba932811a573c17649`. PR #10 (https://github.com/awakenedarpit/LearnLoop-AI/pull/10) is open with deployment-status documentation; CI run `38119007870` passed on commit `90c10ec3b5721fac807606a7fbfa9238c5e8fafe`. Its Vercel preview is `READY` at `https://learn-loop-58hatjmqx-wprofile2007-8440.vercel.app` but remains protected from smoke testing by Vercel Authentication/connector access.

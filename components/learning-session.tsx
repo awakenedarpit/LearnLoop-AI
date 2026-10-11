@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, CheckCircle2, CircleHelp, Lightbulb, LoaderCircle, RotateCcw, Save, TriangleAlert, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, CheckCircle2, CircleHelp, Lightbulb, LoaderCircle, RotateCcw, Save, Sparkles, TriangleAlert, X } from "lucide-react";
 import type { ConfidenceLevel, LearningKind } from "@/lib/learning/catalog";
 import type { LearningQuestionView, LearningResult, LearningSessionView } from "@/lib/services/learning";
 
 type ApiResponse<T> = { data?: T; error?: { message?: string } };
 type SaveState = { questionId: string | null; status: "idle" | "saving" | "saved" | "error"; message?: string };
+type AiFeedback = { explanation: string; nextStep: string; source: "gemini" | "fallback"; warning?: string };
 const kinds: Record<LearningKind, { label: string; next: string; nextLabel: string }> = {
   diagnostic: { label: "Python diagnostic", next: "/learn/practice", nextLabel: "Practice a concept" },
   practice: { label: "Focused practice", next: "/learn/reassess", nextLabel: "Reassess with fresh questions" },
@@ -31,6 +32,8 @@ export function LearningSession({ sessionId, expectedKind, initialSession, initi
   const [failedSaveCount, setFailedSaveCount] = useState(0);
   const [completing, setCompleting] = useState(false);
   const [comparisonBaseline, setComparisonBaseline] = useState<LearningResult | null>(null);
+  const [aiFeedback, setAiFeedback] = useState<Record<string, AiFeedback>>({});
+  const [aiLoading, setAiLoading] = useState<string | null>(null);
   const saveQueue = useRef<Promise<void>>(Promise.resolve());
   const sequence = useRef(0);
   const latestSequence = useRef(new Map<string, number>());
@@ -122,6 +125,25 @@ export function LearningSession({ sessionId, expectedKind, initialSession, initi
     } finally { setCompleting(false); }
   }
 
+  async function requestAiExplanation(question: LearningQuestionView) {
+    if (question.isCorrect || !session || aiLoading) return;
+    setAiLoading(question.id);
+    try {
+      const response = await fetch("/api/ai/explanation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId, questionId: question.id }),
+      });
+      const body = await response.json() as ApiResponse<AiFeedback>;
+      if (!response.ok || !body.data) throw new Error(body.error?.message || "AI feedback is unavailable.");
+      setAiFeedback((current) => ({ ...current, [question.id]: body.data! }));
+    } catch (reason) {
+      setPageError(reason instanceof Error ? reason.message : "AI feedback is unavailable.");
+    } finally {
+      setAiLoading(null);
+    }
+  }
+
   if (loading) return <div className="session-shell"><div className="skeleton" style={{ height: 45, marginBottom: 15 }} /><div className="skeleton" style={{ height: 390 }} /></div>;
   if (!session || pageError && !currentQuestion) return <section className="session-shell card card-pad" role="alert"><div className="empty-symbol"><TriangleAlert size={18} /></div><h1 className="card-title" style={{ marginTop: 13 }}>Session unavailable</h1><p className="card-description">{pageError || "This session could not be loaded."}</p><button className="button button-secondary" type="button" onClick={() => { setLoading(true); setPageError(""); void loadSession(); }} style={{ marginTop: 14 }}>Try again</button></section>;
   if (!currentQuestion) return null;
@@ -185,6 +207,9 @@ export function LearningSession({ sessionId, expectedKind, initialSession, initi
           {showHint ? <span><Lightbulb size={12} style={{ verticalAlign: "-2px", marginRight: 5, color: "#9c85d3" }} />{currentQuestion.hint ?? "Think through each step before choosing."}</span> : <button className="button button-quiet" type="button" onClick={() => setShowHint(true)}><Lightbulb size={13} />Show a hint</button>}
         </div>}
         {completed && <div className="feedback-panel"><strong>{currentQuestion.isCorrect ? "Why this works" : currentQuestion.selectedOptionId ? "A helpful explanation" : "Correct answer"}</strong><p>{currentQuestion.explanation ?? "Review this concept and try a new question in your next session."}</p></div>}
+        {completed && !currentQuestion.isCorrect && <div className="feedback-panel" style={{ marginTop: 10, background: "#fbf9ff", borderColor: "#e3dcf6" }}>
+          {aiFeedback[currentQuestion.id] ? <><strong><Sparkles size={14} style={{ verticalAlign: "-2px", marginRight: 5 }} />AI study note <span className="state-chip state-chip-neutral">{aiFeedback[currentQuestion.id].source === "gemini" ? "Gemini" : "Curated fallback"}</span></strong><p>{aiFeedback[currentQuestion.id].explanation}</p><p><strong>Next step:</strong> {aiFeedback[currentQuestion.id].nextStep}</p>{aiFeedback[currentQuestion.id].warning && <small>{aiFeedback[currentQuestion.id].warning}</small>}</> : <button className="button button-secondary" type="button" onClick={() => void requestAiExplanation(currentQuestion)} disabled={aiLoading === currentQuestion.id}><Sparkles size={14} />{aiLoading === currentQuestion.id ? "Preparing study note…" : "Explain this with AI"}</button>}
+        </div>}
         <div className="question-nav" aria-label="Question navigation">{session.questions.map((question, index) => <button key={question.id} type="button" className={`question-nav-button${index === activeIndex ? " question-nav-current" : ""}${question.selectedOptionId && index !== activeIndex ? " question-nav-answered" : ""}`} onClick={() => { setActiveIndex(index); setShowHint(false); }} aria-label={`Go to question ${index + 1}${question.selectedOptionId ? ", answered" : ", unanswered"}`} aria-current={index === activeIndex ? "step" : undefined}>{index + 1}</button>)}</div>
         <div className="session-actions">
           <button className="button button-secondary" type="button" onClick={() => { setActiveIndex((index) => Math.max(0, index - 1)); setShowHint(false); }} disabled={activeIndex === 0}><ArrowLeft size={13} />Previous</button>

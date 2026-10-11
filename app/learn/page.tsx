@@ -22,7 +22,7 @@ export default function LearnPage() {
         <article className="learning-card card"><div className="learning-card-icon"><BookOpenCheck size={16} /></div><h2>Practice</h2><p>Try new questions chosen from concepts that need another look.</p><Link className="subtle-link" href="/learn/practice">Explore focused practice <ArrowRight size={12} /></Link></article>
         <article className="learning-card card"><div className="learning-card-icon"><RotateCcw size={16} /></div><h2>Reassess</h2><p>Use fresh questions and compare with your actual saved baseline.</p><Link className="subtle-link" href="/learn/reassess">See what changed <ArrowRight size={12} /></Link></article>
       </div>
-      <div style={{ marginTop: 16 }} className="disclaimer"><Sparkles size={14} />Explanations and hints are curated for this local demo. AI-generated help will be added only after a protected Gemini configuration is available.</div>
+      <div style={{ marginTop: 16 }} className="disclaimer"><Sparkles size={14} />Completed answers can request a clearly labeled AI study note. Verified scores and answer keys remain deterministic, and curated guidance is shown when Gemini is unavailable.</div>
     </>
   );
 }
