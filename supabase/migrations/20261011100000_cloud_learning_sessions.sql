@@ -85,7 +85,7 @@ returns trigger
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $validate$
 declare
   v_valid integer;
   v_unique integer;
@@ -101,7 +101,7 @@ begin
   end if;
   return new;
 end;
-$;
+$validate$;
 revoke all on function public.validate_learning_session_questions() from public, anon, authenticated;
 create trigger validate_learning_session_questions_before_insert
   before insert on public.learning_sessions
@@ -165,7 +165,7 @@ returns trigger
 language plpgsql
 security definer
 set search_path = ''
-as $$
+as $finalize$
 declare
   v_correct integer;
   v_answered integer;
@@ -213,7 +213,7 @@ begin
   new.completed_at := v_completed_at;
   return new;
 end;
-$$;
+$finalize$;
 
 revoke all on function public.finalize_learning_session() from public, anon, authenticated;
 create trigger finalize_learning_session_before_update
