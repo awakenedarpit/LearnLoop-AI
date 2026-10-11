@@ -16,6 +16,11 @@ export class CloudAssessmentError extends Error {
 }
 
 type JsonRecord = Record<string, unknown>;
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function isUuid(value: string): boolean {
+  return UUID_PATTERN.test(value);
+}
 
 function asRecord(value: unknown): JsonRecord {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new CloudAssessmentError("INVALID_CLOUD_RESPONSE");
@@ -144,6 +149,7 @@ export async function listCloudStudentQuizzes(): Promise<StudentQuizSummary[]> {
 }
 
 export async function getCloudStudentQuiz(quizId: string): Promise<StudentQuiz | null> {
+  if (!isUuid(quizId)) return null;
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.rpc("get_assigned_quiz", { p_quiz_id: quizId });
   if (error) {
@@ -155,6 +161,7 @@ export async function getCloudStudentQuiz(quizId: string): Promise<StudentQuiz |
 }
 
 export async function startCloudStudentQuizAttempt(quizId: string): Promise<ActiveQuizAttempt> {
+  if (!isUuid(quizId)) throw new CloudAssessmentError("QUIZ_NOT_AVAILABLE");
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.rpc("start_assessment_attempt", { p_quiz_id: quizId });
   throwRpcError(error, data);
@@ -167,6 +174,7 @@ export async function saveCloudStudentQuizAttemptAnswers(
   attemptId: string,
   answers: Record<string, number>,
 ): Promise<ActiveQuizAttempt> {
+  if (!isUuid(attemptId)) throw new CloudAssessmentError("ATTEMPT_NOT_FOUND");
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.rpc("save_assessment_answers", {
     p_attempt_id: attemptId,
@@ -182,6 +190,7 @@ export async function finalizeCloudStudentQuizAttempt(
   attemptId: string,
   answers: Record<string, number>,
 ): Promise<StudentQuizResult> {
+  if (!isUuid(attemptId)) throw new CloudAssessmentError("ATTEMPT_NOT_FOUND");
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.rpc("finalize_assessment_attempt", {
     p_attempt_id: attemptId,
