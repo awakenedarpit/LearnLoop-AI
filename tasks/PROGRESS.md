@@ -226,3 +226,12 @@ No typecheck, lint, unit tests, build, integration test, browser test, or deploy
 
 - Retrieved the recorded `20261010195206 secure_assessment_attempt_lifecycle` SQL statements from the active LearnLoop Supabase migration ledger and restored them to `supabase/migrations/20261010195206_secure_assessment_attempt_lifecycle.sql` on this feature branch.
 - This restores source history only. The migration was **not** replayed on the already-migrated project. Review the recovered file in Git before treating migrations as reproducible end-to-end.
+
+
+## Cloud learning-session persistence milestone — 2026-10-11
+
+- Added `supabase/migrations/20261011100000_cloud_learning_sessions.sql` for per-user learning sessions and answer autosaves, with RLS, narrow column grants, server-side score finalization, answer-key withholding, and one active session per learner/session kind.
+- Added `lib/services/cloud-learning.ts` to use the signed-in Supabase session for session creation/resume, answer autosave, completion, progress overview, and history.
+- Routed the existing learning-session, answer, completion, and progress endpoints to the cloud adapter when local demo mode is disabled. The fictional SQLite path remains for explicit local/demo mode.
+- This is code-only so far: the new migration has **not** been applied to the live Supabase project. Apply it through the migration workflow after review, then run authenticated multi-user authorization and persistence smoke tests.
+- Remaining: wire teacher authoring/review/analytics to Supabase, add stronger adapter/route tests, verify environment variables and live deployment, and resolve/review Supabase Security Advisor findings.
