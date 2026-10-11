@@ -2,7 +2,7 @@
 
 ## Latest update — 2026-10-11 (assessment HTTP audit)
 
-**Branch:** `feat/assessment-http-integration`, created from verified GitHub `main` SHA `43f5b6a5bfd879deb4ec24704907df80345b3ac6`. Local changes are not yet committed/pushed at the time of this entry.
+**Branch:** `feat/assessment-http-integration`, created from verified GitHub `main` SHA `43f5b6a5bfd879deb4ec24704907df80345b3ac6`. Commit `e5ca043e2076f7f99915d2c415a742d1e85a4ae5` is pushed and remote-ref verified. PR #9 is open against `main` (https://github.com/awakenedarpit/LearnLoop-AI/pull/9). GitHub Actions run `38118386150` passed typecheck, lint, unit tests, student HTTP integration and production build in 48s. Non-blocking runner annotations warn that actions target Node 20 and `ubuntu-latest` will migrate to Ubuntu 26.
 
 - Added `scripts/verify-assessment-flow.mjs` and integrated it into `pnpm test:integration`. The expanded HTTP run passed quiz validation/draft visibility/publish/key withholding; timed start, autosave/recovery, expiry, attempt limits, server scoring and idempotent finalization; teacher review/analytics/CSV and formula injection neutralization. Existing student learning integration passed in the same run. All data is isolated fictional SQLite.
 - Current branch `pnpm typecheck`, `pnpm lint`, `pnpm test` (20/20), `DEMO_MODE=true DEMO_DB_PATH=:memory: pnpm build`, and `git diff --check` all pass. The expanded HTTP integration also passes.
